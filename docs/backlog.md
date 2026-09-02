@@ -173,6 +173,28 @@
   whether to add a persistent `[idle_timeout]` with a longer timeout, or to build the soak into
   a macro that keeps the machine busy. Note a long timeout means heaters stay live longer after
   an abandoned job — that is the trade-off, not a free win.
+- **TPU profile wanted.** A 3/4 spool of red TPU is on hand, previously dialled in on an
+  Ender-3 for crash-resistant drone parts. Intended here for robot feet and possibly tyres.
+  - **The Ender-3 settings are gone and would not have transferred anyway** — that machine was
+    **Bowden**. Its retraction values compensate for metres of tube compliance this direct-drive
+    machine does not have, and would be badly wrong. Temperatures and speeds would have carried
+    over; those are the easier half to re-derive. (This loss is what prompted putting these
+    notes under version control.)
+  - **Protect the PEI plate.** TPU bonds to PEI aggressively and is one of the few materials
+    that can lift coating off a sheet on removal. Textured is more forgiving than smooth, but
+    use a glue stick as a release layer rather than find out — the plate was fitted 2026-09-02.
+  - **Do not inherit the PETG retraction settings.** `retract_before_travel = 1`, `wipe = 1` and
+    40 mm/s retract speed are right for PETG and wrong for a material that buckles under
+    compression. TPU wants near-zero retraction at a much lower speed and accepts stringing as
+    the price.
+  - Direct drive is a real advantage here: the shorter and more constrained the filament path,
+    the less TPU can buckle instead of extruding.
+- **Lightweight (foaming) PLA profile wanted**, for RC planes. Treat as a separate problem, not
+  a PLA variant. Nozzle temperature drives the foaming expansion, so **temperature sets density**
+  rather than just flow quality; flow is deliberately run down to roughly 40-50 % to let the
+  material expand into the gap, and prints are typically single-perimeter with no infill.
+  Tuning means a calibration tower stepping temperature and measuring the resulting density.
+  Not something to guess at.
 - **PETG temperature tower.** 240 °C is a generic starting point, not this filament's
   measured sweet spot.
 

@@ -49,13 +49,20 @@ above.
 
 ### Model sources
 
-Printables, MakerWorld and Cults gate downloads behind a login, so they cannot be fetched
-directly onto the Pi. **Thingiverse allows direct download** and is the practical source.
-Models supplied as a `D:\...` path on the Windows side can be pulled across instead.
+**As of 2026-09-02, no model source can be fetched automatically. The user must download in
+a browser and hand the file over.** Verified that day:
 
-Thingiverse now sits behind Cloudflare and serves a bot challenge (HTTP 429, header
-`cf-mitigated: challenge`) to curl's *default* User-Agent. A browser User-Agent passes
-straight through — verified 2026-09-01:
+| Source | Result |
+|---|---|
+| Thingiverse `/thing:<id>/zip` | **HTTP 200 but returns the Next.js app shell, not a zip.** Tried with a full browser header set (UA, Accept, Accept-Language, Referer, Sec-Fetch-*). One id also returned 504. |
+| Printables | 403 to WebFetch |
+| MakerWorld | 403 even with a browser UA from the Pi; also needs a login |
+| MyMiniFactory | 403 even with a browser UA from the Pi |
+| Cults3D | **Page fetches fine** with a browser UA (useful for checking price and licence), but downloads need a login, and much of its catalogue is paid |
+
+**This is a regression, not a standing limitation.** The browser-User-Agent workaround below did
+work on 2026-09-01 — `~/models/hinge.zip` (454 KB) came down that way — so Thingiverse tightened
+something in between. Retry it before assuming it is permanently dead:
 
 ```bash
 curl -sL -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 \
@@ -63,9 +70,11 @@ curl -sL -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/5
   -o model.zip "https://www.thingiverse.com/thing:<id>/zip"
 ```
 
-Check what you got — the challenge page is HTML with a `.zip` name (`file model.zip`).
-Some models have moved off Thingiverse entirely to GitHub, which needs none of this and is
-worth preferring; DrLex's Flexi Rex is one such.
+**Always check what you got** — the challenge or shell page is HTML wearing a `.zip` name, and
+`file model.zip` will say so. A silent HTML download is the failure mode to watch for.
+
+**GitHub-hosted models need none of this and are worth preferring**; DrLex's Flexi Rex is one
+such, and is why that print worked first time as a fetch.
 
 ## Secondary path — OrcaSlicer on the desktop
 

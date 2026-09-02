@@ -198,6 +198,32 @@
 - **PETG temperature tower.** 240 °C is a generic starting point, not this filament's
   measured sweet spot.
 
+- **Upgrade policy, set 2026-09-02: the machine stays as-is unless something fails.** Then
+  repair or replace is judged on the failure. Assessments made and closed:
+  - **CoreXY conversion: no.** The case for CoreXY is removing the inertia of a bed that moves
+    in XY. This frame does not have one — the gantry moves in XY and the bed only in Z, so most
+    of the benefit is already present. A large amount of work for a small delta, and it would
+    discard a validated first layer, a tuned config, a saved mesh and all of these notes.
+  - **Carbon-filled filament: the nozzle is the barrier, not the hotend.** CF is abrasive and
+    destroys a brass nozzle in hours; a hardened steel nozzle (~GBP 10) is the whole fix for
+    CF-PETG or CF-PLA. `max_temp: 305` comes from Klipper's official Ender-5 S1 sample and a
+    PTFE-lined hotend cannot be sanctioned to that (the liner degrades near 250 C), so the
+    hotend is very likely all-metal — **evidence, not proof; confirm visually**: PTFE tube
+    running to the nozzle means lined, bare metal heatbreak means all-metal. A hotend change is
+    only needed for high-temp composites (CF-nylon, CF-PC).
+    **Caveat worth heeding:** CF makes parts stiffer and more dimensionally stable but usually
+    makes layer adhesion and impact resistance *worse* — the fibres are short and interrupt the
+    interlayer bond. Right for a bracket that must not flex; wrong for feet and anything taking
+    impacts, where plain PETG or TPU is the better material. It is not a straight upgrade.
+  - **Dual extrusion: not feasible, and would not deliver what is wanted anyway.** Four drivers
+    are configured (X, Y, Z, E) on a compact stock board. Beyond the hardware, soluble or
+    breakaway supports need both materials **on the same layers**, so a manual filament swap
+    cannot achieve it at any price. Single-nozzle multi-material systems purge at every tool
+    change; on a support-heavy print the purge tower routinely outweighs the part, so "cheap
+    support material" is not cheap — the cost moves from the support to the waste. The
+    realistic answers stay: prefer support-free models, orient to avoid overhangs, and widen
+    `support_material_contact_distance` when supports are unavoidable.
+
 ## Deferred / parked
 
 - **KlipperScreen display blanking** — cosmetic, tap to wake. Can be disabled if it annoys.

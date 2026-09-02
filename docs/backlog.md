@@ -224,6 +224,31 @@
     realistic answers stay: prefer support-free models, orient to avoid overhangs, and widen
     `support_material_contact_distance` when supports are unavoidable.
 
+- **Second printer: Creality Ender-5 Plus**, in the garage, unused ~2 years. Identified from
+  the purchase invoice 2026-09-02. **350 x 350 x 400 mm.** Not committed to commissioning; the
+  case for it is that RC plane parts are long and 220 x 220 is the binding constraint.
+  - **Klipper ships an official sample**, `printer-creality-ender5plus-2019.cfg` — the same
+    thing that made this machine's commissioning safe. Use it; do not guess pins or thermistors.
+  - **BLTouch is stock.** Same probe, mesh, tram and `z_offset` reasoning as the S1.
+  - **`max_temp: 260` vs the S1's 305 — the signature of a PTFE-lined hotend, not all-metal.**
+    This collides with the RC-plane plan: **lightweight PLA foams at 230-260 C**, exactly where
+    a PTFE liner degrades and off-gasses. An all-metal hotend is needed before LW-PLA, and is
+    cheap. Confirm the liner visually before buying either.
+  - **`rotation_distance: 33.683` on the extruder** (vs 7.5 here) — a stock **Bowden** extruder.
+    Settles the division of labour: **TPU stays on the S1 permanently**, and Bowden retraction
+    (~4-6 mm) does not transfer from this machine's 0.8 mm.
+  - **Flashing will differ.** The sample shows an **FTDI** USB bridge, not the S1's CH340, so
+    [klipper-setup.md](klipper-setup.md) does **not** apply to it.
+  - **One Pi can host both.** A second Klipper + Moonraker instance against a second MCU is
+    established practice — a second set of systemd units and data directories. No second SBC
+    needed.
+  - **Physical inspection before any config work**, per the lesson from 2026-09-01: build
+    surface present and intact, belts not slack, Z lead screw free and not gummed, wheels not
+    flat-spotted. The last machine out of that garage was missing its build surface and it cost
+    two failed prints and hours of confident wrong diagnosis.
+  - Proposed split if commissioned: **S1** = PETG, TPU, detailed figures; **Plus** = large flat
+    parts, plain PLA, LW-PLA for planes (after the hotend).
+
 ## Deferred / parked
 
 - **KlipperScreen display blanking** — cosmetic, tap to wake. Can be disabled if it annoys.

@@ -1,0 +1,10 @@
+# Editor / OS noise
+*.swp
+*~
+.DS_Store
+
+# Local scratch
+scratch/
+*.gcode
+*.stl
+*.3mf

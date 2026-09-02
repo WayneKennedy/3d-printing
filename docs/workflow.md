@@ -1,0 +1,193 @@
+# Print workflow
+
+The goal is that slicing is invisible plumbing: hand over a model and a material, get a
+print. Mainsail is the UI, not a slicer; the Pi has no slicer GUI.
+
+## Primary path — slice on the Pi
+
+```bash
+ssh wkenn@printhub '~/slicer/slice-print.sh <model.stl|.3mf> petg [--print]'
+```
+
+It slices with the fixed profile `~/slicer/ender5s1_petg.ini`, writes G-code straight into
+`~/printer_data/gcodes/` (where Mainsail lists it), and with `--print` starts the job via
+Moonraker. Adding another material is a matter of dropping in `ender5s1_<mat>.ini`; only
+`petg` exists today.
+
+Snapshots: [`../reference/slice-print.sh`](../reference/slice-print.sh),
+[`../reference/ender5s1_petg.ini`](../reference/ender5s1_petg.ini).
+
+### Profile essentials
+
+PETG 240/80, 0.2 mm layers (0.24 first), 3 perimeters, 15 % grid infill, fan off for 3 layers
+then 40–50 %, first layer 20 mm/s. Relative extrusion with a per-layer `G92 E0` — PrusaSlicer
+requires that and will produce broken G-code without it.
+
+**Heating order:** `start_gcode` sets only the bed, then calls `START_PRINT`, which waits for
+the bed before commanding the hotend. Bed-first since 2026-09-01: heating in parallel got the
+hotend to 240 °C about two minutes early and it oozed while waiting for the bed, and the wipe
+passes were not clearing it. Costs ~1.5 min per print. Note that G-code sliced before
+2026-09-01 18:11 still carries a literal `M104` ahead of `START_PRINT` and defeats this — see
+[backlog](backlog.md).
+
+**Retraction:** 0.8 mm at 40 mm/s with 0.2 mm lift — short, because the extruder is direct
+drive, not Bowden. The amount was never the problem; what mattered was that it was not firing.
+Four settings were absent from the `.ini`, so PrusaSlicer's defaults applied silently, and two
+of them were wrong for this machine. Corrected 2026-09-02:
+
+| Setting | Was (default) | Now | Why |
+|---|---|---|---|
+| `retract_before_travel` | 2 mm | **1 mm** | Travels under the threshold get no retraction at all. On print-in-place models most hops between adjacent segments are under 2 mm, so the moves most likely to drop ooze on small parts were the ones skipping retraction. |
+| `retract_layer_change` | 0 | **1** | Z-hop happened without retracting — a blob at every layer change. |
+| `wipe` | 0 | **1** | Nozzle now drags along the last path while retracting, clearing the melt. |
+| `only_retract_when_crossing_perimeters` | 0 | 0 | Already correct; 1 would suppress retracts inside the part. |
+
+`retract_length` was deliberately **left at 0.8 mm**. Longer retracts on PETG pull molten
+filament up into the heatbreak, trading stringing for jamming, and more retract events at
+greater length is how filament grinding starts. Raise it only if stringing survives the fixes
+above.
+
+### Model sources
+
+Printables, MakerWorld and Cults gate downloads behind a login, so they cannot be fetched
+directly onto the Pi. **Thingiverse allows direct download** and is the practical source.
+Models supplied as a `D:\...` path on the Windows side can be pulled across instead.
+
+Thingiverse now sits behind Cloudflare and serves a bot challenge (HTTP 429, header
+`cf-mitigated: challenge`) to curl's *default* User-Agent. A browser User-Agent passes
+straight through — verified 2026-09-01:
+
+```bash
+curl -sL -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 \
+  (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" \
+  -o model.zip "https://www.thingiverse.com/thing:<id>/zip"
+```
+
+Check what you got — the challenge page is HTML with a `.zip` name (`file model.zip`).
+Some models have moved off Thingiverse entirely to GitHub, which needs none of this and is
+worth preferring; DrLex's Flexi Rex is one such.
+
+## Secondary path — OrcaSlicer on the desktop
+
+Kept for when a print needs actual tuning; not needed for routine work.
+
+| Setting | Value |
+|---|---|
+| Printer | Creality Ender-5 S1, or Generic Klipper Printer |
+| Build volume | 220 × 220 × 280, origin front-left |
+| Nozzle / drive | 0.4 mm, direct drive |
+| G-code flavour | Klipper |
+| Retraction | ~0.8 mm |
+| Machine start G-code | `START_PRINT` (replace any inline block entirely) |
+| Machine end G-code | `END_PRINT` |
+| Host type | Klipper / Moonraker |
+| Hostname | `http://100.99.147.57` |
+| Port | `7125` |
+| API key | blank |
+| Device UI | `http://100.99.147.57` |
+
+"Generic Klipper Printer" is a fine choice — it only sets the G-code flavour; Klipper itself
+runs on the Pi. Moonraker's `trusted_clients` already includes `100.64.0.0/10`, so the tailnet
+address works with no API key, from the desk or the garage. Use the tailnet address rather
+than a LAN IP for exactly that reason.
+
+Sanity check after slicing: in preview, the model should sit centred and the first move should
+be the prime line along the front edge.
+
+## Project-specific profiles
+
+`slice-print.sh <model> <mat>` resolves `~/slicer/ender5s1_<mat>.ini`, so a project profile is
+just another `<mat>` string.
+
+| Profile (`<mat>`) | Layers | Perimeters | Infill | Status |
+|---|---|---|---|---|
+| `petg` | 0.2 | 3 | 15 % grid | **canonical** — general use *and* koala-bot |
+| `petg_koala` | 0.2 | 4 | 30 % gyroid | built 2026-09-01 against a superseded spec; unused |
+| `petg_koalacoupon` | 0.15 | 4 | 30 % gyroid | as above; unused |
+| `pla` | 0.2 | 3 | 15 % grid | **UNTESTED** — built 2026-09-02, no PLA has been printed yet |
+
+### `pla` — built 2026-09-02, untested
+
+Derived from `ender5s1_petg.ini` by changing **only** material-specific values, so that if a
+PLA print misbehaves the material is the only variable: temps 210/205 (first/other), bed 60,
+fan 100 % from layer 2 (PETG runs 40-50 % from layer 4), `filament_density = 1.24`. Layer
+heights, speeds, perimeters, infill and retraction are byte-identical to the PETG profile.
+
+- **The temperatures are generic starting points, not measured.** Override with the spool's own
+  stated range. A temperature tower is the proper answer and is backlogged for both materials.
+- **No PLA has been printed on this machine.** Put a Benchy through this profile before
+  committing anything that matters to it.
+- **The saved bed mesh was probed at 80 C and `START_PRINT` hardcodes `BED_MESH_PROFILE
+  LOAD=default`.** A 60 C PLA print therefore loads the 80 C bed shape. The difference is
+  second-order (bed bowing between 60 and 80 C is typically a few hundredths of a millimetre,
+  comparable to the mesh's own spread) but it is cheap to fix properly: probe a second profile
+  at 60 C with `BED_MESH_CALIBRATE PROFILE=pla60`, parameterise `START_PRINT` as
+  `BED_MESH_PROFILE LOAD={params.MESH|default('default')}`, and add `MESH=pla60` to the PLA
+  profile's `start_gcode`. A bare `START_PRINT` then still means PETG 240/80 on the default
+  mesh, so it stays safe. **Requires editing `printer.cfg`, so not during a print.**
+
+**Check a project's own spec before slicing, and check it is current.** koala-bot's
+`docs/bom.md` briefly specified 4 perimeters / 30 % gyroid, and the two `petg_koala*` profiles
+were built for it; that section was rewritten hours later to document the generic `petg`
+profile instead. Both koala profiles are kept but are **not** the spec — do not use them
+without checking `docs/bom.md` again.
+
+Note the direction of causation there: koala-bot's BOM now documents whatever profile happened
+to be on the Pi as the project standard. It reads as a specification but is an observation, and
+its own text flags 4–5 perimeters for load-bearing parts as an untested open point.
+
+### koala-bot's `slice_remote.py` — safe, with one caveat
+
+`hardware/src/koala_hardware/slice_remote.py` copies every STL to `/tmp/koala-slice` on the Pi,
+slices each for volume and time, deletes the G-code, and caches the figures locally. It does
+**not** touch Moonraker, does not write to `~/printer_data/gcodes/`, and cannot start a print.
+
+**Do not run it during a print.** It runs PrusaSlicer over ~14 STLs on the machine hosting
+Klippy; sustained CPU load on the print host is a real risk to a running job. Nothing in the
+script says so.
+
+## Inspect layer 1 before printing
+
+Cheap, headless, and it would have caught the 2026-09-01 Kinetic Hinge Toy failure in a minute.
+Parse the first extruding layer out of the G-code and render it — what you are looking for is
+whether layer 1 has *area*. Solid filled regions adhere; a field of single-width lines and
+small isolated dashes is the shape that fails.
+
+Extract the layer-1 segments on the Pi, then render locally with ImageMagick:
+
+```bash
+# on the Pi: emit "x1 y1 x2 y2" per extruding move of the first layer
+python3 - <<'EOF' > layer1.txt
+import re
+G="/home/wkenn/printer_data/gcodes/<job>.gcode"
+z=None; px=py=None; first=None
+for line in open(G, errors="ignore"):
+    if not line.startswith(("G1","G0")): continue
+    mz=re.search(r"\bZ(-?[\d.]+)", line)
+    if mz: z=float(mz.group(1))
+    mx=re.search(r"\bX(-?[\d.]+)", line); my=re.search(r"\bY(-?[\d.]+)", line)
+    if mx and my:
+        x,y=float(mx.group(1)),float(my.group(1))
+        if " E" in line:
+            if first is None: first=z
+            if z==first and px is not None: print("%.3f %.3f %.3f %.3f"%(px,py,x,y))
+        px,py=x,y
+EOF
+```
+
+Draw those as SVG lines on a 220 × 220 grid (flip Y — G-code origin is front-left, SVG's is
+top-left) and `convert` to PNG. Also worth checking the same way: that the extruding X/Y bounds
+sit inside the bed, since PrusaSlicer centres the object and a model may arrive far off-origin.
+
+## Viewing photos of prints
+
+Phone photos of the plate are the only way to diagnose an adhesion failure — telemetry cannot
+see it. iPhone `.HEIC` needs decoding first; `libheif-examples` and `imagemagick` are installed
+locally for this:
+
+```bash
+heif-convert -q 90 IMG_1234.HEIC out.jpg
+convert out.jpg -crop 1100x900+1750+2300 +repage -resize 1300x detail.jpg   # zoom a region
+```
+
+WSL paths given as `\\wsl.localhost\Ubuntu-24.04\home\wkenn\...` map to `/home/wkenn/...`.

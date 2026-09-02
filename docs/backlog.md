@@ -234,9 +234,30 @@
     This collides with the RC-plane plan: **lightweight PLA foams at 230-260 C**, exactly where
     a PTFE liner degrades and off-gasses. An all-metal hotend is needed before LW-PLA, and is
     cheap. Confirm the liner visually before buying either.
-  - **`rotation_distance: 33.683` on the extruder** (vs 7.5 here) — a stock **Bowden** extruder.
-    Settles the division of labour: **TPU stays on the S1 permanently**, and Bowden retraction
-    (~4-6 mm) does not transfer from this machine's 0.8 mm.
+  - **NOT stock: a Micro Swiss NG Direct Drive Extruder is fitted** (noted 2026-09-02). This
+    voids several conclusions drawn from the sample config, and means **the official sample is
+    no longer safe to use wholesale** — it describes the stock Bowden machine:
+    - **`rotation_distance: 33.683` is wrong.** Calibrate it by measurement (extrude 100 mm,
+      measure what actually came through). Do not take a figure for the NG's gear ratio from
+      the internet.
+    - **The BLTouch offsets are wrong.** The NG relocates the probe on its own mount, and a
+      toolhead conversion physically moves the nozzle relative to the probe — which is exactly
+      what `z_offset` measures. This is the inverse of the bed-surface case: a surface change
+      does not move `z_offset`, a toolhead change does. **`PROBE_CALIBRATE` genuinely is
+      required here**, along with re-measuring `x_offset` and `y_offset`.
+    - **Confirm the thermistor and heater cartridge before powering the hotend.** If the kit
+      supplied its own hotend, `sensor_type` may not be the `EPCOS 100K B57560G104F` the sample
+      declares. A mismatched sensor does not fail loudly — it reads a plausible wrong
+      temperature and the heater compensates in the wrong direction.
+    - **It is direct drive now**, so TPU is viable on it and retraction transfers roughly from
+      the S1 (~0.8 mm) rather than needing Bowden values. The earlier "TPU stays on the S1"
+      reasoning is void — though there is no need to move it.
+    - **Open: did the kit include an all-metal hotend, or is the stock lined one still in
+      place?** If all-metal, LW-PLA becomes viable, `max_temp` can rise above 260 and the
+      RC-plane blocker disappears. If stock, the 260 ceiling stands.
+    - The NG uses **hardened steel drive gears**. With an all-metal hotend and a hardened
+      nozzle, this machine — not the S1 — may be the better candidate for carbon-filled
+      filament.
   - **Flashing will differ.** The sample shows an **FTDI** USB bridge, not the S1's CH340, so
     [klipper-setup.md](klipper-setup.md) does **not** apply to it.
   - **One Pi can host both.** A second Klipper + Moonraker instance against a second MCU is
@@ -247,7 +268,9 @@
     flat-spotted. The last machine out of that garage was missing its build surface and it cost
     two failed prints and hours of confident wrong diagnosis.
   - Proposed split if commissioned: **S1** = PETG, TPU, detailed figures; **Plus** = large flat
-    parts, plain PLA, LW-PLA for planes (after the hotend).
+    parts, plain PLA, LW-PLA for planes, and potentially carbon-filled work. The split is now
+    driven by bed size and hotend capability rather than by extruder type, since both machines
+    are direct drive.
 
 ## Deferred / parked
 

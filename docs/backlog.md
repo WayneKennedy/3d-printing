@@ -186,14 +186,15 @@
     (3.8/4.0/4.2). Orange and red PETG were ordered 2026-09-02 for robotics parts. Before
     committing a press-fit dimension to `params.py` for parts that will be printed in a
     different spool, re-run a coupon on that spool. Clearance holes do not need this.
-- **Every gcode file on the Pi predates the 2026-09-01 18:11 ooze fix.** The `M104` was removed
-  from `start_gcode` in the `.ini` profiles at 18:11, but `Kinetic_Toy`, `Flexi-Rex-improved`,
-  `Flexi-Rex-200`, `coupon_ladder` and `3DBenchy` were all sliced before that and still carry a
-  literal `M104 S<temp>` ahead of the `START_PRINT` call. That line commands the hotend up
-  regardless of what the macro does, so the bed-first ordering is defeated for those files.
-  Harmless when the bed is already warm from a previous job; on a cold start it restores the
-  full ~2 min of oozing. Re-slice before relying on any of them from cold, or strip the `M104`
-  line in place. `first_layer_test.gcode` was patched by hand on 2026-09-02 and is correct.
+- ~~**Every gcode file predates the 2026-09-01 18:11 ooze fix.**~~ **Wrong diagnosis, corrected
+  2026-09-02.** The real cause was that **PrusaSlicer re-injects its own `M104`/`M109` around a
+  custom start block unless those tokens appear literally in it.** Removing `M104` from
+  `start_gcode` on 2026-09-01 therefore made things worse: PrusaSlicer put `M104 S240` ahead of
+  everything, so the bed-first fix never took effect for *any* file, freshly sliced ones
+  included. Fixed 2026-09-02 by putting `M140`/`M190`/`M104` back in the correct order in
+  `start_gcode`; see [workflow](workflow.md). **Anything sliced between 2026-09-01 18:11 and
+  2026-09-02 22:06 still heats hotend-first — re-slice rather than trust it.** Verify by
+  inspecting emitted G-code, never by reading the profile.
 - **No `[idle_timeout]` section in `printer.cfg`** — so Klipper's default 600 s applies, and it
   runs `TURN_OFF_HEATERS` + `M84`. Hit on 2026-09-02: a bed heated to 80 °C for a pre-mesh soak
   was silently switched off at the 10-minute mark, because heaters at temperature do not count

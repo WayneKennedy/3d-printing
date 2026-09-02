@@ -23,12 +23,33 @@ PETG 240/80, 0.2 mm layers (0.24 first), 3 perimeters, 15 % grid infill, fan off
 then 40–50 %, first layer 20 mm/s. Relative extrusion with a per-layer `G92 E0` — PrusaSlicer
 requires that and will produce broken G-code without it.
 
-**Heating order:** `start_gcode` sets only the bed, then calls `START_PRINT`, which waits for
-the bed before commanding the hotend. Bed-first since 2026-09-01: heating in parallel got the
-hotend to 240 °C about two minutes early and it oozed while waiting for the bed, and the wipe
-passes were not clearing it. Costs ~1.5 min per print. Note that G-code sliced before
-2026-09-01 18:11 still carries a literal `M104` ahead of `START_PRINT` and defeats this — see
-[backlog](backlog.md).
+**Heating order:** bed first, hotend last. `start_gcode` is:
+
+```
+M140 S[first_layer_bed_temperature]
+M190 S[first_layer_bed_temperature]
+M104 S[first_layer_temperature]
+START_PRINT EXTRUDER_TEMP=[first_layer_temperature] BED_TEMP=[first_layer_bed_temperature]
+```
+
+Bed-first since 2026-09-01: heating in parallel got the hotend to 240 °C about two minutes
+early and it oozed while waiting for the bed, and the wipe passes were not clearing it. Costs
+~1.5 min per print.
+
+**The literal `M104`/`M190` tokens are load-bearing — do not remove them.** PrusaSlicer emits
+its *own* `M104` before the custom start G-code and `M109` after it, and suppresses them only
+when it finds those tokens literally in the custom block. A first attempt on 2026-09-01 removed
+`M104` from `start_gcode` on the reasoning that `START_PRINT` handles heating — which caused
+PrusaSlicer to inject `M104 S240` **ahead of everything**, defeating the fix entirely. That went
+unnoticed until 2026-09-02, when slicing Godzilla exposed it. Verified fixed by inspecting the
+emitted block, not by reading the profile:
+
+```bash
+sed -n '1,25p' out.gcode | grep -E '^M1[0459]|^START_PRINT'
+```
+
+Anything sliced between 2026-09-01 18:11 and 2026-09-02 22:06 still heats hotend-first.
+**Re-slice rather than trust a file from that window.**
 
 **Retraction:** 0.8 mm at 40 mm/s with 0.2 mm lift — short, because the extruder is direct
 drive, not Bowden. The amount was never the problem; what mattered was that it was not firing.

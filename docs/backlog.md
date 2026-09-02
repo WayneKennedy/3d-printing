@@ -40,13 +40,24 @@
     - Hardware **MJPG up to 1920x1080 @ 30 fps** (also H.264 on `/dev/video2`). Measured CPU
       cost of streaming at 1280x720 during a live print: **nil** — load average 0.13, ustreamer
       not in the top six processes.
-    - Has **both** `focus_automatic_continuous` and `focus_absolute` (1-1023). **Lock manual
-      focus once the mount is final**: the working plane never moves, so autofocus can only
-      hunt when the toolhead sweeps past and cost soft frames. The correct `focus_absolute`
-      value is distance-specific, so set it after mounting, not before.
+    - **Its focus controls are fake — the lens is FIXED FOCUS.** It advertises
+      `focus_automatic_continuous` and `focus_absolute` (1-1023), but a measured sweep across
+      the full range on 2026-09-02 produced no focus curve: sharpness on a static patch of bed
+      texture stayed flat at 13.7-14.0 (arbitrary units, stddev of Laplacian), and frames at
+      `focus=1` and `focus=1023` are visually identical. The dips at 380/560/850 were the
+      toolhead crossing the sample patch, not defocus. **There is nothing to lock.** The
+      control was left at its default (`focus_automatic_continuous=1`), which is equally inert.
+    - **Consequence: mounting distance is a design constraint, not a free choice.** With a
+      fixed lens, sharpness is whatever that lens gives at the chosen distance. The current
+      ad-hoc position lands in a usable range — bed speckle resolves clearly, which is the
+      detail needed to spot a feature releasing. **Design the bracket to hold roughly the
+      current distance**, and test a couple of distances before committing to a geometry.
+    - The unit is branded "LOGITUBO 920" — a C920 clone. **If the real C920S surfaces it is
+      worth swapping**: genuine autofocus and better optics. Swapping is near-free, since
+      crowsnest points at `/dev/video0` rather than at a model.
     - `power_line_frequency` already 50 Hz — no flicker banding, nothing to change.
-    - **It has no 1/4" tripod foot**, unlike the C920S, so the bracket must be designed around
-      this body. **Measure the camera as well as the extrusion.**
+    - **It does have a 1/4" tripod thread** (confirmed 2026-09-02; it came off a desk arm), so
+      the bracket can bolt to that rather than clamping the body.
   - **`crowsnest` is running as of 2026-09-02** — `mode: ustreamer`, `/dev/video0`, raised from
     640x480 to **1280x720**, port 8080. Backup at `crowsnest.conf.bak-0902`. Snapshot endpoint
     `http://localhost:8080/?action=snapshot` returns ~200 KB JPEGs. First snapshot confirmed a

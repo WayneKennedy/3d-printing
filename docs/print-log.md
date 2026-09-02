@@ -11,6 +11,7 @@ From Moonraker's job history. All in white PETG at 240/80.
 | 2026-09-01 15:31 | `Flexi-Rex-improved.gcode` | 9.6 min of 169 est. | **Cancelled — same failure as the Kinetic Toy.** A small section did not stick and was dragged into neighbouring pieces. Flexi Rex with stronger links (DrLex), 100 % scale, 81 × 68 × 13 mm. Source: GitHub [`DrLex0/print3D-FlexiRex`](https://github.com/DrLex0/print3D-FlexiRex), `Flexi-Rex-improved.stl` — no Cloudflare, author's settings match `ender5s1_petg.ini` exactly. |
 | 2026-09-01 18:10 | `coupon_ladder.gcode` | 135.3 min (2 h 15) | **Complete, clean.** koala-bot fit coupon, 150 × 60 × 6 mm, 22.6 g. Sliced `petg` (0.2 mm, 3 perim, 15 % grid) per koala-bot's `docs/bom.md`. Slicer estimate 135.6 min vs 135.3 actual — accurate to 20 s. No corner lift despite a 150 mm flat footprint on the bare magnetic base. |
 | 2026-09-02 18:41 | `first_layer_test.gcode` | 6.3 min | **Complete.** First print on the new textured PEI plate. Ran after tram check and a fresh `BED_MESH_CALIBRATE` at 80 °C. No `PROBE_CALIBRATE`; `z_offset` left at 1.776. |
+| 2026-09-02 20:33 | `Flexi-Rex-improved.gcode` | 171.0 min (2 h 51) | **Complete, intact.** The print that failed at layer 1 on 2026-09-01, rerun unchanged on the new textured PEI plate. All segments present, nothing released or dragged. 7.39 m filament (~22.6 g). Slicer estimate 169 min vs 171.0 actual. **This is the confirmation of the plate diagnosis** — same model, same gcode, same settings, different surface. |
 
 ## Two failures in a row — the pattern (2026-09-01)
 
@@ -131,6 +132,12 @@ in the garage.
 **PEI plate fitted and calibrated 2026-09-02.** The textured spring-steel plate arrived and
 is on the machine; the magnetic base was checked by hand at 80 °C and grips firmly all over,
 so it needs no replacement. Printing is no longer deferred. See [hardware](hardware.md).
+
+**The bed-surface diagnosis is confirmed.** `Flexi-Rex-improved.gcode` failed at layer 1 on
+bare magnet on 2026-09-01 and completed intact on the PEI plate on 2026-09-02 — the same file,
+unchanged, with no slicer or Z-offset changes between the two runs. The only variable was the
+surface. Every other hypothesis pursued on 2026-09-01 (model geometry, brim, first-layer
+extrusion width, bed contamination, Z-offset) is therefore ruled out, not merely unproven.
 
 Calibration performed on fitting, at 80 °C throughout:
 

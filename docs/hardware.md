@@ -22,6 +22,10 @@ Verified on the machine 2026-09-01 unless noted.
   (plate size; build volume is 220 × 220), double-sided, textured, the standard Creality size
   shared with the Ender-3 S1 family. Textured, not smooth, is deliberate: "gold PEI" describes
   both, and smooth PEI bonds to PETG hard enough to tear its own coating off.
+- **The flexible plate matters twice for print-in-place models.** It is why small isolated
+  segments stay put while printing, and why they come off intact afterwards: flexing releases
+  the whole footprint at once, where a scraper concentrates force at one edge and is exactly
+  how a thin joint or a small segment gets snapped. Confirmed in use 2026-09-02.
 - **The magnetic base sheet is sound.** Typical rating is 70–80 °C and it has held 80 °C for
   many hours at a stretch (the dragon alone was 8 h 24), so demagnetisation was a live concern.
   Checked by hand on 2026-09-02 with the bed at temperature: firm all over, no corner lift. No

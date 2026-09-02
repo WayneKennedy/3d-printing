@@ -20,6 +20,7 @@ rather than committing them. Run it after **any** change made on the Pi.
 | `ender5s1_petg.ini` | `~/slicer/ender5s1_petg.ini` |
 | `ender5s1_pla.ini` | `~/slicer/ender5s1_pla.ini` — untested, see [workflow](../docs/workflow.md) |
 | `slice-print.sh` | `~/slicer/slice-print.sh` |
+| `crowsnest.conf` | `~/printer_data/config/crowsnest.conf` |
 
 `printer.cfg` includes Klipper's `SAVE_CONFIG` block at the end — PID values, probe `z_offset`
 and the saved bed mesh — so a refresh captures calibration state as well as configuration.

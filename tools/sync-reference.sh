@@ -22,6 +22,7 @@ sync() {  # <remote path> <local path>
 echo "Syncing reference/ from $HOST"
 sync "printer_data/config/printer.cfg" "reference/printer.cfg"
 sync "slicer/slice-print.sh"           "reference/slice-print.sh"
+sync "printer_data/config/crowsnest.conf" "reference/crowsnest.conf"
 for ini in petg pla; do
   sync "slicer/ender5s1_${ini}.ini" "reference/ender5s1_${ini}.ini"
 done

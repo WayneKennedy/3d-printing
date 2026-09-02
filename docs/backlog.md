@@ -33,9 +33,28 @@
   - **Scope of the benefit:** the assistant reads still JPEGs from the snapshot endpoint, on
     demand or on a timer. That is a diagnostic tool, not a safety net — a failure at 03:00 is
     caught at the next snapshot, not as it happens.
-  - **Camera chosen: Logitech C920S**, already owned (in the garage). UVC, hardware MJPG,
-    autofocus. Its fold-out foot has a **1/4"-20 threaded insert** — mount to that rather than
-    clamping the body.
+  - ~~**Camera: Logitech C920S**~~ **The camera actually fitted 2026-09-02 is a Sonix/Microdia
+    `0c45:6536` "USB Live camera", not the C920S** — Logitech's vendor ID is `046d` and no
+    Logitech device enumerated. Verified on the device rather than assumed. It is a better fit
+    than the C920S would have been:
+    - Hardware **MJPG up to 1920x1080 @ 30 fps** (also H.264 on `/dev/video2`). Measured CPU
+      cost of streaming at 1280x720 during a live print: **nil** — load average 0.13, ustreamer
+      not in the top six processes.
+    - Has **both** `focus_automatic_continuous` and `focus_absolute` (1-1023). **Lock manual
+      focus once the mount is final**: the working plane never moves, so autofocus can only
+      hunt when the toolhead sweeps past and cost soft frames. The correct `focus_absolute`
+      value is distance-specific, so set it after mounting, not before.
+    - `power_line_frequency` already 50 Hz — no flicker banding, nothing to change.
+    - **It has no 1/4" tripod foot**, unlike the C920S, so the bracket must be designed around
+      this body. **Measure the camera as well as the extrusion.**
+  - **`crowsnest` is running as of 2026-09-02** — `mode: ustreamer`, `/dev/video0`, raised from
+    640x480 to **1280x720**, port 8080. Backup at `crowsnest.conf.bak-0902`. Snapshot endpoint
+    `http://localhost:8080/?action=snapshot` returns ~200 KB JPEGs. First snapshot confirmed a
+    healthy print and resolved individual Flexi Rex segments and the PEI grain, which is the
+    detail level needed to spot a feature releasing. 1080p is available if more is wanted.
+  - **Framing note from the first snapshot:** the hotend shroud partly blocks the nozzle tip.
+    The part is clearly visible but the moment of extrusion is not. Best view is from the
+    front-left, slightly below or level with the nozzle plane, looking slightly up.
   - **Frame mount, aimed at the nozzle plane.** Decided 2026-09-02. On this frame Z is the bed
     carriage (single `[stepper_z]`, no gantry Z), so **the nozzle never moves vertically**: the
     active layer sits at a constant height and a constant distance from a frame-mounted camera.

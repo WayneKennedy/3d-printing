@@ -63,6 +63,28 @@
     `http://localhost:8080/?action=snapshot` returns ~200 KB JPEGs. First snapshot confirmed a
     healthy print and resolved individual Flexi Rex segments and the PEI grain, which is the
     detail level needed to spot a feature releasing. 1080p is available if more is wanted.
+  - **The camera is blind in the dark — a light is needed for overnight monitoring.** Found
+    2026-09-03 01:37 during the Godzilla print: with the room lights off, the default
+    auto-exposure snapshot was essentially black (mean 0-2/255); auto mode caps its own shutter
+    and will not compensate. Forcing manual exposure and gain rescues it to *gross failure
+    detection* only — enough to confirm nothing had come loose, not enough for detail, and at
+    a ~0.5 s shutter anything moving smears:
+
+    ```bash
+    # night mode
+    v4l2-ctl -d /dev/video0 --set-ctrl=auto_exposure=1
+    v4l2-ctl -d /dev/video0 --set-ctrl=exposure_time_absolute=5000
+    v4l2-ctl -d /dev/video0 --set-ctrl=gain=100
+    v4l2-ctl -d /dev/video0 --set-ctrl=brightness=64
+    # back to day mode
+    v4l2-ctl -d /dev/video0 --set-ctrl=auto_exposure=3
+    v4l2-ctl -d /dev/video0 --set-ctrl=gain=50 --set-ctrl=brightness=3
+    ```
+
+    That took mean brightness from ~1 to 56/255. **A cheap USB LED strip on the frame is the
+    real fix** and is a prerequisite for treating the camera as useful on the 12 h 53 m disk
+    print, which was always going to run overnight. `crowsnest.conf` has a commented `v4l2ctl:`
+    line if these should ever be applied at service start.
   - **Framing note from the first snapshot:** the hotend shroud partly blocks the nozzle tip.
     The part is clearly visible but the moment of extrusion is not. Best view is from the
     front-left, slightly below or level with the nozzle plane, looking slightly up.

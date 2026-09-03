@@ -2,10 +2,28 @@
 
 ## Open
 
-- **Garage move + recalibration.** The printer lives on the desk today and is destined for the
-  garage. On relocation, re-run tram → Z-offset → bed mesh at operating temperature; see
-  [calibration.md](calibration.md#after-the-move-to-the-garage). Decide whether Ethernet can
-  reach the garage — wired is bulletproof, Wi-Fi is the known weak link.
+- **Garage move + recalibration — happening 2026-09-03.** Brought forward to free the room for
+  a grandchildren's sleepover. On relocation, re-run tram → Z-offset → bed mesh at operating
+  temperature; see [calibration.md](calibration.md#after-the-move-to-the-garage). Decide whether
+  Ethernet can reach the garage — wired is bulletproof, Wi-Fi is the known weak link.
+  Move-specific checks, none of which are covered by the calibration procedure itself:
+  - **The camera is resting on the frame corner, not mounted.** Lift it off first — it will
+    otherwise fall during the move. Its position is not repeatable, so the framing will need
+    re-checking with a snapshot afterwards regardless.
+  - **Confirm `printhub` is reachable from the garage before relying on it.** Tailscale hides a
+    weak signal until it does not.
+  - **Ambient temperature and draught become live variables.** PETG at 80 °C bed is fairly
+    tolerant, but a cold garage is not the same first-layer environment the current mesh and
+    Z-offset were measured in. This is the reason to re-mesh at temperature rather than trust
+    the saved profile.
+  - **Move the PETG spool indoors or into a dry box.** A garage is damper than the house and
+    PETG is hygroscopic.
+- **`Kinetic_Toy.gcode` is sliced, correct and waiting.** Re-sliced 2026-09-03 08:20 with
+  bed-first heating and the corrected retraction — 13h41, 87.4 g, verified in the emitted
+  G-code. Started 08:23 and aborted within three minutes for the garage move; the bed reached
+  68 °C and the hotend never left ambient, so no filament was laid. **Do not re-slice it.**
+  Print it after the move has been recalibrated, not before — it is a 13-hour commitment on an
+  uncalibrated machine otherwise. Spool was ~700 g at abort, so material is not a constraint.
 - **Confirm the Wi-Fi fix holds.** Power-saving is disabled three ways and persistent logging
   is on, but the original 35-minute dropout was never caught in the act, so power-save is the
   strong suspect rather than a proven cause. If it recurs, the journal will now say why.

@@ -51,6 +51,31 @@ sed -n '1,25p' out.gcode | grep -E '^M1[0459]|^START_PRINT'
 Anything sliced between 2026-09-01 18:11 and 2026-09-02 22:06 still heats hotend-first.
 **Re-slice rather than trust a file from that window.**
 
+### Aborting during the heat-soak
+
+`CANCEL_PRINT` goes into the same G-code queue as `M190`, so a cancel sent while the bed is
+still climbing does not run until the bed reaches target. Moonraker flips the job to `paused`
+straight away, which makes it look like the cancel landed when it has not — on 2026-09-03 a
+cancel sat behind `M190 S80` with the bed at 68 °C and nothing happened.
+
+The certain fast abort is `M112` (emergency stop). It requires a `FIRMWARE_RESTART` afterwards,
+which is no worse than the power cycle you would otherwise reach for.
+
+```bash
+ssh wkenn@printhub 'curl -s -X POST "localhost:7125/printer/emergency_stop"'
+# then, once you want it back:
+ssh wkenn@printhub 'curl -s -X POST "localhost:7125/printer/firmware_restart"'
+```
+
+Setting the bed target to 0 first *should* release the `M190` and let a normal cancel through —
+Klipper accepts commands from other sources during a temperature wait — but this has **not been
+tested on this machine.** Do not reach for it in a hurry.
+
+Cutting mains power to the printer is also safe and leaves no mess: the MCU disappears, Klipper
+logs `Lost communication with MCU` and shuts down, and the Pi is unaffected. The give-away in
+`dmesg` is `ch341-uart ttyUSB0: converter now disconnected`, which distinguishes a deliberate
+power-off from a genuine USB fault.
+
 **Retraction:** 0.8 mm at 40 mm/s with 0.2 mm lift — short, because the extruder is direct
 drive, not Bowden. The amount was never the problem; what mattered was that it was not firing.
 Four settings were absent from the `.ini`, so PrusaSlicer's defaults applied silently, and two

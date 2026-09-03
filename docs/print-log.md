@@ -12,6 +12,7 @@ From Moonraker's job history. All in white PETG at 240/80.
 | 2026-09-01 18:10 | `coupon_ladder.gcode` | 135.3 min (2 h 15) | **Complete, clean.** koala-bot fit coupon, 150 × 60 × 6 mm, 22.6 g. Sliced `petg` (0.2 mm, 3 perim, 15 % grid) per koala-bot's `docs/bom.md`. Slicer estimate 135.6 min vs 135.3 actual — accurate to 20 s. No corner lift despite a 150 mm flat footprint on the bare magnetic base. |
 | 2026-09-02 18:41 | `first_layer_test.gcode` | 6.3 min | **Complete.** First print on the new textured PEI plate. Ran after tram check and a fresh `BED_MESH_CALIBRATE` at 80 °C. No `PROBE_CALIBRATE`; `z_offset` left at 1.776. |
 | 2026-09-02 20:33 | `Flexi-Rex-improved.gcode` | 171.0 min (2 h 51) | **Complete, intact.** The print that failed at layer 1 on 2026-09-01, rerun unchanged on the new textured PEI plate. All segments present, nothing released or dragged. 7.39 m filament (~22.6 g). Slicer estimate 169 min vs 171.0 actual. **This is the confirmation of the plate diagnosis** — same model, same gcode, same settings, different surface. |
+| 2026-09-02 22:09 | `Godzilla.gcode` | 237.8 min (3 h 58) | **Complete, all 7 parts intact.** Flexi Godzilla by AndresMF, Thingiverse [thing:3705484](https://www.thingiverse.com/thing:3705484), CC BY-NC. Multi-part: body (138.8 x 89.4 x 10), 2 legs, 2 arms, 2 pins — hand-arranged onto one plate, see below. 12.57 m / 38.4 g. Slicer estimate 241 min vs 237.8 actual. |
 
 ## Two failures in a row — the pattern (2026-09-01)
 
@@ -121,6 +122,28 @@ past layer 1.
   ~2 min before the bed was ready and oozed while waiting; wipe passes were not clearing it.
   Costs ~1.5 min per print. Side benefit: `G28` now runs with the bed at operating temperature,
   which `calibration.md` wanted anyway.
+
+## Godzilla — three changes validated at once (2026-09-02)
+
+This print was the first to exercise three separate fixes, and all three held:
+
+- **Bed-first heating, finally working.** Telemetry caught it directly: bed climbing 37.9 → 80 °C
+  over four minutes with the hotend target at **0**, then the hotend commanded only once the bed
+  arrived. Every previous print on this machine had the nozzle sat at 240 °C oozing throughout
+  that window. See [workflow](workflow.md) — the `M104` tokens in `start_gcode` are load-bearing.
+- **The PEI plate on the worst-case geometry.** The two pins are 22.5 × 4.9 mm and 19.7 × 4.9 mm
+  — the smallest, most isolated parts printed on this machine, and precisely the feature class
+  that failed twice on 2026-09-01. Both adhered at layer 1 and survived to the end.
+- **The corrected retraction settings** (`retract_before_travel = 1`, `wipe = 1`,
+  `retract_layer_change = 1`), first used here. Seven separate islands means constant travel
+  between them; no stringing problem resulted.
+
+**PrusaSlicer 2.5.0's headless `--merge` arrange is broken.** It threw `Objects could not fit on
+the bed` for *any* multi-object slice — including two legs and two arms totalling under
+120 × 45 mm on a 220 × 220 bed. Single objects slice fine. Worked around by translating each STL
+into position with a script and writing one merged binary STL
+(`~/models/godzilla/godzilla_plate.stl`), then slicing that as a single object. **Reuse that
+approach for any multi-part model**; do not trust `--merge`.
 
 ## Current state
 

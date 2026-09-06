@@ -23,8 +23,12 @@ echo "Syncing reference/ from $HOST"
 sync "printer_data/config/printer.cfg" "reference/printer.cfg"
 sync "slicer/slice-print.sh"           "reference/slice-print.sh"
 sync "printer_data/config/crowsnest.conf" "reference/crowsnest.conf"
-for ini in petg pla; do
-  sync "slicer/ender5s1_${ini}.ini" "reference/ender5s1_${ini}.ini"
+# Slicer profiles are DISCOVERED on the Pi, not hardcoded. A hardcoded list silently
+# left ender5s1_petg_koala.ini and ender5s1_petg_koalacoupon.ini out of version control
+# entirely - exactly the "a dialled-in profile gets lost" failure this directory exists
+# to prevent. Backups (*.bak*) are deliberately skipped.
+for remote in $(ssh "$HOST" 'ls ~/slicer/ender5s1_*.ini 2>/dev/null' | grep -v '\.bak'); do
+  sync "$remote" "reference/$(basename "$remote")"
 done
 
 echo

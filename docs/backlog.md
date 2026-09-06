@@ -2,28 +2,86 @@
 
 ## Open
 
-- **Garage move + recalibration — happening 2026-09-03.** Brought forward to free the room for
-  a grandchildren's sleepover. On relocation, re-run tram → Z-offset → bed mesh at operating
-  temperature; see [calibration.md](calibration.md#after-the-move-to-the-garage). Decide whether
-  Ethernet can reach the garage — wired is bulletproof, Wi-Fi is the known weak link.
-  Move-specific checks, none of which are covered by the calibration procedure itself:
-  - **The camera is resting on the frame corner, not mounted.** Lift it off first — it will
-    otherwise fall during the move. Its position is not repeatable, so the framing will need
-    re-checking with a snapshot afterwards regardless.
-  - **Confirm `printhub` is reachable from the garage before relying on it.** Tailscale hides a
-    weak signal until it does not.
-  - **Ambient temperature and draught become live variables.** PETG at 80 °C bed is fairly
-    tolerant, but a cold garage is not the same first-layer environment the current mesh and
-    Z-offset were measured in. This is the reason to re-mesh at temperature rather than trust
-    the saved profile.
-  - **Move the PETG spool indoors or into a dry box.** A garage is damper than the house and
-    PETG is hygroscopic.
+- ~~**Garage move + recalibration.**~~ **Done 2026-09-06.** The machine moved and was
+  recalibrated in place at 240/80. Results in
+  [calibration.md](calibration.md#after-the-move-to-the-garage): tram already within tolerance
+  and left alone, mesh re-probed and saved (0.246 → 0.281 mm), PID verified rather than
+  re-tuned, `z_offset` untouched at 1.776. Outcomes of the move-specific checks:
+  - **Wi-Fi in the garage is strong — the worry was unfounded.** `-47 dBm` at 433 Mbit/s on
+    `the house SSID`, and the MCU link is clean (`bytes_retransmit=0`, `bytes_invalid=0`,
+    `srtt=0.003`). **Ethernet is not needed**; `eth0` remains `NO-CARRIER`.
+  - **The garage roof is clear corrugated PVC**, so the space behaves as a greenhouse: very
+    warm by day, cold by night, ambient "wildly varied" rather than uniformly cold. This is a
+    standing condition, not a one-off — see the open item below.
+  - **The camera was lifted off for the move and has not gone back on** — see the open item
+    below.
+
+- ~~**The camera is disconnected and must be refitted.**~~ **Done 2026-09-06.** Refitted and
+  `crowsnest` restarted (see the `reset-failed` gotcha in
+  [hardware.md](hardware.md#host-printhub)). Snapshot confirmed live during the dragon print:
+  the part, the individual claws and the PEI grain all resolve, and daytime exposure needs no
+  correction. Framing is still ad-hoc and the position is not repeatable, and the frame confirms
+  the known limitation — **the hotend shroud partly blocks the nozzle tip**, so the part is
+  visible but the moment of extrusion is not. The bracket is still to be designed; see the
+  fixed-focus mounting-distance constraint below.
+
+- **Ambient in the garage is a live variable, in both directions.** The clear PVC roof makes it
+  hot in daytime sun and cold overnight. Consequences:
+  - **Record the ambient alongside any future mesh or PID result.** Otherwise "the calibration
+    drifted" and "the ambient changed" are indistinguishable after the fact.
+  - **There is plenty of thermal headroom.** Measured 2026-09-06: the bed holds 80 °C on a 34 %
+    duty cycle, so a cold night has a long way to go before it cannot hold target. Re-tune only
+    if that duty approaches saturation.
+  - **A long print will cross a hot/cold cycle**, so warping and adhesion risk on a multi-hour
+    job depend on when it starts.
+  - **Move the PETG spool indoors or into a dry box.** Now a heat and UV problem as well as a
+    damp one: PETG is hygroscopic, and a sunlit greenhouse is a poor filament store.
 - **`Kinetic_Toy.gcode` is sliced, correct and waiting.** Re-sliced 2026-09-03 08:20 with
   bed-first heating and the corrected retraction — 13h41, 87.4 g, verified in the emitted
   G-code. Started 08:23 and aborted within three minutes for the garage move; the bed reached
   68 °C and the hotend never left ambient, so no filament was laid. **Do not re-slice it.**
-  Print it after the move has been recalibrated, not before — it is a 13-hour commitment on an
-  uncalibrated machine otherwise. Spool was ~700 g at abort, so material is not a constraint.
+  **The recalibration it was waiting on is done (2026-09-06) and the camera is back, so the
+  remaining blocker is light, not hardware.** At 13 h it runs unattended into the night, and the
+  camera is blind in the dark — night-mode exposure gets gross failure detection only. Either
+  start it early enough to finish the critical first hours in daylight, or fit the LED strip
+  first (see the night-mode note below). Material: the ~700 g white spool it
+  was queued against was swapped out on 2026-09-06 for a **new red PETG spool**, so it will come
+  out red unless white is reloaded; 87.4 g is not a constraint either way.
+- **Four sliced files predate the `start_gcode` fix and heat the nozzle during the bed soak.**
+  Audited 2026-09-06. The fix (bdb18f0, 2026-09-02 22:07) put `M190` ahead of `M104` so the bed
+  reaches target before the hotend heats. Files still emitting `M104` first, which leaves the
+  nozzle at 240 °C oozing for the several minutes the bed takes to climb:
+  **`LittleGrassDragon`, `Flexi-Rex-200`, `Flexi-Rex-improved`, `coupon_ladder`**.
+  Correct already: `3DBenchy`, `Godzilla`, `Kinetic_Toy`, `first_layer_test`.
+  Not chronological — `3DBenchy` predates the fix but was sliced with the right ordering, so
+  **check the file rather than its date**: `grep -avE '^;|^$' FILE | head -6`.
+  Consequence is a blob of ooze on the plate and a dirty nozzle at exactly the moment the first
+  layer starts, which is self-limiting (the `START_PRINT` purge line cleans the tip) but wastes
+  the deliberate pre-print nozzle wipe. Observed live on the dragon, 2026-09-06. Re-slice these
+  when they are next wanted rather than pre-emptively; the files are otherwise correct.
+
+- **SO-ARM101 follower arm — printing in white eSUN PLA+.** Repo cloned to
+  `~/Code/SO-ARM100` (upstream `TheRobotStudio/SO-ARM100`; SO-101 lives inside it). Decided
+  2026-09-06:
+  - **Follower only, one to start**, possibly a second later. Leader not planned.
+  - **Material PLA+, because the arm lives indoors.** Chosen over PETG on stiffness (~3 GPa vs
+    ~2 GPa — arm deflection costs repeatability), clean support release (this model *needs*
+    supports and PETG supports weld to the part), and dimensional fidelity for the press-fit
+    STS3215 pockets. **An outdoor arm would be printed in PETG instead.** Do not store a PLA+
+    arm in the garage over a sunny summer.
+  - **Do NOT use `Ender_Follower_SO101.stl` on this machine**, despite the README listing it
+    for 220 × 220 beds. It measures 216.3 × 215.3 mm, which fills the bed to ~2 mm and creates
+    two hard conflicts: `START_PRINT`'s purge line at Y8 X15→X205 runs straight through the
+    parts *with nowhere else to put it*, and the plate overruns the measured mesh (X3–205,
+    Y28–218) by a 25.7 mm front strip and 13.2 mm at the right. Slice the 12 follower parts
+    from `STL/SO101/Individual/` into **two batches inside the meshed area** instead — also
+    halves the loss if a print fails hours in.
+  - **Print the gauges first** (`STL/Gauges/`, tiny): `Gauge_0` and `Gauge_tight_1` against an
+    STS3215, or the Lego pair. The project's own Step 3, and it matters more because the
+    profile is untested.
+  - Project spec: 0.4 mm nozzle, 0.2 mm layer, **15 % infill** (already the profile default),
+    supports everywhere except slopes >45°, none in horizontal screw holes.
+
 - **Confirm the Wi-Fi fix holds.** Power-saving is disabled three ways and persistent logging
   is on, but the original 35-minute dropout was never caught in the act, so power-save is the
   strong suspect rather than a proven cause. If it recurs, the journal will now say why.
@@ -106,6 +164,15 @@
   - **Framing note from the first snapshot:** the hotend shroud partly blocks the nozzle tip.
     The part is clearly visible but the moment of extrusion is not. Best view is from the
     front-left, slightly below or level with the nozzle plane, looking slightly up.
+  - **Occlusion is intermittent and driven by toolhead XY, not by print height.** Observed
+    across the 2026-09-06 dragon: at 80 % (Z 13.6 mm) the shroud hid much of the model, yet at
+    90 % (Z 16.8 mm) — taller still — the view was completely clear. The variable is simply
+    where the head happens to be parked when the frame is grabbed. **Consequence for
+    monitoring: a single snapshot showing an obscured part is not evidence of a problem, and
+    one clear snapshot is not proof the whole part is fine.** Grab two or three seconds apart
+    when a frame looks blocked. This is an argument for the front-left low angle over a high
+    one, but not the argument that the model grows into the sightline — on this machine the bed
+    descends, so it does not.
   - **Frame mount, aimed at the nozzle plane.** Decided 2026-09-02. On this frame Z is the bed
     carriage (single `[stepper_z]`, no gantry Z), so **the nozzle never moves vertically**: the
     active layer sits at a constant height and a constant distance from a frame-mounted camera.
@@ -140,7 +207,11 @@
   itself is the deliverable.
   **Do not edit `moonraker.conf` during a print** — restarting Moonraker mid-job is survivable
   (Klipper reads `virtual_sdcard` files from disk itself) but there is no reason to risk it.
-- **More filament profiles.** PLA and ABS are still missing and are drop-in files. (Material
+- **More filament profiles.** ~~PLA~~ **ABS** is still missing and is a drop-in file.
+  **Correction 2026-09-06: the PLA profile already exists** — `reference/ender5s1_pla.ini`
+  (PLA, 210/205, bed 60, fan 100 % from layer 2, density 1.24, 15 % infill) and is documented
+  in [workflow.md](workflow.md). It is **written but never printed**, which is a different
+  state from missing; the Benchy caveat below still stands. (Material
   profiles only — the koala-bot profiles added 2026-09-01 are *part* profiles for the same
   PETG; see [workflow](workflow.md#project-specific-profiles).) **PLA is now wanted for a
   specific job** — see the superhero figures below. Any new PLA profile is untested; put a

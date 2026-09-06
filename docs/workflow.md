@@ -170,6 +170,32 @@ heights, speeds, perimeters, infill and retraction are byte-identical to the PET
 
 - **The temperatures are generic starting points, not measured.** Override with the spool's own
   stated range. A temperature tower is the proper answer and is backlogged for both materials.
+
+### `ender5s1_plaplus.ini` — PLA+ is not PLA
+
+Added 2026-09-06 for a white **eSUN PLA+** spool. Derived from `ender5s1_pla.ini` changing
+**only** the two temperatures, so the material-is-the-only-variable discipline still holds:
+
+| | plain PLA | PLA+ |
+|---|---|---|
+| `first_layer_temperature` | 210 | **220** |
+| `temperature` | 205 | **215** |
+
+PLA+ is a PLA base resin with impact modifiers. It is **tougher with better layer adhesion**
+than plain PLA, but its glass transition is essentially unchanged at ~55-60 °C, so **it buys no
+extra heat resistance** — the most common misconception about it, and the one that matters in a
+greenhouse garage. It also runs hotter: eSUN's datasheet range is **210-230 °C nozzle, 45-60 °C
+bed**. Slicing PLA+ at plain-PLA temperatures under-fuses it and discards exactly the layer
+adhesion the "+" is sold for. Most PLA+ brands share that range, but check the label if the
+brand changes.
+
+**Open the enclosure when printing PLA+.** The printer is inside a Creality PVC enclosure whose
+front and top are left open by default (see [hardware.md](hardware.md#location)). Enclosures are
+for ABS/ASA; PLA and PLA+ are the materials harmed by them — a warm chamber causes heat creep in
+this direct-drive hotend and undermines the 100 % part cooling the profile specifies. In a
+greenhouse garage on a sunny day the chamber can be well above room temperature.
+
+Invoke as `slice-print.sh model.stl plaplus`. Untested until a Benchy has been through it.
 - **No PLA has been printed on this machine.** Put a Benchy through this profile before
   committing anything that matters to it.
 - **The saved bed mesh was probed at 80 C and `START_PRINT` hardcodes `BED_MESH_PROFILE

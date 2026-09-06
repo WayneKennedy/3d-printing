@@ -1,6 +1,11 @@
 # Print log
 
-From Moonraker's job history. All in white PETG at 240/80.
+From Moonraker's job history. All at 240/80. **White PETG up to and including 2026-09-03;
+a new red PETG spool went on 2026-09-06** and needed no temperature or offset change.
+
+The printer moved from the desk to the garage on **2026-09-06** and was recalibrated in place;
+see [calibration.md](calibration.md#after-the-move-to-the-garage). Everything below that date
+is on the garage machine, whose ambient swings widely — see [hardware.md](hardware.md#location).
 
 | Finished | Job | Duration | Outcome |
 |---|---|---|---|
@@ -13,6 +18,8 @@ From Moonraker's job history. All in white PETG at 240/80.
 | 2026-09-02 18:41 | `first_layer_test.gcode` | 6.3 min | **Complete.** First print on the new textured PEI plate. Ran after tram check and a fresh `BED_MESH_CALIBRATE` at 80 °C. No `PROBE_CALIBRATE`; `z_offset` left at 1.776. |
 | 2026-09-02 20:33 | `Flexi-Rex-improved.gcode` | 171.0 min (2 h 51) | **Complete, intact.** The print that failed at layer 1 on 2026-09-01, rerun unchanged on the new textured PEI plate. All segments present, nothing released or dragged. 7.39 m filament (~22.6 g). Slicer estimate 169 min vs 171.0 actual. **This is the confirmation of the plate diagnosis** — same model, same gcode, same settings, different surface. |
 | 2026-09-02 22:09 | `Godzilla.gcode` | 237.8 min (3 h 58) | **Complete, all 7 parts intact.** Flexi Godzilla by AndresMF, Thingiverse [thing:3705484](https://www.thingiverse.com/thing:3705484), CC BY-NC. Multi-part: body (138.8 x 89.4 x 10), 2 legs, 2 arms, 2 pins — hand-arranged onto one plate, see below. 12.57 m / 38.4 g. Slicer estimate 241 min vs 237.8 actual. |
+| 2026-09-06 10:26 | `LittleGrassDragon.gcode` | 1.0 min of 495 est. | **Aborted immediately — started by accident.** A stray touch on KlipperScreen started the previous job; cancelled 9 s later, then `M112`. Klipper logged `klippy_shutdown` and needed `FIRMWARE_RESTART`. **`filament_used = 0.00` — the bed never reached target and nothing was extruded.** Same clean-abort shape as the `Kinetic_Toy` stop on 09-03. |
+| 2026-09-06 19:35 | `LittleGrassDragon.gcode` | 503.2 min (8 h 23) | **Complete, intact.** First print after the garage move, first on the **new red PETG spool**, and the validation of the whole post-move recalibration. Started 11:12 in daylight. 20 244 mm / 61.8 g against a slicer prediction of 20 230 mm; 500.1 min printing vs 495 est (+1 %). **First layer went down clean with no babystep**, which is what confirms `z_offset` 1.776 survived the relocation — see [calibration.md](calibration.md#after-the-move-to-the-garage). Watched throughout on the refitted camera; no lift, warp or released feature at any point, including the small isolated claws that failed on bare magnet on 09-01. Note this file predates the `start_gcode` fix, so the hotend sat at 240 °C oozing through the bed soak. |
 
 ## Two failures in a row — the pattern (2026-09-01)
 

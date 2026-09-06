@@ -2,6 +2,39 @@
 
 Verified on the machine 2026-09-01 unless noted.
 
+## Location
+
+**Garage, since 2026-09-06** (previously a desk indoors). The garage roof is **clear
+corrugated PVC**, so the space behaves as a greenhouse: very warm in daytime sun, cold
+overnight, with ambient varying widely rather than sitting at a steady low temperature. This is
+the reverse of the usual "cold garage" assumption and it matters in three places — calibration
+results are only meaningful alongside the ambient they were taken at, a long print will cross a
+hot/cold cycle, and filament stored here faces heat and sunlight as well as damp.
+
+The printer sits inside a **Creality PVC enclosure**, fitted at the same time as the move. It
+buffers cold nights and draughts, which is the half of the problem it can help with; it does
+**nothing about solar gain**, and an enclosure inside a greenhouse can run hotter than the room
+on a sunny day.
+
+**The enclosure inverts the usual material advice.** Enclosures suit ABS/ASA. PLA and PLA+ are
+the materials that dislike them: a warm chamber drives heat creep in a direct-drive hotend,
+softening filament above the melt zone and jamming the extruder, and it blunts the aggressive
+part cooling PLA depends on (the PLA profiles run 100 % fan).
+
+**Standing practice, decided 2026-09-06: the front and top are left OPEN by default, and closed
+only for genuinely cold sessions.** That is the right default for this machine — it prints
+mostly PETG and PLA, neither of which wants a hot chamber, and the enclosure's real value here
+is buffering cold nights and draughts rather than retaining heat.
+
+This location is **temporary** — the house is a rental, the user moves later in 2026 and plans
+a purpose-built garden workshop with much better temperature consistency. Work around the
+garage rather than engineering solutions for it.
+
+Measured thermal headroom at the new location (2026-09-06): the bed holds 80 °C on a **34 %
+duty cycle** and the hotend 240 °C on 48 %, so there is substantial reserve against a cold
+night. Measured at ~25 °C ambient with the enclosure in place. See
+[calibration.md](calibration.md#verify-pid-rather-than-re-tuning-it-2026-09-06).
+
 ## Printer
 
 - **Creality Ender-5 S1**, stock, no modifications. Bought new, then unused for ~2 years
@@ -50,8 +83,22 @@ Verified on the machine 2026-09-01 unless noted.
 - Klipper `v0.13.0-439-g2cc360894` (host and MCU firmware in lockstep).
 - Touchscreen: **QDtech MPI1001** (`0484:5750`), an HID multitouch panel running
   KlipperScreen. Its display blanks on idle; a tap wakes it. Cosmetic only.
-- `crowsnest` (webcam daemon) is **failed** — no camera is attached. The `/dev/video*` nodes
-  present are the Pi's hardware codecs, not a camera.
+- `crowsnest` (webcam daemon) is **active**; the camera was unplugged for the garage move on
+  2026-09-06 and refitted the same day. When no camera is attached, `lsusb` shows only the
+  touchscreen and the CH340, there is no `/dev/video0` (the `/dev/video*` nodes that remain are
+  the Pi's hardware codecs), and the service fails.
+- **After replugging the camera, `systemctl restart crowsnest` is not enough.** While the camera
+  is absent the service restart-loops until systemd trips its rate limit —
+  `Start request repeated too quickly` — and that latched failure survives the camera coming
+  back. Clear the counter first:
+
+  ```bash
+  ssh wkenn@printhub 'sudo systemctl reset-failed crowsnest && sudo systemctl restart crowsnest'
+  ```
+
+  It then finds `/dev/video0` (`Sonix_Technology USB Live camera SN0001`) and starts ustreamer
+  normally. Verify with `curl -s "http://localhost:8080/?action=snapshot"` — a healthy frame is
+  ~200 KB of JPEG.
 - No slicer GUI; PrusaSlicer's CLI (`/usr/bin/prusa-slicer`) is installed for headless
   slicing.
 
@@ -63,8 +110,11 @@ Verified on the machine 2026-09-01 unless noted.
 - Wi-Fi `wlan0`: `a private LAN address/22`. **The /22 mask is the answer to the "wrong subnet"
   confusion** — `a private LAN address/22` and the wired `a private LAN address` are the same network
   (`a private /22 LAN`), not two.
-- Ethernet `eth0` is currently **NO-CARRIER** (cable unplugged). Wired is the reliable
-  fallback and is worth using in the garage if reachable.
+- Ethernet `eth0` is **NO-CARRIER** (cable unplugged) and **does not need to be plugged in.**
+  The pre-move worry that Wi-Fi would be the weak link in the garage did not materialise:
+  measured there on 2026-09-06, `wlan0` sits at **-47 dBm on `the house SSID` at 433 Mbit/s**, and the
+  MCU link is clean under load (`bytes_retransmit=0`, `bytes_invalid=0`, `srtt=0.003`). Wired
+  remains the bulletproof fallback if a dropout ever recurs.
 - Wi-Fi power-saving is **disabled** three ways after it silently dropped the Pi off the
   network for ~35 min on 2026-08-31: live (`iw dev wlan0 set power_save off`), persistently
   in NetworkManager (`powersave = disable`), and via a `wifi-powersave-off.service` boot

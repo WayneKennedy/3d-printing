@@ -9,7 +9,7 @@ holds it authoritatively. Query it, or run `tools/print-monitor.py` — see
 
 ## Active work
 
-### SO-ARM101 follower — 4 of 11 parts done
+### SO-ARM101 follower — 5 of 11 parts done
 
 Sliced figures are measured, not estimated. Slice with `slice-plate.sh`, which centres on the
 measured mesh; **verify the emitted footprint against the mesh bounds before printing**, and
@@ -18,7 +18,6 @@ regenerate with `tools/extract-soarm-parts.py`.
 
 | Plate | Parts | Profile | Time | g |
 |---|---|---|---|---|
-| 2 | Base | `plaplus` (no supports) | 11 h 37 | 102.5 |
 | 3 | Upper_arm, Under_arm, Wrist_Roll_Pitch | `plaplus_soarm` | 13 h 49 | 143 |
 | 4 | Rotation_Pitch, Wrist_Roll_Follower, Moving_Jaw | `plaplus_soarm` | 10 h 24 | 102 |
 | reprint | WaveShare plate, **flat** | `plaplus` | ~1 h | 11 |

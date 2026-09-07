@@ -78,7 +78,7 @@ def main(src, outdir):
               % (name, len(idx), over, 100*over/tot, "SUPPORTS" if 100*over/tot > 2 else "none"))
     print("\nNOTE: the percentage is a guide, not proof. WaveShare_Mounting_Plate reads 1.7 %")
     print("and still delaminated, because all of it is one cantilevered patch 13 mm up.")
-    print("Reprint that part flat with the boss up: 0.0 mm2 overhang. See docs/backlog.md.")
+    print("Reprint that part flat with the boss up: 0.0 mm2 overhang. See docs/decisions.md.")
 
 if __name__ == "__main__":
     if len(sys.argv) != 3: print(__doc__); sys.exit(1)

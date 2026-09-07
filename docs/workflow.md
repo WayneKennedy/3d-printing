@@ -6,7 +6,7 @@ print. Mainsail is the UI, not a slicer; the Pi has no slicer GUI.
 ## Primary path — slice on the Pi
 
 ```bash
-ssh wkenn@printhub '~/slicer/slice-print.sh <model.stl|.3mf> petg [--print]'
+tailscale ssh wkenn@printhub '~/slicer/slice-print.sh <model.stl|.3mf> petg [--print]'
 ```
 
 It slices with the fixed profile `~/slicer/ender5s1_petg.ini`, writes G-code straight into
@@ -62,9 +62,9 @@ The certain fast abort is `M112` (emergency stop). It requires a `FIRMWARE_RESTA
 which is no worse than the power cycle you would otherwise reach for.
 
 ```bash
-ssh wkenn@printhub 'curl -s -X POST "localhost:7125/printer/emergency_stop"'
+tailscale ssh wkenn@printhub 'curl -s -X POST "localhost:7125/printer/emergency_stop"'
 # then, once you want it back:
-ssh wkenn@printhub 'curl -s -X POST "localhost:7125/printer/firmware_restart"'
+tailscale ssh wkenn@printhub 'curl -s -X POST "localhost:7125/printer/firmware_restart"'
 ```
 
 Setting the bed target to 0 first *should* release the `M190` and let a normal cancel through —
@@ -169,7 +169,7 @@ fan 100 % from layer 2 (PETG runs 40-50 % from layer 4), `filament_density = 1.2
 heights, speeds, perimeters, infill and retraction are byte-identical to the PETG profile.
 
 - **The temperatures are generic starting points, not measured.** Override with the spool's own
-  stated range. A temperature tower is the proper answer and is backlogged for both materials.
+  stated range. A temperature tower is the proper answer and is an open question for both materials (see [open-questions.md](open-questions.md)).
 
 ### `ender5s1_plaplus.ini` — PLA+ is not PLA
 

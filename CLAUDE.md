@@ -1,40 +1,16 @@
 # Working on the printer
 
-## Access
+@AGENTS.md
 
-`ssh wkenn@printhub` — Tailscale SSH, tailnet-certificate auth, no password. Passwordless
-sudo is enabled. A local `id_ed25519` key is also installed as a LAN break-glass path.
-Password authentication is disabled on all paths.
+Everything needed to drive this machine is in [AGENTS.md](AGENTS.md), imported above — access,
+the rules that will cost a print if broken, slicing, monitoring and aborting. It is
+provider-neutral because other harnesses work this repo too.
 
-Moonraker's HTTP API on `localhost:7125` is the control surface; drive the printer through it
-rather than through KlipperScreen. Examples:
+## Claude-specific notes
 
-```bash
-ssh wkenn@printhub 'curl -s localhost:7125/printer/info'
-ssh wkenn@printhub 'curl -s -X POST "localhost:7125/printer/gcode/script?script=G28"'
-ssh wkenn@printhub 'curl -s "localhost:7125/printer/objects/query?print_stats&extruder&heater_bed"'
-```
-
-## Rules learned the hard way
-
-- **Never both drive the nozzle.** During `PROBE_CALIBRATE`, a KlipperScreen tap and an API
-  `TESTZ` collided and aborted the manual-probe session with "Move out of range". One
-  operator at a time: the assistant sends commands, the user handles paper/filament only.
-- **Z cannot go below 0.** `[stepper_z]` declares no `position_min`, so any move under Z0 is
-  rejected. Work the paper test in the 0.0–0.3 mm window.
-- **Do not edit `printer.cfg` during a print.** Any config change restarts Klipper and aborts
-  the job.
-- **Never guess hardware config.** Pins, kinematics, thermistor types and endstops came from
-  Klipper's official `printer-creality-ender5-s1-2023.cfg` sample. A wrong value on a machine
-  with heaters is a safety problem, not a build error.
-- **The user is at the machine and can see it.** Ask what the nozzle/first layer actually did
-  rather than inferring from telemetry.
-
-## Conventions
-
-- Slicing is plumbing. "Print X in PETG" should mean: fetch model → `slice-print.sh` →
-  start. See [docs/workflow.md](docs/workflow.md).
-- PETG 240/80 is the standing default and is baked into `START_PRINT`, so a bare `START_PRINT`
-  is always safe.
-- After any calibration that Klipper persists, `SAVE_CONFIG` restarts Klipper — wait for
-  `state: ready` before the next command.
+- **Prefer a background `Monitor` on `tools/print-monitor.py` over polling.** A print here runs
+  8–14 hours; a monitor that emits on every terminal state costs one notification per event,
+  where repeated status queries cost a tool call each and still miss a failure between polls.
+- **Never let a project fact live only in chat or in auto-memory.** Memory holds pointers; the
+  repo holds the fact. Durable conclusions go to [docs/decisions.md](docs/decisions.md),
+  unresolved ones to [docs/open-questions.md](docs/open-questions.md).

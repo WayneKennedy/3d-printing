@@ -64,7 +64,7 @@ to date has gone directly onto the bare rubberised magnetic base. That is not a 
 and it explains the pattern exactly — a bare magnet offers no keying, so large footprints hold
 by area alone while small isolated features have nothing to grip. Benchy and the dragon
 succeeded because they are big and solid; the hinge toy and the Rex failed at their smallest
-features. See [hardware](hardware.md) and [backlog](backlog.md).
+features. See [hardware](hardware.md) and [decisions](decisions.md).
 
 Corner lift has **not** been observed yet and remains unproven either way; no print so far has
 had a large flat footprint to show it. `coupon_ladder` (150 × 60 × 6 mm flat slab) is the right
@@ -186,7 +186,7 @@ Calibration performed on fitting, at 80 °C throughout:
 - **`z_offset` deliberately left at 1.776.** No `PROBE_CALIBRATE` — it is nozzle-to-trigger
   geometry inside the toolhead, so a thicker surface raises probe and nozzle together and the
   number does not move. Verified by first-layer test instead; babystep is the tool if the two
-  second-order effects (magnet compliance, textured datum) show up. See [backlog](backlog.md).
+  second-order effects (magnet compliance, textured datum) show up. See [decisions](decisions.md).
 
 Klipper restarted at 18:37 by `SAVE_CONFIG`. Machine is still on the desk, not yet in the
 garage.

@@ -1,0 +1,220 @@
+# Open questions
+
+Genuinely undecided, plus work in progress. **Never state anything here as settled.** Once one
+is resolved, move it to [decisions.md](decisions.md) with the evidence that resolved it.
+
+**Live machine state is not recorded here.** It is stale the moment it is written; Moonraker
+holds it authoritatively. Query it, or run `tools/print-monitor.py` — see
+[AGENTS.md](../AGENTS.md).
+
+## Active work
+
+### SO-ARM101 follower — 4 of 11 parts done
+
+Sliced figures are measured, not estimated. Slice with `slice-plate.sh`, which centres on the
+measured mesh; **verify the emitted footprint against the mesh bounds before printing**, and
+**never slice while a print is running**. Parts live in `~/models/so-arm101/` on the Pi;
+regenerate with `tools/extract-soarm-parts.py`.
+
+| Plate | Parts | Profile | Time | g |
+|---|---|---|---|---|
+| 2 | Base | `plaplus` (no supports) | 11 h 37 | 102.5 |
+| 3 | Upper_arm, Under_arm, Wrist_Roll_Pitch | `plaplus_soarm` | 13 h 49 | 143 |
+| 4 | Rotation_Pitch, Wrist_Roll_Follower, Moving_Jaw | `plaplus_soarm` | 10 h 24 | 102 |
+| reprint | WaveShare plate, **flat** | `plaplus` | ~1 h | 11 |
+
+Open within it:
+
+- **Does the delaminated WaveShare plate need replacing at all?** The user is waiting on the
+  mating parts to judge. `WaveShare_Mounting_Plate_FLAT.stl` is staged on the Pi if it does.
+- **Fit the LED strip before plates 3 and 4?** Neither fits in a daylight window, and the
+  camera is blind in the dark. See the night-monitoring item below.
+
+### `Kinetic_Toy.gcode` is sliced, correct and waiting
+
+Re-sliced 2026-09-03 with bed-first heating and corrected retraction — 13 h 41, 87.4 g,
+verified in the emitted G-code. Started and aborted within three minutes for the garage move;
+the bed reached 68 °C and the hotend never left ambient, so no filament was laid. **Do not
+re-slice it.**
+
+The recalibration it was waiting on is done and the camera is back, so **the remaining blocker
+is light, not hardware.** At 13 h it runs unattended into the night. Either start it early
+enough to finish the critical first hours in daylight, or fit the LED strip first. The white
+spool it was queued against was swapped for **red PETG** on 2026-09-06, so it comes out red
+unless white is reloaded; 87.4 g is not a constraint either way.
+
+### Coupon ladders printed 2026-09-01, not yet measured
+
+Three ladders on `coupon_ladder`: M3 clearance 3.2/3.4/3.6, insert bores 3.8/4.0/4.2, motor
+bores 37.3/37.5/37.7. Smallest that fits wins; **test from the top face down**, since
+`elefant_foot_compensation = 0` leaves the bottom edge slightly proud. Feeds koala-bot's
+`params.py`. Needs screws and the motor body in hand.
+
+### Four sliced files still heat the nozzle during the bed soak
+
+Audited 2026-09-06. Still emitting `M104` before `M190`: **`LittleGrassDragon`,
+`Flexi-Rex-200`, `Flexi-Rex-improved`, `coupon_ladder`**. Correct already: `3DBenchy`,
+`Godzilla`, `Kinetic_Toy`, `first_layer_test`. **Not chronological** — `3DBenchy` predates the
+fix but was sliced correctly, so **check the file, not its date**:
+`grep -avE '^;|^$' FILE | head -6`. Consequence is a blob of ooze and a dirty nozzle exactly as
+the first layer starts, which is self-limiting (the purge line cleans the tip). **Re-slice when
+next wanted rather than pre-emptively**; the files are otherwise correct.
+
+## Machine
+
+- **Night monitoring needs a light.** With the room dark, an auto-exposure snapshot is
+  essentially black (mean 0–2/255) and auto mode caps its own shutter. Forced manual exposure
+  rescues it to **gross failure detection only** — enough to confirm nothing has come loose,
+  not enough for detail, and at ~0.5 s shutter anything moving smears. The v4l2 settings are in
+  [hardware.md](hardware.md). **A cheap USB LED strip on the frame is the real fix** and is a
+  prerequisite for treating the camera as useful on any overnight print.
+- **The camera bracket is still to be designed.** Three things must be measured, not assumed:
+  the frame extrusion face width where it mounts (**20 vs 40 mm — the bracket differs
+  completely**), whether M5 T-nuts are on hand or the bracket should clip over the extrusion,
+  and the viewpoint. Best view found so far is front-left, slightly below or level with the
+  nozzle plane, looking slightly up. The camera has a 1/4" tripod thread, so the bracket can
+  bolt to that rather than clamping the body. **Hold roughly the current distance** — the lens
+  is fixed focus. Print it in PETG.
+- **`moonraker-timelapse` is installed but not wired up** (installed 2025-12-30). Present and
+  correct: `component/timelapse.py` symlinked into `~/moonraker/moonraker/components/`,
+  `klipper_macro/timelapse.cfg` symlinked to `~/printer_data/config/timelapse.cfg` and
+  already `[include]`d by `printer.cfg`, `/usr/bin/ffmpeg` for rendering, so
+  `TIMELAPSE_TAKE_FRAME` already exists as a macro. **This was blocked on having a camera; the
+  camera was fitted 2026-09-02, so it is now unblocked.** Still missing:
+  1. `[timelapse]` section in `moonraker.conf`.
+  2. `[webcam]` section in `moonraker.conf` — needed for Mainsail to display the feed; the
+     snapshot endpoint works without it.
+  3. `[update_manager timelapse]` so it is kept current.
+  4. `TIMELAPSE_TAKE_FRAME` appended to `layer_gcode` in the profiles, currently just `G92 E0`.
+     **Without this no frames are captured.**
+
+  Use `hyperlapse` mode — see [decisions.md](decisions.md#camera-and-monitoring). **Do not edit
+  `moonraker.conf` during a print.**
+- **No `[idle_timeout]` section in `printer.cfg`**, so Klipper's default 600 s applies and runs
+  `TURN_OFF_HEATERS` + `M84`. A bed heated to 80 °C for a pre-mesh soak was silently switched
+  off at the 10-minute mark, because **heaters at temperature do not count as activity** — only
+  motion and commands do. `SET_IDLE_TIMEOUT TIMEOUT=3600` fixes it for a session but does not
+  survive a restart. **Decide:** a persistent `[idle_timeout]` with a longer timeout, or a soak
+  macro that keeps the machine busy. Note the trade-off — a long timeout means heaters stay
+  live longer after an abandoned job.
+- **No `CANCEL_PRINT` macro in `printer.cfg`.** Moonraker's cancel zeroes the heaters but
+  leaves the nozzle parked on the part at temperature — hit 2026-09-01, needed a manual
+  retract/lift/park. `END_PRINT` already has the right body; add a `[gcode_macro CANCEL_PRINT]`
+  that calls it. Note `M84` there clears the homed flag, so a cancel always needs a re-home.
+  **Fires exactly when a print is already going wrong**, which is the argument for doing it.
+- **[calibration.md](calibration.md)'s post-move procedure still says to re-run
+  `PROBE_CALIBRATE`** on a basis that [decisions.md](decisions.md#build-surface) shows is
+  flawed for a surface change. **Never answered: reword it, or keep it as belt-and-braces?**
+- **Confirm the Wi-Fi fix holds.** Power-saving is disabled three ways and persistent logging
+  is on, but the original 35-minute dropout was never caught in the act, so power-save is the
+  **strong suspect rather than a proven cause**. If it recurs, the journal will now say why.
+- **Move the PETG spool indoors or into a dry box.** Now a heat and UV problem as well as a
+  damp one — PETG is hygroscopic and a sunlit greenhouse is a poor filament store.
+- **`tools/sync-reference.sh` is currently broken from the workstation.** It uses plain `scp`
+  and `ssh`, which fail with `Host key verification failed` — there is no `printhub` entry in
+  `known_hosts` and no TTY to accept one. The host key is stable, so
+  `ssh-keyscan -t ed25519 printhub >> ~/.ssh/known_hosts` fixes it; rewriting the script around
+  `tailscale ssh ... cat` avoids the seeding step entirely. **Until one or the other is done,
+  `reference/` cannot be refreshed, so treat it as potentially stale** — which is the exact
+  failure the directory exists to prevent.
+- **Keep the flashing microSD with the printer.** MCU firmware updates still go via SD; see
+  [klipper-setup.md](klipper-setup.md#consequence).
+
+## Materials wanted
+
+- **ABS profile** — missing, and a drop-in file.
+- **TPU profile.** A 3/4 spool of red TPU is on hand, previously dialled in on an Ender-3 for
+  drone parts. **Those settings are gone and would not have transferred anyway** — that machine
+  was Bowden, and its retraction compensates for tube compliance this direct-drive machine does
+  not have. Temperatures and speeds would have carried; those are the easier half to re-derive.
+  (This loss is what prompted putting these notes under version control.)
+  - **Do not inherit the PETG retraction settings.** `retract_before_travel = 1`, `wipe = 1`
+    and 40 mm/s are right for PETG and wrong for a material that buckles under compression.
+    TPU wants near-zero retraction at much lower speed and accepts stringing as the price.
+  - **Protect the PEI plate.** TPU bonds to PEI aggressively and is one of the few materials
+    that can lift coating off a sheet on removal. Use a glue stick as a release layer rather
+    than find out.
+- **Lightweight (foaming) PLA profile**, for RC planes. **Treat as a separate problem, not a
+  PLA variant** — nozzle temperature drives foaming expansion, so **temperature sets density**
+  rather than just flow quality. Flow runs down to ~40–50 % to let the material expand, and
+  prints are typically single-perimeter with no infill. Tuning means a tower stepping
+  temperature and measuring density. Not something to guess at.
+- **Temperature towers for PETG and PLA.** 240 °C and the PLA/PLA+ figures are generic starting
+  points from datasheets, not this machine's or this filament's measured sweet spot.
+
+## Second printer — Creality Ender-5 Plus
+
+In the garage, unused ~2 years, identified from the purchase invoice 2026-09-02.
+**350 × 350 × 400 mm. Not committed to commissioning**; the case for it is that RC plane parts
+are long and 220 × 220 is the binding constraint.
+
+- **Klipper ships an official sample**, `printer-creality-ender5plus-2019.cfg` — the same thing
+  that made this machine's commissioning safe. Use it; do not guess pins or thermistors.
+- **NOT stock: a Micro Swiss NG Direct Drive Extruder is fitted.** This **voids the sample
+  config as a wholesale source** — it describes the stock Bowden machine:
+  - **`rotation_distance: 33.683` is wrong.** Calibrate by measurement (extrude 100 mm, measure
+    what came through). Do not take the NG's gear ratio from the internet.
+  - **The BLTouch offsets are wrong.** The NG relocates the probe and moves the nozzle relative
+    to it. **This is the inverse of the bed-surface case: a surface change does not move
+    `z_offset`, a toolhead change does.** `PROBE_CALIBRATE` genuinely is required here, plus
+    re-measuring `x_offset` and `y_offset`.
+  - **Confirm the thermistor and heater cartridge before powering the hotend.** If the kit
+    supplied its own hotend, `sensor_type` may not be what the sample declares. **A mismatched
+    sensor does not fail loudly** — it reads a plausible wrong temperature and the heater
+    compensates in the wrong direction.
+  - It is direct drive now, so TPU is viable on it and retraction transfers roughly from the S1.
+    The earlier "TPU stays on the S1" reasoning is void.
+- **Open: did the kit include an all-metal hotend, or is the stock lined one still in place?**
+  `max_temp: 260` in the sample is the signature of a PTFE liner. This collides with the
+  RC-plane plan — **lightweight PLA foams at 230–260 °C, exactly where a PTFE liner degrades
+  and off-gasses.** If all-metal, LW-PLA becomes viable and the blocker disappears; if stock,
+  the 260 ceiling stands. **Confirm visually before buying either.**
+- **Flashing will differ** — the sample shows an FTDI USB bridge, not the S1's CH340, so
+  [klipper-setup.md](klipper-setup.md) does not apply.
+- **One Pi can host both** — a second Klipper + Moonraker instance against a second MCU is
+  established practice. No second SBC needed.
+- **Physical inspection before any config work**, per the lesson from 2026-09-01: build surface
+  present and intact, belts not slack, Z lead screw free, wheels not flat-spotted. The last
+  machine out of that garage was missing its build surface, and it cost two failed prints and
+  hours of confident wrong diagnosis.
+- **Proposed split if commissioned:** S1 = PETG, TPU, detailed figures; Plus = large flat
+  parts, plain PLA, LW-PLA, potentially carbon-filled. Driven by bed size and hotend
+  capability, not extruder type, since both are direct drive.
+
+## This repo's shape
+
+- **Nothing arbitrates concurrent access to the printer.** "Never slice while a print runs" is
+  enforced today by a single operator's attention. **If a second consumer (koala-bot's own
+  session, say) starts driving its own prints, two agents can slice concurrently and nothing
+  stops them.** Moonraker refuses a second *print*; nothing refuses a concurrent *slice*, which
+  is the documented hazard. **Decide before the second consumer arrives, not after.** Cheapest
+  workable answer is a lock file on the Pi that `slice-print.sh` and `slice-plate.sh` check,
+  plus an explicit precondition in [AGENTS.md](../AGENTS.md).
+- **Project knowledge should move out with its project.** The SO-ARM101 material in
+  [decisions.md](decisions.md#project-decisions) and above is project work living in the device
+  repo because this was the only context store when it was written. **Move it when the arm is
+  finished, not mid-build.** What stays behind is only what generalises: batch by print time
+  not footprint, bridgeability rather than overhang percentage, `buildplate_only` for bores.
+
+## Deferred / parked
+
+- **Deferred prints, now unblocked.** Flexi Rex (sliced at 100 % and 200 %), the remaining
+  koala-bot coupons, and the original outstanding ask — two or three fun prints for the
+  grandkids.
+- **KlipperScreen display blanking** — cosmetic, tap to wake. Can be disabled if it annoys.
+- **OrcaSlicer** — configured on paper but not the routine path; the Pi pipeline replaced it.
+  Settings kept in [workflow.md](workflow.md) for when a print needs actual tuning.
+
+## Project ideas raised, not committed
+
+Printer-adjacent ideas from commissioning. Active robotics work lives in `~/Code/koala-bot`.
+
+- **SpotMicro** ([thing:3445283](https://www.thingiverse.com/thing:3445283)) — quadruped,
+  dozens of printed parts, 12 servos, Arduino Mega. PETG suits its structural parts.
+- **6-DOF printable arm.** Accuracy depends on drive choice: hobby servos wander by
+  millimetres; stepper + gear reduction reaches ~0.2–1 mm. AR4 (Annin Robotics) is the pick for
+  repeatability; Thor (AngelLM) is the print-everything option; BCN3D MOVEO is easier but only
+  5-DOF.
+- **InMoov revival** — a partially built torso from ~8 years ago is on the shelf. **Parked as
+  inspiration only:** upstream has had no activity since 2024, and the 3D-printed auger-thread
+  neck actuators are mechanically compromised by friction.

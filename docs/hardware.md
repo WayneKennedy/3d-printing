@@ -93,12 +93,53 @@ night. Measured at ~25 °C ambient with the enclosure in place. See
   back. Clear the counter first:
 
   ```bash
-  ssh wkenn@printhub 'sudo systemctl reset-failed crowsnest && sudo systemctl restart crowsnest'
+  tailscale ssh wkenn@printhub 'sudo systemctl reset-failed crowsnest && sudo systemctl restart crowsnest'
   ```
 
   It then finds `/dev/video0` (`Sonix_Technology USB Live camera SN0001`) and starts ustreamer
   normally. Verify with `curl -s "http://localhost:8080/?action=snapshot"` — a healthy frame is
-  ~200 KB of JPEG.
+  ~200 KB of JPEG. Over the tailnet the snapshot is on **port 80 via nginx** at
+  `http://100.99.147.57/webcam/?action=snapshot` — 8080 is bound to localhost. The trailing
+  slash is load-bearing; `/webcam?action=snapshot` 301s and drops the query.
+
+### The camera itself
+
+Verified on the device 2026-09-02, **not** assumed from the invoice — it was bought as a
+"C920S" and is not one.
+
+- **Sonix/Microdia `0c45:6536` "USB Live camera"**, branded "LOGITUBO 920", a C920 clone.
+  Logitech's vendor ID is `046d` and no Logitech device enumerated.
+- **Hardware MJPG up to 1920x1080 @ 30 fps**; H.264 also available on `/dev/video2`. Measured
+  CPU cost of streaming 1280x720 during a live print: **nil** (load 0.13, ustreamer not in the
+  top six processes). `crowsnest` runs it at **1280x720**, raised from the configured 640x480;
+  backup at `crowsnest.conf.bak-0902`.
+- **The lens is FIXED FOCUS and the focus controls are fake.** It advertises
+  `focus_automatic_continuous` and `focus_absolute` (1-1023), but a measured sweep across the
+  full range produced no focus curve — sharpness on static bed texture stayed flat at 13.7-14.0
+  (stddev of Laplacian) and frames at 1 and 1023 are visually identical. The dips at 380/560/850
+  were the toolhead crossing the sample patch, not defocus. **There is nothing to lock**; the
+  control is left at its inert default. Mounting distance is therefore a design constraint —
+  see [decisions.md](decisions.md#camera-and-monitoring).
+- `power_line_frequency` is already 50 Hz — no flicker banding, nothing to change.
+- It has a **1/4" tripod thread**, so a bracket can bolt to that rather than clamp the body.
+- **`/dev/video19-28` are the Pi 5's own ISP and codec blocks, not capture devices.** Their
+  presence does not mean a camera is attached.
+
+Night exposure (gross failure detection only; see
+[open-questions.md](open-questions.md#machine)):
+
+```bash
+# night mode  - takes mean brightness from ~1 to 56/255
+v4l2-ctl -d /dev/video0 --set-ctrl=auto_exposure=1
+v4l2-ctl -d /dev/video0 --set-ctrl=exposure_time_absolute=5000
+v4l2-ctl -d /dev/video0 --set-ctrl=gain=100
+v4l2-ctl -d /dev/video0 --set-ctrl=brightness=64
+# back to day mode
+v4l2-ctl -d /dev/video0 --set-ctrl=auto_exposure=3
+v4l2-ctl -d /dev/video0 --set-ctrl=gain=50 --set-ctrl=brightness=3
+```
+
+`crowsnest.conf` has a commented `v4l2ctl:` line if these should ever apply at service start.
 - No slicer GUI; PrusaSlicer's CLI (`/usr/bin/prusa-slicer`) is installed for headless
   slicing.
 

@@ -1,5 +1,38 @@
 # Backlog
 
+## In flight — 2026-09-07 09:10, machine handover
+
+**A print is running.** `soarm_plate2_base.gcode` — SO-ARM101 `Base`, started 08:38,
+**11 h 37, 102.5 g, no supports**, ETA ~20:15. It was 2 % in and healthy at 215/60 at handover.
+The session monitoring it was closed, so **nothing is watching it**. To check:
+
+```bash
+ssh wkenn@printhub 'curl -s "localhost:7125/printer/objects/query?print_stats&virtual_sdcard&extruder&heater_bed"'
+ssh wkenn@printhub 'curl -s "http://localhost:8080/?action=snapshot"' > snap.jpg   # daylight only
+```
+
+The camera is blind after dark and this finishes near sunset; night mode (gross failure
+detection only) is in [backlog](#camera) and [hardware](hardware.md).
+
+**SO-ARM101 follower, 4 of 11 parts done.** Remaining, all sliced figures measured not guessed:
+
+| Plate | Parts | Profile | Time | g |
+|---|---|---|---|---|
+| 2 *(running)* | Base | `plaplus` (no supports) | 11 h 37 | 102.5 |
+| 3 | Upper_arm, Under_arm, Wrist_Roll_Pitch | `plaplus_soarm` | 13 h 49 | 143 |
+| 4 | Rotation_Pitch, Wrist_Roll_Follower, Moving_Jaw | `plaplus_soarm` | 10 h 24 | 102 |
+| reprint | WaveShare plate, **flat** | `plaplus` | ~1 h | 11 |
+
+Slice with `~/slicer/slice-plate.sh <name> <material> <stl...>` on the Pi, which centres on the
+measured mesh. **Verify the emitted footprint against the mesh bounds before printing** —
+`--merge` has spilled parts off the bed. **Never slice while a print runs**; PrusaSlicer
+saturates the Pi and Klipper's timing suffers. Parts are in `~/models/so-arm101/` on the Pi;
+regenerate with `tools/extract-soarm-parts.py`.
+
+Open decisions: whether the delaminated WaveShare plate needs replacing at all (user is waiting
+on the mating parts to judge), and fitting the LED strip before plates 3 and 4, neither of
+which fits in a daylight window.
+
 ## Open
 
 - ~~**Garage move + recalibration.**~~ **Done 2026-09-06.** The machine moved and was
@@ -102,6 +135,31 @@
     everywhere cost **29-75 %**: `Wrist_Roll_Pitch` 50.8 g vs 29.1 g (+75 %), `Rotation_Pitch`
     +38 %, `Moving_Jaw` +38 %, `Motor_holder_Base` +29 %. **Never generalise a slicing cost from
     one part.**
+  - **The WaveShare plate delaminated, and percentage-of-surface-area is why. Correction
+    2026-09-07.** It was sliced without supports on the strength of "1.7 % overhang", and its
+    raised boss came off the bed as visibly separated layers. **A percentage hides a small
+    contiguous overhang on a large part.** The plate prints *on edge* (51 x 7.6 footprint,
+    42 mm tall); its section is 4.0 mm thick except between Z 16.8 and 25.2, where the boss
+    protrudes 3.6 mm horizontally off a vertical wall. All 68.6 mm2 of its overhang sits in one
+    patch at Z 12-13, cantilevered in mid-air with nothing beneath it.
+  - **Contiguous area is not the discriminator either — bridgeability is.**
+    `Base_motor_holder` has a *larger* mid-air patch (124.9 mm2 at Z 19.7) and printed
+    perfectly, because it spans between two walls and bridges. The WaveShare boss hangs off one
+    wall with nothing to reach. **No cheap geometric metric separates these two cases**; treat
+    a low percentage as "probably fine", not as proof, and look at any part whose overhang is
+    concentrated in one patch well above the bed.
+  - **The fix is orientation, not supports.** Measured on the plate: as designed (on edge)
+    92.0 mm2 of overhang; flat with the boss *down* 1764.6 mm2 (much worse); **flat with the
+    boss up, 0.0 mm2** — nothing to support at all. Flat is also the stronger part for
+    something bolted down carrying a PCB: 38 layers through the thickness with the large face
+    parallel to them, rather than a thin plate that splits along its layer planes.
+    `WaveShare_Mounting_Plate_FLAT.stl` is staged in `~/models/so-arm101/` on the Pi.
+    **The designers were not wrong** — on edge costs 388 mm2 of bed against 2142 mm2 flat,
+    which matters when all 11 parts share one 220 mm plate. Printing selectively buys the space
+    to make the better choice.
+  - **`Base` was checked against the same trap and cleared** while it was printing: its largest
+    contiguous overhang is 73.4 mm2 at **Z 0.3-0.7 mm**, effectively at the bed rather than
+    cantilevered, so no abort was needed.
   - **Only 6 of the 11 parts need supports at all.** Measured overhang area — faces whose slope
     is under 45 deg from horizontal, excluding the face resting on the bed:
 

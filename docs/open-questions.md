@@ -142,11 +142,99 @@ next wanted rather than pre-emptively**; the files are otherwise correct.
 - **Temperature towers for PETG and PLA.** 240 °C and the PLA/PLA+ figures are generic starting
   points from datasheets, not this machine's or this filament's measured sweet spot.
 
-## Second printer — Creality Ender-5 Plus
+## More than one printer
+
+Two candidate second machines are on hand. **The Ender-3 V3 KE is likely to be commissioned
+first, on desk space** rather than on capability.
+
+### How a printer attaches decides almost everything
+
+**This is the fork that reorders the whole question**, because the two candidates attach
+differently:
+
+- The **Ender-5 S1 and Ender-5 Plus are dumb MCUs on USB.** Klipper's host process runs on
+  printhub, so each one consumes a USB port, a `klippy` process and real host CPU.
+- The **Ender-3 V3 KE has its own Linux host running Klipper on the mainboard**, with a network
+  stack. It attaches over the network, **consumes no printhub USB port and adds no host CPU.**
+
+So "how many printers can the Pi drive?" only ever applied to the USB-attached kind.
+
+### The USB constraint — verified on printhub 2026-09-07
+
+**A USB hub is fine and port count is not the limit.** The MCU link is low-rate serial; the
+CH340 negotiates at **12 Mbit/s** and Klipper uses a fraction of it. Bandwidth is a non-issue.
+Four physical connectors, three in use (CH340, touchscreen, camera).
+
+**The real constraint is device naming, and the standard Klipper advice breaks here.**
+
+```
+/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0        -> ttyUSB0
+/dev/serial/by-path/platform-xhci-hcd.0-usb-0:1:1.0-port0 -> ttyUSB0
+```
+
+**The `by-id` path carries no serial number** — just vendor and product — because the CH340
+(`1a86:7523`) does not report one. **A second identical Creality board produces the identical
+`by-id` path**, so "always use `by-id`, never `ttyUSB0`" fails exactly when there is more than
+one printer. Which machine is which becomes a coin flip at every boot, and the config that
+lands on the wrong one carries heater and kinematics settings.
+
+**Use `by-path` for any USB-attached second machine.** It encodes physical topology — which
+socket on which hub — and is stable and unique per socket; through a hub it simply gains path
+segments. **Label the hub sockets physically and never move a cable between ports.** Boards
+with native USB (STM32 CDC-ACM, `ttyACM*`) usually *do* carry unique serials, so a mixed farm
+may have some printers safely on `by-id` and others not — check each rather than assume.
+
+**Host CPU, not USB, is the ceiling.** printhub sits at load 0.35 across 4 cores with a print
+running and the camera streaming, so there is headroom — **but the cost of a second `klippy`
+instance has not been measured here, and should be before committing to a third.** The known
+collision matters more as the count rises: PrusaSlicer saturating the Pi degrades *every*
+running print, not just the one being sliced for. **A farm probably wants slicing off the print
+host entirely.**
+
+Two farm concerns known to matter generally but **not verified here**: use a self-powered hub
+rather than bus-powered, and expect ground-loop and switching noise from multiple heated beds
+sharing a USB ground tree. The latter would present as `ch341-uart: converter now disconnected`
+— indistinguishable in `dmesg` from a deliberate power-off, per [hardware.md](hardware.md).
+
+### Creality Ender-3 V3 KE — acquired 2026-09-07, unopened
+
+**Likely commissioned before the Ender-5 Plus, on desk space.** 220 × 220 × 240.
+
+**Nothing below is verified on the machine — the box is unopened.** These are vendor and
+community facts that shape the plan; confirm each on the hardware before acting, per the
+never-guess-hardware rule in [AGENTS.md](../AGENTS.md).
+
+- **It ships with Klipper already.** This is not a Marlin conversion like the Ender-5 S1 was, so
+  [klipper-setup.md](klipper-setup.md) does not apply — no flashing, no CH340, no microSD.
+  Creality publishes its fork at `CrealityOfficial/Ender-3_V3_KE_Klipper`.
+- **The mainboard runs Linux with its own network stack**, which is why it needs no host. It is
+  architecturally unlike the V3 SE board.
+- **Stock firmware is Creality's walled garden.** The community route to a normal Klipper stack
+  is the **Guilouz `Creality-Helper-Script`** (written for the K1/K1 Max, reported working on
+  the KE), installed over root SSH to the printer itself. It brings up **Moonraker on 7125**,
+  with **Fluidd on 4408 and Mainsail on 4409**.
+- **Open: does it join the tailnet?** It is a Linux host, so plausibly yes, which would make it
+  reachable the same way printhub is. Unverified, and it decides whether it is addressable from
+  the workstation directly or only via printhub.
+- **Open: what does printhub's role become?** If the KE hosts its own Klipper and Moonraker,
+  printhub is a *client* for it — slicing and orchestration — not its host. **The repo's
+  convention that "Moonraker is `100.99.147.57:7125`" stops being unambiguous** the moment a
+  second Moonraker exists on 7125 on another host. Decide the addressing convention before
+  writing any KE automation.
+- **Open: run it stock or open it up?** Stock means Creality Print and their cloud; the helper
+  script means the same Moonraker API this repo already drives, and therefore the same
+  `slice-print.sh` plumbing. The second is clearly better for this setup, but it is a
+  modification to a brand-new machine and worth a deliberate decision.
+- **Physical inspection still applies**, even unopened — the 2026-09-01 lesson was a missing
+  build surface, and a sealed box only rules out *later* loss, not a shipping fault.
+
+### Creality Ender-5 Plus — not committed
 
 In the garage, unused ~2 years, identified from the purchase invoice 2026-09-02.
-**350 × 350 × 400 mm. Not committed to commissioning**; the case for it is that RC plane parts
-are long and 220 × 220 is the binding constraint.
+**350 × 350 × 400 mm.** The case for it is that RC plane parts are long and 220 × 220 is the
+binding constraint — a reason the KE does not address, since it is 220 × 220 too. **Now
+likely the third machine rather than the second.** It is USB-attached, so everything in the
+USB constraint above applies to it and not to the KE.
 
 - **Klipper ships an official sample**, `printer-creality-ender5plus-2019.cfg` — the same thing
   that made this machine's commissioning safe. Use it; do not guess pins or thermistors.
@@ -171,8 +259,10 @@ are long and 220 × 220 is the binding constraint.
   the 260 ceiling stands. **Confirm visually before buying either.**
 - **Flashing will differ** — the sample shows an FTDI USB bridge, not the S1's CH340, so
   [klipper-setup.md](klipper-setup.md) does not apply.
-- **One Pi can host both** — a second Klipper + Moonraker instance against a second MCU is
-  established practice. No second SBC needed.
+- **One Pi can host both S1 and Plus** — a second Klipper + Moonraker instance against a
+  second MCU is established practice, and no second SBC is needed. But see the USB
+  constraint above: address it by `by-path`, and **measure the cost of the second `klippy`
+  instance** rather than assuming the headroom is free.
 - **Physical inspection before any config work**, per the lesson from 2026-09-01: build surface
   present and intact, belts not slack, Z lead screw free, wheels not flat-spotted. The last
   machine out of that garage was missing its build surface, and it cost two failed prints and

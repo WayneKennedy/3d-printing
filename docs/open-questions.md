@@ -21,6 +21,37 @@ regenerate with `tools/extract-soarm-parts.py`.
 | 3 | Upper_arm, Under_arm, Wrist_Roll_Pitch | `plaplus_soarm` | 13 h 49 | 143 |
 | 4 | Rotation_Pitch, Wrist_Roll_Follower, Moving_Jaw | `plaplus_soarm` | 10 h 24 | 102 |
 
+Per-part figures, sliced and measured 2026-09-06 with **supports everywhere**, so these are
+**upper bounds** — the `plaplus_soarm` profile (snug + build-plate-only) comes in under them,
+e.g. `Rotation_Pitch` 51.3 g grid-everywhere against 42.6 g as actually sliced:
+
+| Remaining part | g | Time | Overhang |
+|---|---|---|---|
+| `Upper_arm` | 61.6 | 5 h 51 | 3.8 % |
+| `Rotation_Pitch` | 51.5 | 4 h 53 | 11.2 % |
+| `Wrist_Roll_Pitch` | 50.8 | 4 h 47 | 8.3 % |
+| `Under_arm` | 49.4 | 4 h 39 | 4.2 % |
+| `Wrist_Roll_Follower` | 46.9 | 4 h 48 | 5.5 % |
+| `Moving_Jaw` | 22.2 | 2 h 26 | 14.0 % |
+
+**Open: plate order does not match assembly order.** Building and testing from the base
+upward, the next part needed is **`Rotation_Pitch`** — which sits on plate 4, behind all of
+plate 3. Two facts make this cheap to fix rather than a constraint to live with:
+
+- **The support-grouping rule does not bind among the remaining six.** All six need supports,
+  so all six slice with `plaplus_soarm`. "One plate cannot mix the two groups" is satisfied by
+  *any* grouping of them — plates 3 and 4 were split on bed space and time alone, so they can
+  be re-grouped freely by assembly order at no cost.
+- **`Rotation_Pitch` alone is ~4 h 53 at worst, and less as actually sliced.** That fits a
+  daylight window, which means **it sidesteps the LED-strip decision entirely** rather than
+  waiting on it, and it gets the base joint assembled and test-fitted before another ~24 h is
+  committed to the rest. That is the same "prefer a cheap print that discriminates" reasoning
+  that the gauges settled the elephant-foot question with — see
+  [decisions.md](decisions.md#slicing).
+
+  Assembly order from the base up is `Rotation_Pitch` → `Upper_arm` → `Under_arm` →
+  `Wrist_Roll_Pitch` → `Wrist_Roll_Follower` → `Moving_Jaw`. **Re-plate before slicing 3 or 4.**
+
 Open within it:
 
 - **Fit the LED strip before plates 3 and 4?** Neither fits in a daylight window, and the

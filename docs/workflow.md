@@ -122,9 +122,10 @@ curl -sL -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/5
 **GitHub-hosted models need none of this and are worth preferring**; DrLex's Flexi Rex is one
 such, and is why that print worked first time as a fetch.
 
-## Secondary path — OrcaSlicer on the desktop
+## Secondary path — OrcaSlicer on `ivory-win`
 
-Kept for when a print needs actual tuning; not needed for routine work.
+Kept for when a print needs actual tuning; not needed for routine work. **Named explicitly
+because "the desktop" is not a location** — see the note on machine-local claims below.
 
 | Setting | Value |
 |---|---|
@@ -242,7 +243,9 @@ Parse the first extruding layer out of the G-code and render it — what you are
 whether layer 1 has *area*. Solid filled regions adhere; a field of single-width lines and
 small isolated dashes is the shape that fails.
 
-Extract the layer-1 segments on the Pi, then render locally with ImageMagick:
+Extract the layer-1 segments on the Pi, then render them as SVG. **Do not assume ImageMagick
+is present** — the workstation has no `convert`; `ivory` does. Either render on `ivory` or
+write SVG directly, which needs no tooling at all:
 
 ```bash
 # on the Pi: emit "x1 y1 x2 y2" per extruding move of the first layer
@@ -287,4 +290,25 @@ tailscale ssh wkenn@ivory 'cat /tmp/p_s.jpg' > part.jpg      # then read it
 Resize before fetching — a 3024 × 4032 iPhone frame is ~1.3 MB and 1600 px wide is ample.
 To zoom a region instead: `convert /tmp/p.jpg -crop 1100x900+1750+2300 +repage -resize 1300x`.
 
-WSL paths given as `\\wsl.localhost\Ubuntu-24.04\home\wkenn\...` map to `/home/wkenn/...`.
+### Claims about tooling do not port between machines
+
+**This repo is read from more than one machine** — it originated on `ivory` and is worked from
+the Linux workstation as well. **A statement like "imagemagick is installed locally" is a claim
+about one machine, not about the repo**, and it silently becomes false the moment the repo is
+read from another. It is worse than a missing note, because an agent will trust it and build a
+plan on it. This file carried exactly that claim about `heif-convert` and ImageMagick and it was
+wrong on the workstation.
+
+**Name the host, or state the requirement instead of the environment.** "`ivory` has
+`heif-convert`" ports. "It's installed locally" does not. The same applies to path shapes: WSL
+paths of the form `\\wsl.localhost\Ubuntu-24.04\home\wkenn\...` map to `/home/wkenn/...`
+**on a WSL host**, which is a fact about that machine and not about wherever you are now.
+
+| Host | Role |
+|---|---|
+| `printhub` | Raspberry Pi 5 — Klipper, Moonraker, PrusaSlicer CLI, camera. **No GUI.** |
+| `ivory` | Linux desktop. Has `heif-convert` and ImageMagick `convert`. Where this repo originated. |
+| `ivory-win` | Windows. OrcaSlicer. |
+| workstation | Linux. `libheif1` but **no** `heif-convert`, **no** ImageMagick, **no** ffmpeg. |
+
+`tailscale ssh wkenn@<host>` reaches any of them; see [AGENTS.md](../AGENTS.md).

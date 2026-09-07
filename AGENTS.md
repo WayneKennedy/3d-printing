@@ -155,6 +155,13 @@ leaves the nozzle parked on the part at temperature. See
 with `./tools/sync-reference.sh` before trusting anything in it, and after any change made on
 the Pi. A stale snapshot is worse than none, because it will be trusted.
 
+**Claims about tooling are claims about a machine, not about this repo.** It is read from
+`printhub`, `ivory` and a Linux workstation, which have different things installed. "X is
+installed locally" silently becomes false when read from elsewhere — and is worse than no note
+at all, because an agent will trust it and plan around it. **Name the host, or state the
+requirement rather than the environment.** The host table is in
+[docs/workflow.md](docs/workflow.md#claims-about-tooling-do-not-port-between-machines).
+
 **Distinguish decided from open.** `decisions.md` records conclusions with the evidence that
 produced them, including conclusions that were reached, tested and found wrong — those
 corrections are kept deliberately so the next agent does not re-derive a known-wrong answer.

@@ -140,8 +140,9 @@ v4l2-ctl -d /dev/video0 --set-ctrl=gain=50 --set-ctrl=brightness=3
 ```
 
 `crowsnest.conf` has a commented `v4l2ctl:` line if these should ever apply at service start.
-- No slicer GUI; PrusaSlicer's CLI (`/usr/bin/prusa-slicer`) is installed for headless
-  slicing.
+- **PrusaSlicer 2.5.0** at `/usr/bin/prusa-slicer` on `printhub`, driven headless via CLI.
+  The binary is built "with GUI support" but there is no desktop session to run it in, so
+  slicing here is always command-line. **2.5.0 predates organic/tree supports** (2.6).
 
 ## Network
 

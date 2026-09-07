@@ -71,7 +71,7 @@ next wanted rather than pre-emptively**; the files are otherwise correct.
   nozzle plane, looking slightly up. The camera has a 1/4" tripod thread, so the bracket can
   bolt to that rather than clamping the body. **Hold roughly the current distance** — the lens
   is fixed focus. Print it in PETG.
-- **`moonraker-timelapse` is installed but not wired up** (installed 2025-12-30). Present and
+- **`moonraker-timelapse` is installed on `printhub` but not wired up** (installed 2025-12-30). Present and
   correct: `component/timelapse.py` symlinked into `~/moonraker/moonraker/components/`,
   `klipper_macro/timelapse.cfg` symlinked to `~/printer_data/config/timelapse.cfg` and
   already `[include]`d by `printer.cfg`, `/usr/bin/ffmpeg` for rendering, so

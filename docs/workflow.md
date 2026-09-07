@@ -270,13 +270,21 @@ sit inside the bed, since PrusaSlicer centres the object and a model may arrive 
 
 ## Viewing photos of prints
 
-Phone photos of the plate are the only way to diagnose an adhesion failure — telemetry cannot
-see it. iPhone `.HEIC` needs decoding first; `libheif-examples` and `imagemagick` are installed
-locally for this:
+Phone photos of the part are the only way to judge fit, finish and adhesion — telemetry cannot
+see any of it. iPhone `.HEIC` needs decoding first.
+
+**Corrected 2026-09-07: the workstation has `libheif1` but NOT `libheif-examples`, so there is
+no `heif-convert`, and no ImageMagick or ffmpeg either.** This file previously claimed both were
+installed locally; they are not. **`ivory` has `heif-convert` and `convert`** — decode there and
+fetch the result, which also avoids installing anything:
 
 ```bash
-heif-convert -q 90 IMG_1234.HEIC out.jpg
-convert out.jpg -crop 1100x900+1750+2300 +repage -resize 1300x detail.jpg   # zoom a region
+tailscale ssh wkenn@ivory 'heif-convert -q 92 ~/Code/IMG_1234.HEIC /tmp/p.jpg >/dev/null 2>&1
+                           convert /tmp/p.jpg -resize 1600x /tmp/p_s.jpg'
+tailscale ssh wkenn@ivory 'cat /tmp/p_s.jpg' > part.jpg      # then read it
 ```
+
+Resize before fetching — a 3024 × 4032 iPhone frame is ~1.3 MB and 1600 px wide is ample.
+To zoom a region instead: `convert /tmp/p.jpg -crop 1100x900+1750+2300 +repage -resize 1300x`.
 
 WSL paths given as `\\wsl.localhost\Ubuntu-24.04\home\wkenn\...` map to `/home/wkenn/...`.

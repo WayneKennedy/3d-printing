@@ -20,12 +20,9 @@ regenerate with `tools/extract-soarm-parts.py`.
 |---|---|---|---|---|
 | 3 | Upper_arm, Under_arm, Wrist_Roll_Pitch | `plaplus_soarm` | 13 h 49 | 143 |
 | 4 | Rotation_Pitch, Wrist_Roll_Follower, Moving_Jaw | `plaplus_soarm` | 10 h 24 | 102 |
-| reprint | WaveShare plate, **flat** | `plaplus` | ~1 h | 11 |
 
 Open within it:
 
-- **Does the delaminated WaveShare plate need replacing at all?** The user is waiting on the
-  mating parts to judge. `WaveShare_Mounting_Plate_FLAT.stl` is staged on the Pi if it does.
 - **Fit the LED strip before plates 3 and 4?** Neither fits in a daylight window, and the
   camera is blind in the dark. See the night-monitoring item below.
 

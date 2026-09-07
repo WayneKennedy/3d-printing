@@ -155,6 +155,14 @@ it stops the next agent re-deriving it. Anything undecided lives in
     part for something bolted down carrying a PCB. **The designers were not wrong** — on edge
     costs 388 mm² of bed against 2142 mm² flat, which matters when parts share one plate.
     Printing selectively buys the space to make the better choice.
+  - **Resolved 2026-09-07: the delaminated plate was accepted and NOT reprinted.** Checked
+    against the mating parts with an STS3215 in situ — `Base_motor_holder` seats over the
+    `Base` as a tight fit and the `WaveShare_Mounting_Plate` connects correctly, so the
+    delamination is cosmetic for this assembly. **This does not soften the lesson above:** the
+    plate genuinely did delaminate and the percentage metric genuinely did miss it. What it
+    settles is the cost of that miss, which here was zero. `WaveShare_Mounting_Plate_FLAT.stl`
+    stays staged on the Pi, and flat-with-the-boss-up remains the right orientation if this
+    part is ever printed again — it is simply not worth an hour to replace a working part.
 - **Height drives print time, not volume.** `Base` (122.7 cm³) and `Upper_arm` (117.3 cm³) are
   nearly the same volume, but Base is 87 mm tall against 24.5 mm and takes **twice as long**.
   **Batch by time, never by footprint area.**

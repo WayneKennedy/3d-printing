@@ -106,8 +106,15 @@ def main():
         now = time.monotonic()
         if new == "printing" and now - last_beat >= a.heartbeat:
             last_beat = now
+            # File position is not time. Below ~15% the start sequence (soak, home,
+            # mesh, purge) has burned wall clock against almost no file progress, so
+            # a linear ETA reads wildly pessimistic; near the end it reads optimistic,
+            # because top solid layers are slow and cheap in bytes. Only offer a
+            # figure in the middle, where it is worth something. The slicer's estimate
+            # is the better number outside that band.
             rate = pct / dur if dur > 0 else 0
-            eta = f", ~{hms((100 - pct) / rate)} left" if rate > 0 else ""
+            eta = (f", ~{hms((100 - pct) / rate)} left"
+                   if rate > 0 and 15 <= pct <= 90 else "")
             emit(f"OK {pct:.1f}% after {hms(dur)}{eta} — "
                  f"nozzle {st['extruder']['temperature']:.0f}/"
                  f"{st['extruder']['target']:.0f}, "

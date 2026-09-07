@@ -195,7 +195,12 @@ for ABS/ASA; PLA and PLA+ are the materials harmed by them — a warm chamber ca
 this direct-drive hotend and undermines the 100 % part cooling the profile specifies. In a
 greenhouse garage on a sunny day the chamber can be well above room temperature.
 
-Invoke as `slice-print.sh model.stl plaplus`. Untested until a Benchy has been through it.
+Invoke as `slice-print.sh model.stl plaplus`.
+
+**Validated 2026-09-06** on the SO-ARM101 `Motor_holder_Base`, the first PLA of any kind
+printed on this machine. 220/215 at 60 C bed laid down clean with no babystep. No Benchy was
+needed in the end: a real part that is wanted anyway is a better first print than a throwaway,
+because a bad result costs nothing extra and a good one is a part in hand.
 - **No PLA has been printed on this machine.** Put a Benchy through this profile before
   committing anything that matters to it.
 - **The saved bed mesh was probed at 80 C and `START_PRINT` hardcodes `BED_MESH_PROFILE
@@ -206,6 +211,11 @@ Invoke as `slice-print.sh model.stl plaplus`. Untested until a Benchy has been t
   `BED_MESH_PROFILE LOAD={params.MESH|default('default')}`, and add `MESH=pla60` to the PLA
   profile's `start_gcode`. A bare `START_PRINT` then still means PETG 240/80 on the default
   mesh, so it stays safe. **Requires editing `printer.cfg`, so not during a print.**
+
+  **Measured 2026-09-06: not needed.** The first PLA+ print ran a 60 C bed on the 80 C-probed
+  `default` mesh and the first layer was clean with no babystep. The effect really is
+  second-order, so **do not build `pla60` speculatively** - the parameterisation above is
+  written down and stays available if a PLA first layer ever actually misbehaves.
 
 **Check a project's own spec before slicing, and check it is current.** koala-bot's
 `docs/bom.md` briefly specified 4 perimeters / 30 % gyroid, and the two `petg_koala*` profiles

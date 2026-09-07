@@ -81,6 +81,67 @@
     profile is untested.
   - Project spec: 0.4 mm nozzle, 0.2 mm layer, **15 % infill** (already the profile default),
     supports everywhere except slopes >45°, none in horizontal screw holes.
+  - **Sliced and measured 2026-09-06 with `ender5s1_plaplus_soarm.ini`.** The follower is a
+    **464 g, ~47 h build** — not the single pass the bed size implies:
+
+    | Part | g | Time | | Part | g | Time |
+    |---|---|---|---|---|---|---|
+    | Base | 107.4 | **12h18** | | Base_motor_holder | 23.2 | 1h58 |
+    | Upper_arm | 61.6 | 5h51 | | Moving_Jaw | 22.2 | 2h26 |
+    | Rotation_Pitch | 51.5 | 4h53 | | Motor_holder_Base | 20.4 | 2h11 |
+    | Wrist_Roll_Pitch | 50.8 | 4h47 | | Motor_holder_Wrist | 19.8 | 2h07 |
+    | Wrist_Roll_Follower | 46.9 | 4h48 | | WaveShare plate | 11.3 | 1h08 |
+    | Under_arm | 49.4 | 4h39 | | **TOTAL** | **464** | **~47 h** |
+
+  - **Height drives print time, not volume.** `Base` (122.7 cm3) and `Upper_arm` (117.3 cm3)
+    are nearly the same volume, but Base is 87 mm tall (435 layers) against Upper_arm's 24.5 mm
+    and takes **twice as long**. Batch by time, never by footprint area.
+  - ~~**Supports are nearly free here.**~~ **Wrong — corrected 2026-09-06.** That was measured
+    on `Base` alone (+5 g, +41 min), which is the least representative part in the set: it is so
+    large that any support is small in relative terms. Measured across the rest, supports
+    everywhere cost **29-75 %**: `Wrist_Roll_Pitch` 50.8 g vs 29.1 g (+75 %), `Rotation_Pitch`
+    +38 %, `Moving_Jaw` +38 %, `Motor_holder_Base` +29 %. **Never generalise a slicing cost from
+    one part.**
+  - **Only 6 of the 11 parts need supports at all.** Measured overhang area — faces whose slope
+    is under 45 deg from horizontal, excluding the face resting on the bed:
+
+    | Needs support | | Does not (≤2 %) | |
+    |---|---|---|---|
+    | Moving_Jaw | 14.0 % | WaveShare_Mounting_Plate | 1.7 % |
+    | Rotation_Pitch | 11.2 % | Motor_holder_Base | 1.3 % |
+    | Wrist_Roll_Pitch | 8.3 % | Base_motor_holder | 1.2 % |
+    | Wrist_Roll_Follower | 5.5 % | Motor_holder_Wrist | 1.1 % |
+    | Under_arm | 4.2 % | Base | 0.5 % |
+    | Upper_arm | 3.8 % | | |
+
+    Slice the right-hand five with plain `ender5s1_plaplus.ini`. **Support settings are
+    per-file, so a plate cannot mix the two groups** — that constraint, not footprint, is what
+    decides the plates.
+  - **`support_material_buildplate_only = 1` is the answer to "no supports in horizontal screw
+    holes".** Previously recorded here as impossible headlessly; that was wrong. Support inside
+    a bore rests on the part rather than the bed, so the switch drops it. Confirmed on the
+    2026-09-06 `Motor_holder_Base` print, which came off with support walls bonded inside the
+    screw holes and against vertical faces, serving no purpose and not cleaning off.
+  - **Use `support_material_style = snug`, not the default `grid`.** PrusaSlicer's own help says
+    snug saves material and reduces object scarring. Measured on `Rotation_Pitch`: grid
+    everywhere 51.3 g, snug everywhere 47.0 g, **snug + build-plate-only 42.6 g**, none 37.3 g.
+  - **Tree/organic supports are NOT available.** printhub runs PrusaSlicer **2.5.0**; organic
+    supports arrived in 2.6. `snug` is the closest this version offers. Upgrading the slicer is
+    the only route to tree supports.
+  - **Revised total with selective supports: 409 g / 41.9 h**, against 464 g / 47.1 h for
+    supports-everywhere.
+  - **The Individual/ STLs are NOT in print orientation — extract parts from the plate file
+    instead.** `Wrist_Roll_Follower` is 105.4 mm tall in `Individual/` but 65.2 mm on the Ender
+    plate; `Under_arm` flips from 64.4 to 24.0. Only `Base` matches. Slicing `Individual/`
+    naively discards the project's support-minimising orientation. Split
+    `Ender_Follower_SO101.stl` into connected components instead — triangle counts identify each
+    part exactly and sum to 96584. **`Moving_Jaw` is two disconnected shells (10878 + 382) that
+    must be kept in one file**, or the gripper's pieces get separated by the arranger.
+  - **`prusa-slicer --merge` did not pack 7 parts reliably** — the result spanned X -42 to 250
+    on a 222 mm bed. Keep plates to a modest fill and verify the emitted footprint against the
+    mesh bounds every time before printing.
+  - **Do not slice on the Pi while a print is running.** PrusaSlicer saturates the cores and
+    Klipper's timing is the thing that suffers; there is no local slicer on the workstation.
 
 - **Confirm the Wi-Fi fix holds.** Power-saving is disabled three ways and persistent logging
   is on, but the original 35-minute dropout was never caught in the act, so power-save is the
@@ -260,10 +321,22 @@
   already wide. This was previously logged as a fix for the adhesion failures; it is not one,
   and that strengthens the case for the plate surface being the cause. (A brim is also the wrong
   tool for open-mesh models — it welds neighbouring features together.)
-- **`elefant_foot_compensation = 0`** in `ender5s1_petg.ini` (PrusaSlicer normally defaults to
-  0.2 mm). Harmless while every part is sliced with this one profile — bias is consistent, and
-  fit coupons measure the real result. It matters only if the profile ever diverges between a
-  coupon and the part it validates.
+- **`elefant_foot_compensation = 0`** in `ender5s1_petg.ini` and inherited by every PLA/PLA+
+  profile (PrusaSlicer normally defaults to 0.2 mm). Harmless while every part is sliced with
+  this one profile — bias is consistent, and fit coupons measure the real result. It matters
+  only if the profile ever diverges between a coupon and the part it validates.
+  - **Investigated and cleared 2026-09-06/07. No change needed.** An STS3215 servo would not
+    seat in a freshly printed SO-ARM101 `Motor_holder_Base`, raising the worry that zero
+    elephant-foot compensation shrinks a bed-facing pocket from the inside — a bias no fit
+    coupon would catch, because a servo is injection-moulded and shares none of this printer's
+    biases. **The SO-101 gauges settled it: the servo is a tight friction fit in `Gauge_0`,
+    which is the intended press fit.** The machine is dimensionally correct at 220/215 in PLA+,
+    and the tight motor holder was **support residue bonded inside the pocket**, not geometry.
+    Leave `elefant_foot_compensation = 0`.
+  - **The method is the reusable part.** Two hypotheses predicted the same symptom. The gauges
+    print support-free, so a single 1 h 07 print separated them: a good gauge fit meant residue,
+    a bad one meant compensation. Prefer a cheap print that *discriminates* between causes over
+    a long one that merely retries.
 - ~~**`filament_density` missing.**~~ **Done 2026-09-01** — `filament_density = 1.27` added to
   `ender5s1_petg.ini` and both koala profiles; slicer now reports grams.
 - ~~**PEI sheet missing.**~~ **Done 2026-09-02** — double-sided textured 235 × 235 mm

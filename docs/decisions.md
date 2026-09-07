@@ -250,6 +250,14 @@ are here because the printer repo was the only context store when they were take
     rest on the part is simply dropped. A first attempt that ignored this called
     `Rotation_Pitch` 1.3x and pointed the wrong way; modelling the drop called it 76x against a
     measured 45x.
+  - **Bed contact is the third axis, and for a tall part it outranks support.** Measured
+    2026-09-07 across the set: `Upper_arm` 3938 mm2 (41 % of footprint, aspect 0.39),
+    `Under_arm` 2699 mm2, **`Base` 1692 mm2 / aspect 2.11 — the proven-good reference on this
+    machine**, having printed clean for 11 h 25. `Wrist_Roll_Pitch` as extracted is
+    **251 mm2, 9 %, aspect 3.93** — the worst in the set, 6.7x less grip than `Base` while
+    standing nearly as tall relative to it, and outside anything this machine has printed
+    successfully. Every layer-1 failure here has been a part with too little bed contact.
+    (Aspect = height / sqrt(contact).)
   - **Low support with high dropped area is a trap.** Dropped support means the overhang prints
     with nothing beneath it — exactly how the WaveShare plate delaminated. `Moving_Jaw` flipped
     180 deg saves 16 % of support but turns 2 mm2 of unsupported overhang into 221 mm2, so it

@@ -38,10 +38,26 @@ e.g. `Rotation_Pitch` 51.3 g grid-everywhere against 42.6 g as actually sliced:
 with [`tools/orientation-study.py`](../tools/orientation-study.py) — see
 [decisions.md](decisions.md#supports). `Rotation_Pitch` is re-sliced rotated and printing.
 `Upper_arm`, `Under_arm`, `Wrist_Roll_Follower` and `Moving_Jaw` stay as extracted.
-**Only `Wrist_Roll_Pitch` is open**: flipping it 180° screens 1.6× better on support
-(4.83 vs 7.53 cm³) but slightly worse on unsupported overhang (858 vs 754 mm²), and it swaps
-which face sits on the bed. **Slice it both ways and compare before plate 3** — the screen is
-not authoritative, and 1.6× is well inside the margin where it has been wrong before.
+**`Wrist_Roll_Pitch` should be flipped 180°, and the pending slice test now confirms rather
+than decides.** It is the awkward part of the set — no good flat face in any orientation. The
+flip wins on three axes and loses on one:
+
+| | as-extracted | **X180 (flip)** |
+|---|---|---|
+| bed support | 7.53 cm³ | **4.83 cm³** (−36 %) |
+| **bed contact** | **251 mm² / 9 %** | **577 mm² / 21 %** (+130 %) |
+| aspect (h/√contact) | 3.93 | **2.59** |
+| unsupported overhang | 754 mm² | 858 mm² (+14 %, against) |
+
+**Bed contact is what decides it.** At 251 mm² on a 62 mm-tall part it is the worst in the set
+and outside anything printed successfully here; flipped it lands in the same class as `Base`
+(1692 mm², aspect 2.11), which ran 11 h 25 clean. A tall part with a poor grip is how a job
+lets go hours in.
+
+**Add a brim.** The standing objection — that a brim welds neighbouring features on open-mesh
+models — does not apply to a solid part, and 577 mm² under 62 mm of part is worth the
+insurance. `brim_width` is not in the profiles today, so this means a per-job override or a
+one-line profile variant; decide which before slicing plate 3.
 
 **Open: plate order does not match assembly order.** Building and testing from the base
 upward, the next part needed is **`Rotation_Pitch`** — which sits on plate 4, behind all of

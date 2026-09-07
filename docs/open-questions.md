@@ -146,6 +146,14 @@ next wanted rather than pre-emptively**; the files are otherwise correct.
   **strong suspect rather than a proven cause**. If it recurs, the journal will now say why.
 - **Move the PETG spool indoors or into a dry box.** Now a heat and UV problem as well as a
   damp one — PETG is hygroscopic and a sunlit greenhouse is a poor filament store.
+- **A slicer off the print host would remove the "never slice during a print" constraint.**
+  It bit tonight: comparing `Wrist_Roll_Pitch` orientations had to be deferred ~3.5 h because
+  `printhub` is the only machine with PrusaSlicer, and it was busy printing. Neither `blake`
+  (12 cores) nor `ivory` (12 cores) has one, and both are far faster than the Pi's 4 cores.
+  **Put it on `ivory`, not `blake`** — blake gets wiped. **Pin the version to 2.5.0**, or
+  figures stop being comparable with everything already measured, and note that a newer
+  PrusaSlicer would also change support behaviour (organic supports arrive in 2.6). This is the
+  same conclusion the multi-printer section reaches from a different direction.
 - **Keep the flashing microSD with the printer.** MCU firmware updates still go via SD; see
   [klipper-setup.md](klipper-setup.md#consequence).
 

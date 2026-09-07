@@ -316,12 +316,17 @@ Last verified 2026-09-07:
 | Host | Role | Verified present |
 |---|---|---|
 | `printhub` | Raspberry Pi 5 — Klipper, Moonraker, camera. No desktop session. | PrusaSlicer 2.5.0 CLI, ffmpeg, python3 |
-| `ivory` | Linux desktop. Where this repo originated. | `heif-convert`, ImageMagick `convert` |
+| `ivory` | Linux desktop, 12 cores. Where this repo originated. | `heif-convert`, ImageMagick `convert`. **No PrusaSlicer.** |
 | `ivory-win` | Windows | OrcaSlicer |
-| workstation | Linux | `libheif1` only — **no** `heif-convert`, ImageMagick or ffmpeg |
+| `blake` | Linux workstation, 12 cores / 14 GB. **Reformatted often — assume it is bare.** | `libheif1` only — **no** `heif-convert`, ImageMagick, ffmpeg or PrusaSlicer |
 
-Other machines exist on the tailnet (`blake` among them) and are not inventoried here precisely
-because that inventory would rot. `tailscale ssh wkenn@<host>` reaches any of them — see
+**`blake` is the machine this repo is usually worked from, and it is the one most likely to be
+wiped** — which is the whole reason for the rule above. Other tailnet machines are not
+inventoried here precisely because that inventory would rot.
+
+**`tailscale ssh` does not reach `blake`** (no host key; it falls back to plain `ssh` and
+fails). That is fine when you are *on* blake, and a trap when a script assumes every host is
+reachable the same way. `tailscale ssh wkenn@<host>` reaches any of them — see
 [AGENTS.md](../AGENTS.md). To check a host rather than assume it:
 
 ```bash

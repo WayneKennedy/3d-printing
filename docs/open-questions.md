@@ -154,10 +154,13 @@ differently:
 
 - The **Ender-5 S1 and Ender-5 Plus are dumb MCUs on USB.** Klipper's host process runs on
   printhub, so each one consumes a USB port, a `klippy` process and real host CPU.
-- The **Ender-3 V3 KE has its own Linux host running Klipper on the mainboard**, with a network
-  stack. It attaches over the network, **consumes no printhub USB port and adds no host CPU.**
+- The **Ender-3 V3 KE ships with its own Klipper host — the Nebula Pad**, a separate Linux
+  module. Left stock it attaches over the network and consumes no printhub USB port and no host
+  CPU. **But the Nebula Pad can be bypassed entirely**, driving the KE's mainboard MCU from
+  printhub over USB exactly like the S1 — in which case it consumes both.
 
-So "how many printers can the Pi drive?" only ever applied to the USB-attached kind.
+So "how many printers can the Pi drive?" is not a property of the printer. **It is a
+consequence of a choice**, and for the KE that choice is still open.
 
 ### The USB constraint — verified on printhub 2026-09-07
 
@@ -204,11 +207,18 @@ sharing a USB ground tree. The latter would present as `ch341-uart: converter no
 community facts that shape the plan; confirm each on the hardware before acting, per the
 never-guess-hardware rule in [AGENTS.md](../AGENTS.md).
 
-- **It ships with Klipper already.** This is not a Marlin conversion like the Ender-5 S1 was, so
-  [klipper-setup.md](klipper-setup.md) does not apply — no flashing, no CH340, no microSD.
-  Creality publishes its fork at `CrealityOfficial/Ender-3_V3_KE_Klipper`.
-- **The mainboard runs Linux with its own network stack**, which is why it needs no host. It is
-  architecturally unlike the V3 SE board.
+- **It ships with real Klipper, in the proper two-part architecture** — not Marlin with
+  "Klipper" on the box, and not a Marlin conversion like the Ender-5 S1 was. So
+  [klipper-setup.md](klipper-setup.md) does not apply: no flashing, no microSD.
+
+  | Part | Role |
+  |---|---|
+  | Mainboard **GD32F303RET6** (treat as STM32F103, Cortex-M3) | runs Klipper **MCU firmware** |
+  | **Nebula Pad**, a separate Linux module | runs the Klipper **host** (klippy), Creality's UI and the network stack |
+
+- **It is Creality's fork, not mainline.** Their changes were never merged upstream, and the
+  version on the printer is reported as **outdated and not directly updateable**. That is the
+  substantive argument against leaving it stock — it is a Klipper that cannot follow Klipper.
 - **Stock firmware is Creality's walled garden.** The community route to a normal Klipper stack
   is the **Guilouz `Creality-Helper-Script`** (written for the K1/K1 Max, reported working on
   the KE), installed over root SSH to the printer itself. It brings up **Moonraker on 7125**,
@@ -216,15 +226,26 @@ never-guess-hardware rule in [AGENTS.md](../AGENTS.md).
 - **Open: does it join the tailnet?** It is a Linux host, so plausibly yes, which would make it
   reachable the same way printhub is. Unverified, and it decides whether it is addressable from
   the workstation directly or only via printhub.
-- **Open: what does printhub's role become?** If the KE hosts its own Klipper and Moonraker,
-  printhub is a *client* for it — slicing and orchestration — not its host. **The repo's
+- **Open: what does printhub's role become?** Under stock or helper-script, the KE hosts its
+  own Klipper and Moonraker and printhub is only a *client* — slicing and orchestration. Under
+  the bypass, printhub is its host as well. **The repo's
   convention that "Moonraker is `100.99.147.57:7125`" stops being unambiguous** the moment a
   second Moonraker exists on 7125 on another host. Decide the addressing convention before
   writing any KE automation.
-- **Open: run it stock or open it up?** Stock means Creality Print and their cloud; the helper
-  script means the same Moonraker API this repo already drives, and therefore the same
-  `slice-print.sh` plumbing. The second is clearly better for this setup, but it is a
-  modification to a brand-new machine and worth a deliberate decision.
+- **The real decision is three-way, not two.** All three are reversible; none is committed.
+
+  | | What it means | Cost |
+  |---|---|---|
+  | **Stock** | Creality Print and their cloud | Walled garden; a Klipper that cannot be updated |
+  | **Helper script** | Keep the Nebula Pad, add Moonraker/Fluidd/Mainsail on it | Same Moonraker API this repo already drives, so `slice-print.sh` works against it; still Creality's fork underneath |
+  | **Bypass the Pad** | Drive the mainboard MCU from printhub over USB with **mainline** Klipper | One host, one Moonraker, no addressing ambiguity, uniform with the S1 — but **consumes a printhub USB port and host CPU, so the USB constraint above applies** |
+
+  **The bypass is the one that fits this setup best on paper** — it collapses the addressing
+  question, keeps a single Moonraker, and puts the KE on mainline rather than a frozen fork.
+  It is also the most work and abandons the Nebula Pad's touchscreen. Community configs exist
+  for exactly this (`lividhen/Klipper-Ender-3-V3-KE`), driving the board through **Creality's
+  serial-to-USB adapter** — **check whether that adapter is another CH340**, because if it is,
+  the `by-path` requirement above applies to this machine on day one.
 - **Physical inspection still applies**, even unopened — the 2026-09-01 lesson was a missing
   build surface, and a sealed box only rules out *later* loss, not a shipping fault.
 

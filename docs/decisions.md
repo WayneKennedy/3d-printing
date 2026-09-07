@@ -267,7 +267,13 @@ are here because the printer repo was the only context store when they were take
   `Wrist_Roll_Follower` is 105.4 mm tall in `Individual/` but 65.2 mm on the Ender plate;
   `Under_arm` flips from 64.4 to 24.0. Only `Base` matches. Split `Ender_Follower_SO101.stl`
   into connected components (`tools/extract-soarm-parts.py`); triangle counts identify each
-  part and sum to 96584. **`Moving_Jaw` is two disconnected shells (10878 + 382) that must stay
+  part and sum to 96584 — **confirmed against upstream HEAD `eecbe3e` on 2026-09-07**, so the
+  measurements below still describe the current geometry.
+  - **`Ender_Follower_SO101.stl` is an ASCII STL** (24 MB, "Uranium STLWriter"), unlike the
+    binary STLs elsewhere in this project. Reading its bytes 80-84 as a binary triangle count
+    yields 1.87 billion. `extract-soarm-parts.py` parses it as text and is correct; anything
+    else reading it must not assume binary. The Bambu and Prusa plate variants alongside it are
+    binary, and also 96584 triangles. **`Moving_Jaw` is two disconnected shells (10878 + 382) that must stay
   in one file**, or the arranger separates the gripper's pieces.
 - **Only 6 of the 11 parts need supports** — Moving_Jaw 14.0 %, Rotation_Pitch 11.2 %,
   Wrist_Roll_Pitch 8.3 %, Wrist_Roll_Follower 5.5 %, Under_arm 4.2 %, Upper_arm 3.8 %. The

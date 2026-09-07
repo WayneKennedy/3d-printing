@@ -13,8 +13,21 @@ holds it authoritatively. Query it, or run `tools/print-monitor.py` — see
 
 Sliced figures are measured, not estimated. Slice with `slice-plate.sh`, which centres on the
 measured mesh; **verify the emitted footprint against the mesh bounds before printing**, and
-**never slice while a print is running**. Parts live in `~/models/so-arm101/` on the Pi;
-regenerate with `tools/extract-soarm-parts.py`.
+**never slice while a print is running**. Parts live in `~/models/so-arm101/` on the Pi.
+
+**The parts are reproducible from upstream, verified 2026-09-07.** Do not record which machine
+holds a clone — clone it where you need it:
+
+```bash
+git clone https://github.com/TheRobotStudio/SO-ARM100.git      # ~450 MB checked out
+tools/extract-soarm-parts.py \
+  SO-ARM100/STL/SO101/Follower/Ender_Follower_SO101.stl  <outdir>
+```
+
+All 11 parts came out **byte-identical (md5) to the copies on the Pi** that are being printed,
+from a fresh clone on a bare machine. So upstream geometry has not moved since the 2026-09-06
+measurements, the extractor is deterministic, and the Pi's models are trustworthy rather than
+merely old. Re-run this check rather than assuming it still holds after an upstream change.
 
 | Plate | Parts | Profile | Time | g |
 |---|---|---|---|---|

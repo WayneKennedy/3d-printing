@@ -43,6 +43,11 @@ def main():
     down = False
     fails = 0
     last_beat = 0.0
+    # A heater climbing to target is not a fault; a heater that reached target and
+    # then drifted is. Track that per heater, so the heat-soak at the start of every
+    # print does not fire a TEMP alert -- which would train the reader to ignore the
+    # one alert that actually matters mid-print.
+    reached, last_target = {}, {}
 
     while True:
         try:
@@ -86,8 +91,17 @@ def main():
         for name, obj, tol in (("nozzle", "extruder", NOZZLE_TOL),
                                ("bed", "heater_bed", BED_TOL)):
             tgt, cur = st[obj]["target"], st[obj]["temperature"]
-            if tgt > 0 and abs(cur - tgt) > tol:
-                emit(f"TEMP {name} {cur:.1f} C vs target {tgt:.0f} C at {pct:.1f}%")
+            if tgt != last_target.get(obj):        # new setpoint: warming again
+                last_target[obj] = tgt
+                reached[obj] = False
+            if tgt <= 0:                           # off, or cooling down after the job
+                continue
+            if not reached.get(obj):
+                if cur >= tgt - tol:
+                    reached[obj] = True            # arrived; deviation now means something
+            elif abs(cur - tgt) > tol:
+                emit(f"TEMP {name} {cur:.1f} C vs target {tgt:.0f} C at {pct:.1f}% "
+                     f"(had reached target)")
 
         now = time.monotonic()
         if new == "printing" and now - last_beat >= a.heartbeat:

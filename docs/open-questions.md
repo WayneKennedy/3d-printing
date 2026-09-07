@@ -34,6 +34,15 @@ e.g. `Rotation_Pitch` 51.3 g grid-everywhere against 42.6 g as actually sliced:
 | `Wrist_Roll_Follower` | 46.9 | 4 h 48 | 5.5 % |
 | `Moving_Jaw` | 22.2 | 2 h 26 | 14.0 % |
 
+**Orientation is settled for five of six; one slice test outstanding.** Screened 2026-09-07
+with [`tools/orientation-study.py`](../tools/orientation-study.py) — see
+[decisions.md](decisions.md#supports). `Rotation_Pitch` is re-sliced rotated and printing.
+`Upper_arm`, `Under_arm`, `Wrist_Roll_Follower` and `Moving_Jaw` stay as extracted.
+**Only `Wrist_Roll_Pitch` is open**: flipping it 180° screens 1.6× better on support
+(4.83 vs 7.53 cm³) but slightly worse on unsupported overhang (858 vs 754 mm²), and it swaps
+which face sits on the bed. **Slice it both ways and compare before plate 3** — the screen is
+not authoritative, and 1.6× is well inside the margin where it has been wrong before.
+
 **Open: plate order does not match assembly order.** Building and testing from the base
 upward, the next part needed is **`Rotation_Pitch`** — which sits on plate 4, behind all of
 plate 3. Two facts make this cheap to fix rather than a constraint to live with:

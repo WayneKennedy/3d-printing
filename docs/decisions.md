@@ -110,6 +110,11 @@ it stops the next agent re-deriving it. Anything undecided lives in
     `default` mesh with a clean first layer. The effect is genuinely second-order — **do not
     build `pla60` speculatively.** The parameterisation is written down in
     [workflow.md](workflow.md) if a PLA first layer ever actually misbehaves.
+- **Normalise a rotated STL to the origin before slicing.** A rotated `Rotation_Pitch` threw
+  `Objects could not fit on the bed` as a *single* object, because the rotation left it far from
+  the origin and below Z0 and the fit check runs before `--center` can help. Translating it to
+  sit on Z0 centred at the origin fixed it. This extends the `--merge` warning below: the arrange
+  is fragile about input coordinates, not only about object count.
 - **`prusa-slicer --merge` is not trusted.** Its headless arrange threw "Objects could not fit
   on the bed" for two small parts on a 220 × 220 bed, and spilled a 7-part plate from X −42 to
   250. Work around it by translating parts into position and writing one merged STL, or keep
@@ -230,6 +235,26 @@ are here because the printer repo was the only context store when they were take
   nowhere else to put it, and the plate overruns the measured mesh by a **25.7 mm front strip
   and 13.2 mm at the right**. Slice into batches inside
   the meshed area instead — which also halves the loss if a print fails hours in.
+- ~~**The plate-file orientation is support-minimising.**~~ **Not always — corrected
+  2026-09-07 by `Rotation_Pitch`.** Sliced as extracted it needs **5.39 g** of support with
+  most of the part printing over it; rotated 90 deg about X it needs **0.12 g**, and comes out
+  lighter and faster too (36.24 g / 3 h 37 against 42.64 g / 4 h 07), because the flatter
+  as-extracted pose spends more material on top and bottom solid layers. **Check orientation
+  per part rather than trusting the plate.**
+  - **Screened all six unprinted parts with [`tools/orientation-study.py`](../tools/orientation-study.py).
+    `Rotation_Pitch` is the only outlier** — `Upper_arm`, `Under_arm` and `Wrist_Roll_Follower`
+    are already optimal in the plate pose by 1.8-10x, `Moving_Jaw` should stay put (below), and
+    `Wrist_Roll_Pitch` has a marginal 1.6x that is worth one slice test, not a rewrite.
+  - **The metric that matters is support built FROM THE BED, not overhang percentage and not
+    total overhang volume.** With `support_material_buildplate_only = 1`, support that would
+    rest on the part is simply dropped. A first attempt that ignored this called
+    `Rotation_Pitch` 1.3x and pointed the wrong way; modelling the drop called it 76x against a
+    measured 45x.
+  - **Low support with high dropped area is a trap.** Dropped support means the overhang prints
+    with nothing beneath it — exactly how the WaveShare plate delaminated. `Moving_Jaw` flipped
+    180 deg saves 16 % of support but turns 2 mm2 of unsupported overhang into 221 mm2, so it
+    stays as extracted. **The rule is minimise support without creating unsupported overhang**,
+    not minimise support.
 - **The `STL/SO101/Individual/` STLs are not in print orientation — extract parts from the plate file.**
   `Wrist_Roll_Follower` is 105.4 mm tall in `Individual/` but 65.2 mm on the Ender plate;
   `Under_arm` flips from 64.4 to 24.0. Only `Base` matches. Split `Ender_Follower_SO101.stl`

@@ -107,12 +107,14 @@ night. Measured at ~25 °C ambient with the enclosure in place. See
 - Tailnet: **`100.99.147.57`**, MagicDNS `printhub`, tagged **`tag:personal`** to match the
   rest of the fleet. Tailscale SSH is enabled; the tag is what makes the tailnet SSH ACL
   apply, since ACL rules grant by tag and an untagged user-owned node is not covered.
-- Wi-Fi `wlan0`: `a private LAN address/22`. **The /22 mask is the answer to the "wrong subnet"
-  confusion** — `a private LAN address/22` and the wired `a private LAN address` are the same network
-  (`a private /22 LAN`), not two.
+- Wi-Fi `wlan0` holds a **`/22`** address on the house LAN. **That mask is the answer to the
+  "wrong subnet" confusion** — `wlan0` and `eth0` sit in what look like two different `/24`s
+  but share one `/22`, so they are the same network, not two. Check the prefix length before
+  concluding an interface is on the wrong network.
 - Ethernet `eth0` is **NO-CARRIER** (cable unplugged) and **does not need to be plugged in.**
   The pre-move worry that Wi-Fi would be the weak link in the garage did not materialise:
-  measured there on 2026-09-06, `wlan0` sits at **-47 dBm on `the house SSID` at 433 Mbit/s**, and the
+  measured there on 2026-09-06, `wlan0` sits at **-47 dBm at 433 Mbit/s** on the house SSID,
+  and the
   MCU link is clean under load (`bytes_retransmit=0`, `bytes_invalid=0`, `srtt=0.003`). Wired
   remains the bulletproof fallback if a dropout ever recurs.
 - Wi-Fi power-saving is **disabled** three ways after it silently dropped the Pi off the

@@ -26,10 +26,12 @@ a new profile cannot be silently left out.
 | `printer.cfg` | `~/printer_data/config/printer.cfg` |
 | `ender5s1_petg.ini` | `~/slicer/ender5s1_petg.ini` |
 | `ender5s1_pla.ini` | `~/slicer/ender5s1_pla.ini` — plain PLA, untested, see [workflow](../docs/workflow.md) |
-| `ender5s1_plaplus.ini` | `~/slicer/ender5s1_plaplus.ini` — **PLA+ is not PLA**: same profile, 220/215 not 210/205. Untested |
+| `ender5s1_plaplus.ini` | `~/slicer/ender5s1_plaplus.ini` — **PLA+ is not PLA**: same profile, 220/215 not 210/205. **Validated 2026-09-06** on `Motor_holder_Base` |
+| `ender5s1_plaplus_soarm.ini` | `~/slicer/ender5s1_plaplus_soarm.ini` — plain `plaplus` plus supports (`snug`, `buildplate_only`, contact 0.25). For the **6 SO-ARM101 parts that need support**; the other 5 use plain `plaplus` |
 | `ender5s1_petg_koala.ini` | `~/slicer/ender5s1_petg_koala.ini` — project profile, not the koala-bot spec |
 | `ender5s1_petg_koalacoupon.ini` | `~/slicer/ender5s1_petg_koalacoupon.ini` — as above |
-| `slice-print.sh` | `~/slicer/slice-print.sh` |
+| `slice-print.sh` | `~/slicer/slice-print.sh` — one model |
+| `slice-plate.sh` | `~/slicer/slice-plate.sh` — several models on one plate, centred on the measured mesh rather than the bed |
 | `crowsnest.conf` | `~/printer_data/config/crowsnest.conf` |
 
 `printer.cfg` includes Klipper's `SAVE_CONFIG` block at the end — PID values, probe `z_offset`

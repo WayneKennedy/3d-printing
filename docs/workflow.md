@@ -201,8 +201,6 @@ Invoke as `slice-print.sh model.stl plaplus`.
 printed on this machine. 220/215 at 60 C bed laid down clean with no babystep. No Benchy was
 needed in the end: a real part that is wanted anyway is a better first print than a throwaway,
 because a bad result costs nothing extra and a good one is a part in hand.
-- **No PLA has been printed on this machine.** Put a Benchy through this profile before
-  committing anything that matters to it.
 - **The saved bed mesh was probed at 80 C and `START_PRINT` hardcodes `BED_MESH_PROFILE
   LOAD=default`.** A 60 C PLA print therefore loads the 80 C bed shape. The difference is
   second-order (bed bowing between 60 and 80 C is typically a few hundredths of a millimetre,

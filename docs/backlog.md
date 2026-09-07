@@ -1,15 +1,33 @@
 # Backlog
 
-## In flight — 2026-09-07 09:10, machine handover
+## In flight — 2026-09-07 11:40
 
 **A print is running.** `soarm_plate2_base.gcode` — SO-ARM101 `Base`, started 08:38,
-**11 h 37, 102.5 g, no supports**, ETA ~20:15. It was 2 % in and healthy at 215/60 at handover.
-The session monitoring it was closed, so **nothing is watching it**. To check:
+**11 h 37, 102.5 g, no supports**. At 11:40 it was **27.8 % in and healthy** at 215/60, Z 23.4 mm,
+walls clean and well adhered on the snapshot. Observed rate puts it nearer **19:05** than the
+slicer's 20:15, but file position is not linear — treat the slicer figure as the pessimistic one.
+
+**It is being watched** by [`../tools/print-monitor.py`](../tools/print-monitor.py), which polls
+Moonraker every 60 s and emits on every terminal state, on Klippy leaving `ready`, on temperature
+drift, and on the API going unreachable. A monitor that only greps for success is silent through a
+crash, which looks identical to "still running" — hence covering the failures explicitly.
 
 ```bash
-ssh wkenn@printhub 'curl -s "localhost:7125/printer/objects/query?print_stats&virtual_sdcard&extruder&heater_bed"'
-ssh wkenn@printhub 'curl -s "http://localhost:8080/?action=snapshot"' > snap.jpg   # daylight only
+tools/print-monitor.py                 # foreground, or under a background watch
 ```
+
+To check by hand — **no SSH needed, and prefer it that way.** Moonraker's `trusted_clients`
+covers the tailnet, so the workstation can reach both endpoints directly:
+
+```bash
+curl -s "http://100.99.147.57:7125/printer/objects/query?print_stats&virtual_sdcard&extruder&heater_bed"
+curl -s "http://100.99.147.57/webcam/?action=snapshot" > snap.jpg   # daylight only
+```
+
+**The camera is on port 80 via nginx, not 8080.** Verified 2026-09-07: `8080` is bound to
+localhost on the Pi and does not answer over the tailnet, so the old
+`ssh … 'curl localhost:8080'` form was the only reason the SSH hop was there. The trailing
+slash in `/webcam/` is load-bearing — `/webcam?action=snapshot` 301s and drops the query.
 
 The camera is blind after dark and this finishes near sunset; night mode (gross failure
 detection only) is in [backlog](#camera) and [hardware](hardware.md).
@@ -41,7 +59,7 @@ which fits in a daylight window.
   and left alone, mesh re-probed and saved (0.246 → 0.281 mm), PID verified rather than
   re-tuned, `z_offset` untouched at 1.776. Outcomes of the move-specific checks:
   - **Wi-Fi in the garage is strong — the worry was unfounded.** `-47 dBm` at 433 Mbit/s on
-    `the house SSID`, and the MCU link is clean (`bytes_retransmit=0`, `bytes_invalid=0`,
+    the house SSID, and the MCU link is clean (`bytes_retransmit=0`, `bytes_invalid=0`,
     `srtt=0.003`). **Ethernet is not needed**; `eth0` remains `NO-CARRIER`.
   - **The garage roof is clear corrugated PVC**, so the space behaves as a greenhouse: very
     warm by day, cold by night, ambient "wildly varied" rather than uniformly cold. This is a
@@ -337,7 +355,7 @@ which fits in a daylight window.
   Benchy through it before committing a figure to it.
 - **Superhero figures for the grandson (raised 2026-09-02).** He asked for "the orange rock
   hero" (The Thing, Fantastic Four) and The Flash. Decisions taken:
-  - **Print in white so he can paint them himself** — his dad the painter paints Warhammer miniatures
+  - **Print in white so he can paint them himself** — his dad paints Warhammer miniatures
     and has acrylics and primer. Chosen over printing in character colours: it makes the figure
     something he did rather than something he was given, and one roll of white covers every
     character he asks for next. Orange and red PETG are being ordered anyway for other uses.
@@ -360,7 +378,7 @@ which fits in a daylight window.
   - **Use a finer layer height, ~0.12-0.16 mm, in a separate figurine profile.** At the
     standing 0.2 mm, layer lines read through paint as banding on curved surfaces such as
     faces. Do not change the standing profile.
-  - **Scale to 100-120 mm tall.** the painter is used to 28-32 mm miniatures; a young child's brush
+  - **Scale to 100-120 mm tall.** The painter is used to 28-32 mm miniatures; a young child's brush
     control is not. Larger details are the difference between painting it and failing to.
   - **Print two of each** — cheap at this size, and it turns a botched first attempt into a
     second go rather than a ruined present.

@@ -290,25 +290,41 @@ tailscale ssh wkenn@ivory 'cat /tmp/p_s.jpg' > part.jpg      # then read it
 Resize before fetching — a 3024 × 4032 iPhone frame is ~1.3 MB and 1600 px wide is ample.
 To zoom a region instead: `convert /tmp/p.jpg -crop 1100x900+1750+2300 +repage -resize 1300x`.
 
-### Claims about tooling do not port between machines
+### A fresh clone assumes nothing
 
-**This repo is read from more than one machine** — it originated on `ivory` and is worked from
-the Linux workstation as well. **A statement like "imagemagick is installed locally" is a claim
-about one machine, not about the repo**, and it silently becomes false the moment the repo is
-read from another. It is worse than a missing note, because an agent will trust it and build a
-plan on it. This file carried exactly that claim about `heif-convert` and ImageMagick and it was
-wrong on the workstation.
+**Machine names are not secrets and are worth writing down** — this repo is public but is a
+personal context store, not something anyone else is meant to build on. Naming a host is
+information. **Assuming what a host contains is the mistake**, because any of these machines may
+be wiped and rebuilt at any time, and a fresh clone lands on whatever is there.
 
-**Name the host, or state the requirement instead of the environment.** "`ivory` has
-`heif-convert`" ports. "It's installed locally" does not. The same applies to path shapes: WSL
-paths of the form `\\wsl.localhost\Ubuntu-24.04\home\wkenn\...` map to `/home/wkenn/...`
-**on a WSL host**, which is a fact about that machine and not about wherever you are now.
+"imagemagick is installed locally" is not a fact about the repo — it is a fact about wherever
+the author was sitting, and it silently becomes false elsewhere. It is worse than a missing
+note, because an agent will trust it and build a plan on it. **This file carried exactly that
+claim about `heif-convert` and ImageMagick, and it was wrong on the workstation.** The same goes
+for path shapes: WSL paths of the form `\\wsl.localhost\Ubuntu-24.04\home\wkenn\...` map to
+`/home/wkenn/...` **on a WSL host**, and mean nothing anywhere else.
 
-| Host | Role |
-|---|---|
-| `printhub` | Raspberry Pi 5 — Klipper, Moonraker, PrusaSlicer CLI, camera. **No GUI.** |
-| `ivory` | Linux desktop. Has `heif-convert` and ImageMagick `convert`. Where this repo originated. |
-| `ivory-win` | Windows. OrcaSlicer. |
-| workstation | Linux. `libheif1` but **no** `heif-convert`, **no** ImageMagick, **no** ffmpeg. |
+**Write tooling that checks rather than assumes.** `tools/sync-reference.sh` is the worked
+example: it probes `tailscale ssh` then plain `ssh`, uses whichever answers, and if neither does
+it fails once with what is missing and writes nothing. Its previous version assumed plain `ssh`
+worked and, when that failed, reported `MISSING on Pi` for every file — which reads as the Pi
+having lost its config rather than as a connection problem.
 
-`tailscale ssh wkenn@<host>` reaches any of them; see [AGENTS.md](../AGENTS.md).
+**Inventory below is a snapshot, not a guarantee — check before relying on it.**
+Last verified 2026-09-07:
+
+| Host | Role | Verified present |
+|---|---|---|
+| `printhub` | Raspberry Pi 5 — Klipper, Moonraker, camera. No desktop session. | PrusaSlicer 2.5.0 CLI, ffmpeg, python3 |
+| `ivory` | Linux desktop. Where this repo originated. | `heif-convert`, ImageMagick `convert` |
+| `ivory-win` | Windows | OrcaSlicer |
+| workstation | Linux | `libheif1` only — **no** `heif-convert`, ImageMagick or ffmpeg |
+
+Other machines exist on the tailnet (`blake` among them) and are not inventoried here precisely
+because that inventory would rot. `tailscale ssh wkenn@<host>` reaches any of them — see
+[AGENTS.md](../AGENTS.md). To check a host rather than assume it:
+
+```bash
+tailscale ssh wkenn@<host> 'for c in heif-convert convert ffmpeg prusa-slicer; do
+  printf "%-14s " "$c"; command -v $c || echo -; done'
+```

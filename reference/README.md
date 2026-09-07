@@ -11,8 +11,16 @@ change and before the new bed mesh. Refresh before relying on anything here:
 ./tools/sync-reference.sh
 ```
 
-It copies each file down, reports which ones drifted, and leaves the changes staged for review
+It copies each file down, reports which ones drifted, and leaves the changes for review
 rather than committing them. Run it after **any** change made on the Pi.
+
+**It probes its own transport** (`tailscale ssh`, then plain `ssh`) and, if neither answers,
+fails once saying what is missing and writes nothing — rather than reporting every file as
+`MISSING on Pi`, which is what the previous version did when `ssh` could not verify the host
+key. It also checks each file's byte count, so a short read can never overwrite a good
+snapshot with a truncated one.
+
+**Verified in sync with the Pi on 2026-09-07** — all 10 files unchanged.
 
 **Slicer profiles are discovered, not listed** (changed 2026-09-06). The script used to loop
 over a hardcoded `petg pla`, which meant `ender5s1_petg_koala.ini` and

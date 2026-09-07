@@ -106,13 +106,6 @@ next wanted rather than pre-emptively**; the files are otherwise correct.
   **strong suspect rather than a proven cause**. If it recurs, the journal will now say why.
 - **Move the PETG spool indoors or into a dry box.** Now a heat and UV problem as well as a
   damp one — PETG is hygroscopic and a sunlit greenhouse is a poor filament store.
-- **`tools/sync-reference.sh` is currently broken from the workstation.** It uses plain `scp`
-  and `ssh`, which fail with `Host key verification failed` — there is no `printhub` entry in
-  `known_hosts` and no TTY to accept one. The host key is stable, so
-  `ssh-keyscan -t ed25519 printhub >> ~/.ssh/known_hosts` fixes it; rewriting the script around
-  `tailscale ssh ... cat` avoids the seeding step entirely. **Until one or the other is done,
-  `reference/` cannot be refreshed, so treat it as potentially stale** — which is the exact
-  failure the directory exists to prevent.
 - **Keep the flashing microSD with the printer.** MCU firmware updates still go via SD; see
   [klipper-setup.md](klipper-setup.md#consequence).
 

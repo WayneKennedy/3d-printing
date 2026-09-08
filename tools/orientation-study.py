@@ -24,7 +24,15 @@ So: use it to pick which orientations are worth slicing, then slice them. An
 earlier version that ignored buildplate_only called Rotation_Pitch 1.3x and
 pointed at the wrong orientation entirely, which is the failure this replaces.
 
-Usage: tools/orientation-study.py <part.stl> [part.stl ...]
+Usage: tools/orientation-study.py [--bands] <part.stl> [part.stl ...]
+
+  --bands   also break each orientation's dropped area into 5 mm Z bands. Dropped
+            area is NOT a tie-breaker to weigh against the other columns -- it is a
+            list of faces that will print into air. Wrist_Roll_Pitch (2026-09-08)
+            was flipped with 858 mm2 on record as "+14 %, against"; 758 of it was one
+            patch at Z 45-50, the servo-fork face, and the part was scrap. Locate
+            every patch, name it, decide whether that face matters; if it does and
+            no orientation removes it, slice with supports everywhere.
 """
 import struct, math, os, sys
 from collections import defaultdict
@@ -73,6 +81,7 @@ def analyse(tris):
             for gy in range(int(min(ty)//CELL), int(max(ty)//CELL)+1):
                 grid[(gx,gy)].append(i)
     total=oh_area=0.0; from_bed=0.0; on_part=0.0
+    bands=defaultdict(float)
     for t in tris:
         n,area=norm(t)
         if area==0: continue
@@ -88,16 +97,18 @@ def analyse(tris):
             if zz is not None and z0+0.2 < zz < cz-0.2:
                 blocked=True; break
         proj=area*abs(n[2])
-        if blocked: on_part+=proj
+        if blocked: on_part+=proj; bands[int((cz-z0)//BAND)*BAND]+=proj
         else:       from_bed+=proj*(cz-z0)   # column volume actually built
     contact=0.0
     for t in tris:
         n2,ar=norm(t)
         if n2[2] < -0.99 and abs((t[0][2]+t[1][2]+t[2][2])/3.0 - z0) < 0.2:
             contact+=ar
-    return bb, oh_area/total*100 if total else 0, from_bed/1000.0, on_part, contact
+    return bb, oh_area/total*100 if total else 0, from_bed/1000.0, on_part, contact, bands
 
-parts=sys.argv[1:]
+BAND=5.0
+SHOW_BANDS='--bands' in sys.argv[1:]
+parts=[a for a in sys.argv[1:] if a!='--bands']
 print(f"{'part':22} {'orientation':13} {'bbox (mm)':24} {'oh%':>5} {'bed-support cm3':>16} {'dropped mm2':>12}   bed contact / aspect")
 print("-"*130)
 for p in parts:
@@ -105,14 +116,17 @@ for p in parts:
     rows=[]
     for label,ax,d in [('as-extracted',None,0)]+[(f'{a.upper()}{d}',a,d) for a in ('x','y') for d in (90,180,270)]:
         t = base if ax is None else [tuple(rot(v,ax,d) for v in tri) for tri in base]
-        bb,ohp,bedv,onpart,contact = analyse(t)
-        rows.append((bedv,label,bb,ohp,onpart,contact))
+        bb,ohp,bedv,onpart,contact,bands = analyse(t)
+        rows.append((bedv,label,bb,ohp,onpart,contact,bands))
     rows.sort()
-    for bedv,label,bb,ohp,onpart,contact in rows:
+    for bedv,label,bb,ohp,onpart,contact,bands in rows:
         flag=''
         if bb[0]>202 or bb[1]>190: flag=' TOO BIG'
         mark=' <= as-sliced' if label=='as-extracted' else ''
         asp = bb[2]/math.sqrt(contact) if contact > 0 else float('inf')
         print(f"{name:22} {label:13} {bb[0]:6.1f}x{bb[1]:6.1f}x{bb[2]:6.1f}  {ohp:5.1f} "
               f"{bedv:16.2f} {onpart:12.0f}  contact {contact:7.0f}mm2 asp {asp:5.2f}{flag}{mark}")
+        if SHOW_BANDS and bands:
+            print("    dropped by Z band: " + "  ".join(
+                f"{k:.0f}-{k+BAND:.0f}mm {v:.0f}mm2" for k,v in sorted(bands.items()) if v >= 1))
     print()

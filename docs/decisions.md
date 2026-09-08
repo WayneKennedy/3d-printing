@@ -133,7 +133,10 @@ it stops the next agent re-deriving it. Anything undecided lives in
   help says snug saves material and reduces object scarring.
 - **`support_material_buildplate_only = 1` is the answer to "no supports in horizontal screw
   holes"** — previously recorded as impossible headlessly, which was wrong. Support inside a
-  bore rests on the part rather than the bed, so the switch drops it.
+  bore rests on the part rather than the bed, so the switch drops it. **It drops every other on-part overhang with it** — a face
+  cantilevered over the part below prints into air. `Wrist_Roll_Pitch` lost its servo-fork face
+  that way on 2026-09-08; the 2026-09-07 correction below has the rule. For such a part use
+  `plaplus_soarm_all` (`buildplate_only = 0`, otherwise identical) and accept the bore support.
 - **`support_material_contact_distance = 0.25`.** PrusaSlicer's default 0.2 is not an
   improvement; 0.25 is. Widening it further is the right lever when supports are unavoidable
   on a part whose surface matters — but prefer support-free models and better orientation
@@ -263,6 +266,25 @@ are here because the printer repo was the only context store when they were take
     180 deg saves 16 % of support but turns 2 mm2 of unsupported overhang into 221 mm2, so it
     stays as extracted. **The rule is minimise support without creating unsupported overhang**,
     not minimise support.
+  - **Confirmed the hard way 2026-09-08 by `Wrist_Roll_Pitch`, and the rule needs sharpening.**
+    The 180° flip was chosen with its dropped area on record — 858 mm² against 754 as extracted,
+    "+14 %, against" — and weighed as one losing axis among three winning. **Dropped area is not
+    an axis to weigh. It is a list of faces that will print into air**, and the question is where
+    each one is and whether that face matters. Bucketed by height
+    (`tools/orientation-study.py --bands`), 758 of the 858 mm² is a single patch at Z 45–50: the
+    servo-fork face that mounts to the idler horn, cantilevered over the lower tine. The emitted
+    G-code had no support above Z 44.8; the face came out unusable and the part is scrap. As
+    extracted the same fork drops 593 mm² at Z 50–55 — the other tine — so **no orientation
+    escapes it and it is a supports-everywhere part**: `plaplus_soarm_all`, 39.9 g / 4 h 06
+    flipped, against 31.9 g / 3 h 30 with the face missing. The check to run before any
+    `buildplate_only` slice: **every dropped patch, located in Z, named, and judged** — none
+    tolerated by percentage.
+  - **The flip's bed-contact argument was right, and so was its support saving** — sliced
+    2026-09-08, bed-built support 2.80 g flipped against 8.84 g as extracted (−68 %), the part
+    itself 29.1 g either way. 577 mm² carried the 62 mm part for 13 h 16
+    with no brim and no lift, so the flipped pose stays for the reprint and **no brim is needed
+    at that contact**. The as-extracted 251 mm² remains untested, and there is now no reason to
+    test it.
 - **The `STL/SO101/Individual/` STLs are not in print orientation — extract parts from the plate file.**
   `Wrist_Roll_Follower` is 105.4 mm tall in `Individual/` but 65.2 mm on the Ender plate;
   `Under_arm` flips from 64.4 to 24.0. Only `Base` matches. Split `Ender_Follower_SO101.stl`

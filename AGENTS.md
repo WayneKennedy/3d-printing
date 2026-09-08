@@ -70,6 +70,7 @@ write G-code into `~/printer_data/gcodes/`, where Mainsail lists it. `<material>
 | `petg` | 240/80, 0.2 mm, 3 perim, 15 % grid | **canonical**, general use |
 | `plaplus` | 220/215, bed 60, 100 % fan | **validated** 2026-09-06 |
 | `plaplus_soarm` | `plaplus` + snug build-plate-only supports | validated, support-needing parts |
+| `plaplus_soarm_all` | `plaplus_soarm` with supports **everywhere** | for a part whose overhang sits above the part, not the bed — see [decisions.md](docs/decisions.md#supports) |
 | `pla` | 210/205, bed 60 | **untested — no plain PLA has been printed** |
 | `petg_koala`, `petg_koalacoupon` | 4 perim, 30 % gyroid | built for a superseded spec; **not** the koala-bot standard |
 

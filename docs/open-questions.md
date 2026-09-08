@@ -9,7 +9,7 @@ holds it authoritatively. Query it, or run `tools/print-monitor.py` — see
 
 ## Active work
 
-### SO-ARM101 follower — 6 of 11 done, plate 3 printing
+### SO-ARM101 follower — 8 of 11 done, `Wrist_Roll_Pitch` reprint sliced and waiting
 
 Sliced figures are measured, not estimated. Slice with `slice-plate.sh`, which centres on the
 measured mesh; **verify the emitted footprint against the mesh bounds before printing**, and
@@ -29,76 +29,41 @@ from a fresh clone on a bare machine. So upstream geometry has not moved since t
 measurements, the extractor is deterministic, and the Pi's models are trustworthy rather than
 merely old. Re-run this check rather than assuming it still holds after an upstream change.
 
-| Plate | Parts | Profile | Time | g |
-|---|---|---|---|---|
-| 3 *(running, started 2026-09-08 04:06)* | Upper_arm, Under_arm, **Wrist_Roll_Pitch flipped** | `plaplus_soarm` | 13 h 30 | 136.9 |
-| 4 | Rotation_Pitch, Wrist_Roll_Follower, Moving_Jaw | `plaplus_soarm` | 10 h 24 | 102 |
+| Plate | Parts | Profile | Time | g | Status |
+|---|---|---|---|---|---|
+| 3 | `Upper_arm`, `Under_arm`, `Wrist_Roll_Pitch` flipped | `plaplus_soarm` | 13 h 30 | 136.9 | **Done 2026-09-08 17:26.** Two good; `Wrist_Roll_Pitch` fork face printed into air, unusable — [print-log](print-log.md), [decisions](decisions.md#supports) |
+| 3b | `Wrist_Roll_Pitch` flipped, **supports everywhere** | `plaplus_soarm_all` | 4 h 06 | 39.9 | **Sliced 2026-09-08 as `wrp_flip_all.gcode`, verified, ready** — see below |
+| 4 | `Wrist_Roll_Follower`, `Moving_Jaw` | `plaplus_soarm` | — | — | Not yet sliced. The earlier 10 h 24 / 102 g figure included `Rotation_Pitch`, printed 2026-09-08 |
 
-Per-part figures, sliced and measured 2026-09-06 with **supports everywhere**, so these are
-**upper bounds** — the `plaplus_soarm` profile (snug + build-plate-only) comes in under them,
-e.g. `Rotation_Pitch` 51.3 g grid-everywhere against 42.6 g as actually sliced:
+**Next: start `wrp_flip_all.gcode` once the bed is cleared of plate 3.** Verified in the emitted
+G-code on 2026-09-08: footprint X 80–128, Y 77–169 (inside the X3–205 / Y28–218 mesh, clear of
+the Y8 purge line); support material present through Z 45–60 where plate 3 had none above 44.8;
+`M140`/`M190` ahead of `M104`. Costs 8.0 g and 36 min more than the build-plate-only slice, and
+**expect support inside the horizontal bores** — that is what `buildplate_only` was avoiding, and
+it is the price of the fork face. Clean them out before test-fitting. Orientation is settled:
+flipped, no brim — [decisions.md](decisions.md#supports).
+
+Per-part figures for what remains, sliced and measured 2026-09-06 with **supports everywhere**,
+so these are **upper bounds** for anything sliced `plaplus_soarm`:
 
 | Remaining part | g | Time | Overhang |
 |---|---|---|---|
-| `Upper_arm` | 61.6 | 5 h 51 | 3.8 % |
-| `Rotation_Pitch` | 51.5 | 4 h 53 | 11.2 % |
-| `Wrist_Roll_Pitch` | 50.8 | 4 h 47 | 8.3 % |
-| `Under_arm` | 49.4 | 4 h 39 | 4.2 % |
+| `Wrist_Roll_Pitch` (as extracted; flipped is 39.9 g / 4 h 06 as sliced) | 50.8 | 4 h 47 | 8.3 % |
 | `Wrist_Roll_Follower` | 46.9 | 4 h 48 | 5.5 % |
 | `Moving_Jaw` | 22.2 | 2 h 26 | 14.0 % |
 
-**Orientation is settled for five of six; one slice test outstanding.** Screened 2026-09-07
-with [`tools/orientation-study.py`](../tools/orientation-study.py) — see
-[decisions.md](decisions.md#supports). `Rotation_Pitch` is re-sliced rotated and printing.
-`Upper_arm`, `Under_arm`, `Wrist_Roll_Follower` and `Moving_Jaw` stay as extracted.
-**`Wrist_Roll_Pitch` should be flipped 180°, and the pending slice test now confirms rather
-than decides.** It is the awkward part of the set — no good flat face in any orientation. The
-flip wins on three axes and loses on one:
-
-| | as-extracted | **X180 (flip)** |
-|---|---|---|
-| bed support | 7.53 cm³ | **4.83 cm³** (−36 %) |
-| **bed contact** | **251 mm² / 9 %** | **577 mm² / 21 %** (+130 %) |
-| aspect (h/√contact) | 3.93 | **2.59** |
-| unsupported overhang | 754 mm² | 858 mm² (+14 %, against) |
-
-**Confirmed by slicing, 2026-09-08.** Support falls from **8.84 g to 2.80 g (−68 %)** and time
-from 3 h 52 to 3 h 30; the part itself is 29.1 g in either pose, since a 180° flip preserves the
-footprint. Every axis agrees, so **slice plate 3 with the flipped STL**
-(`Wrist_Roll_Pitch_FLIP180.stl`, already staged on the Pi and normalised to the origin).
-
-**Bed contact is what decides it.** At 251 mm² on a 62 mm-tall part it is the worst in the set
-and outside anything printed successfully here; flipped it lands in the same class as `Base`
-(1692 mm², aspect 2.11), which ran 11 h 25 clean. A tall part with a poor grip is how a job
-lets go hours in.
-
-**Add a brim.** The standing objection — that a brim welds neighbouring features on open-mesh
-models — does not apply to a solid part, and 577 mm² under 62 mm of part is worth the
-insurance. `brim_width` is not in the profiles today, so this means a per-job override or a
-one-line profile variant; decide which before slicing plate 3.
-
-**Open: plate order does not match assembly order.** Building and testing from the base
-upward, the next part needed is **`Rotation_Pitch`** — which sits on plate 4, behind all of
-plate 3. Two facts make this cheap to fix rather than a constraint to live with:
-
-- **The support-grouping rule does not bind among the remaining six.** All six need supports,
-  so all six slice with `plaplus_soarm`. "One plate cannot mix the two groups" is satisfied by
-  *any* grouping of them — plates 3 and 4 were split on bed space and time alone, so they can
-  be re-grouped freely by assembly order at no cost.
-- **`Rotation_Pitch` alone is ~4 h 53 at worst, and less as actually sliced.** That fits a
-  daylight window, which means **it sidesteps the LED-strip decision entirely** rather than
-  waiting on it, and it gets the base joint assembled and test-fitted before another ~24 h is
-  committed to the rest. That is the same "prefer a cheap print that discriminates" reasoning
-  that the gauges settled the elephant-foot question with — see
-  [decisions.md](decisions.md#slicing).
-
-  Assembly order from the base up is `Rotation_Pitch` → `Upper_arm` → `Under_arm` →
-  `Wrist_Roll_Pitch` → `Wrist_Roll_Follower` → `Moving_Jaw`. **Re-plate before slicing 3 or 4.**
+Orientation for both plate-4 parts was screened 2026-09-07 and both stay as extracted — see
+[decisions.md](decisions.md#supports). **Before slicing plate 4, run
+`tools/orientation-study.py --bands` on both and judge every dropped patch by where it is**, the
+check that would have caught `Wrist_Roll_Pitch`. Assembly order from the base up is
+`Rotation_Pitch` → `Upper_arm` → `Under_arm` → `Wrist_Roll_Pitch` → `Wrist_Roll_Follower` →
+`Moving_Jaw`, which the queue now matches.
 
 Open within it:
 
-- **Fit the LED strip before plates 3 and 4?** Neither fits in a daylight window, and the
-  camera is blind in the dark. See the night-monitoring item below.
+- **Permanent LED strip before plate 4?** The temporary lamp made overnight camera frames fully
+  diagnostic on 2026-09-08 (see [Machine](#machine)), so a night start is watchable with the lamp
+  in place; the strip is still the proper fitting.
 
 ### `Kinetic_Toy.gcode` is sliced, correct and waiting
 

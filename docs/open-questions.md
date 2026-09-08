@@ -61,6 +61,20 @@ check that would have caught `Wrist_Roll_Pitch`. Assembly order from the base up
 
 Open within it:
 
+- **How the Waveshare board attaches to `WaveShare_Mounting_Plate` is undocumented upstream.**
+  Raised 2026-09-08 when the printed plate was test-fitted (it fits the base and is fine). The
+  SO-ARM100 README and the LeRobot SO-101 guide never describe the step — the guide's only
+  words are that the board "can now be attached to the base of the arm", and its whole fastener
+  set is M2×6 and M3×6. Waveshare ships the board alone, no fasteners. Measured from the STL:
+  plate 51 × 42 × 4.0 mm; **four D-shaped through-holes, 5.0 mm circle with one flat (5.0 wide ×
+  4.25), identical top and bottom — not counterbored — on 37 × 28 mm centres**, which is exactly
+  the Bus Servo Adapter (A)'s 42 × 33 mm board with Ø2.5 holes on 37 × 28 spacing; and an
+  18 × 18 mm boss 3.6 mm proud of one face, centred. So the holes line up with the board's but
+  are twice its hole size and cannot hold a screw on their own. *Speculation, unverified:* the
+  D-hole is a nut trap — an M2 nut (4.0 AF, 4.6 across corners) fits a 5.0 × 4.25 D and the
+  flat stops it turning, and M2×6 through a 1.6 mm board reaches it; an M2.5 nut (5.77 AC) does
+  not fit. **Test with an M2 nut in hand before buying anything.** Which face carries the
+  board — presumably the flat one, with the boss keying into the base — is also unverified.
 - **Permanent LED strip before plate 4?** The temporary lamp made overnight camera frames fully
   diagnostic on 2026-09-08 (see [Machine](#machine)), so a night start is watchable with the lamp
   in place; the strip is still the proper fitting.

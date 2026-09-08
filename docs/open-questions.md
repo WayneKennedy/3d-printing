@@ -9,7 +9,7 @@ holds it authoritatively. Query it, or run `tools/print-monitor.py` — see
 
 ## Active work
 
-### SO-ARM101 follower — 8 of 11 done, `Wrist_Roll_Pitch` reprint sliced and waiting
+### SO-ARM101 follower — 9 of 11 done, plate 4 (the last two) printing
 
 Sliced figures are measured, not estimated. Slice with `slice-plate.sh`, which centres on the
 measured mesh; **verify the emitted footprint against the mesh bounds before printing**, and
@@ -32,23 +32,18 @@ merely old. Re-run this check rather than assuming it still holds after an upstr
 | Plate | Parts | Profile | Time | g | Status |
 |---|---|---|---|---|---|
 | 3 | `Upper_arm`, `Under_arm`, `Wrist_Roll_Pitch` flipped | `plaplus_soarm` | 13 h 30 | 136.9 | **Done 2026-09-08 17:26.** Two good; `Wrist_Roll_Pitch` fork face printed into air, unusable — [print-log](print-log.md), [decisions](decisions.md#supports) |
-| 3b | `Wrist_Roll_Pitch` flipped, **supports everywhere** | `plaplus_soarm_all` | 4 h 06 | 39.9 | **Sliced 2026-09-08 as `wrp_flip_all.gcode`, verified, ready** — see below |
-| 4 | `Wrist_Roll_Follower`, `Moving_Jaw` | `plaplus_soarm` | — | — | Not yet sliced. The earlier 10 h 24 / 102 g figure included `Rotation_Pitch`, printed 2026-09-08 |
+| 3b | `Wrist_Roll_Pitch` flipped, **supports everywhere** | `plaplus_soarm_all` | 4 h 06 | 39.9 | **Done 2026-09-08 22:00** as `wrp_flip_all.gcode`; fork face supported — [print-log](print-log.md) |
+| 4 | `Wrist_Roll_Follower`, `Moving_Jaw` | `plaplus_soarm` + **5 mm brim** | 6 h 19 | 59.6 | **Started 2026-09-08 23:26** as `soarm_plate4.gcode`. Both pass `--bands` as extracted (61 and 2 mm² dropped, scattered). Brim because `Moving_Jaw` has only 30 mm² of flat bed contact (aspect 4.09); passed as `--brim-width 5` on the command line, not a profile change. Footprint X 41–167 / Y 67–173 verified inside the mesh |
 
-**Next: start `wrp_flip_all.gcode` once the bed is cleared of plate 3.** Verified in the emitted
-G-code on 2026-09-08: footprint X 80–128, Y 77–169 (inside the X3–205 / Y28–218 mesh, clear of
-the Y8 purge line); support material present through Z 45–60 where plate 3 had none above 44.8;
-`M140`/`M190` ahead of `M104`. Costs 8.0 g and 36 min more than the build-plate-only slice, and
-**expect support inside the horizontal bores** — that is what `buildplate_only` was avoiding, and
-it is the price of the fork face. Clean them out before test-fitting. Orientation is settled:
-flipped, no brim — [decisions.md](decisions.md#supports).
+**Next: when plate 4 completes, the follower's 11 parts are all printed.** Then assembly, in
+the order below, and the fit of every support-cleaned face gets reported into
+[print-log.md](print-log.md).
 
 Per-part figures for what remains, sliced and measured 2026-09-06 with **supports everywhere**,
 so these are **upper bounds** for anything sliced `plaplus_soarm`:
 
 | Remaining part | g | Time | Overhang |
 |---|---|---|---|
-| `Wrist_Roll_Pitch` (as extracted; flipped is 39.9 g / 4 h 06 as sliced) | 50.8 | 4 h 47 | 8.3 % |
 | `Wrist_Roll_Follower` | 46.9 | 4 h 48 | 5.5 % |
 | `Moving_Jaw` | 22.2 | 2 h 26 | 14.0 % |
 

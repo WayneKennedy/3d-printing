@@ -13,10 +13,16 @@ Reports, per orientation:
                    overhang prints unsupported -- the WaveShare delamination mode.
                    Low support with high dropped area is a trap, not a win.
 
-Screening only: the slicer is the authority. Validated 2026-09-07 against
-Rotation_Pitch, where it predicted X270 over as-extracted by 76x and the slicer
-measured 45x (0.12 g of support against 5.39 g). An earlier metric that ignored
-buildplate_only called the same comparison 1.3x and pointed the wrong way.
+SCREENING ONLY -- it ranks orientations reliably, but DO NOT trust its magnitudes.
+Two calibration points, both directionally right and both numerically off, in
+opposite directions:
+
+  Rotation_Pitch    screen 76x better rotated   slicer 45x   (overstated)
+  Wrist_Roll_Pitch  screen 36% less support     slicer 68%   (understated)
+
+So: use it to pick which orientations are worth slicing, then slice them. An
+earlier version that ignored buildplate_only called Rotation_Pitch 1.3x and
+pointed at the wrong orientation entirely, which is the failure this replaces.
 
 Usage: tools/orientation-study.py <part.stl> [part.stl ...]
 """

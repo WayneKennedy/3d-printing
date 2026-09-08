@@ -62,6 +62,11 @@ flip wins on three axes and loses on one:
 | aspect (h/√contact) | 3.93 | **2.59** |
 | unsupported overhang | 754 mm² | 858 mm² (+14 %, against) |
 
+**Confirmed by slicing, 2026-09-08.** Support falls from **8.84 g to 2.80 g (−68 %)** and time
+from 3 h 52 to 3 h 30; the part itself is 29.1 g in either pose, since a 180° flip preserves the
+footprint. Every axis agrees, so **slice plate 3 with the flipped STL**
+(`Wrist_Roll_Pitch_FLIP180.stl`, already staged on the Pi and normalised to the origin).
+
 **Bed contact is what decides it.** At 251 mm² on a 62 mm-tall part it is the worst in the set
 and outside anything printed successfully here; flipped it lands in the same class as `Base`
 (1692 mm², aspect 2.11), which ran 11 h 25 clean. A tall part with a poor grip is how a job

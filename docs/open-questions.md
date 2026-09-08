@@ -9,7 +9,7 @@ holds it authoritatively. Query it, or run `tools/print-monitor.py` — see
 
 ## Active work
 
-### SO-ARM101 follower — 5 of 11 parts done
+### SO-ARM101 follower — 6 of 11 done, plate 3 printing
 
 Sliced figures are measured, not estimated. Slice with `slice-plate.sh`, which centres on the
 measured mesh; **verify the emitted footprint against the mesh bounds before printing**, and
@@ -31,7 +31,7 @@ merely old. Re-run this check rather than assuming it still holds after an upstr
 
 | Plate | Parts | Profile | Time | g |
 |---|---|---|---|---|
-| 3 | Upper_arm, Under_arm, Wrist_Roll_Pitch | `plaplus_soarm` | 13 h 49 | 143 |
+| 3 *(running, started 2026-09-08 04:06)* | Upper_arm, Under_arm, **Wrist_Roll_Pitch flipped** | `plaplus_soarm` | 13 h 30 | 136.9 |
 | 4 | Rotation_Pitch, Wrist_Roll_Follower, Moving_Jaw | `plaplus_soarm` | 10 h 24 | 102 |
 
 Per-part figures, sliced and measured 2026-09-06 with **supports everywhere**, so these are

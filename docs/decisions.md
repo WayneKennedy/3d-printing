@@ -285,6 +285,17 @@ are here because the printer repo was the only context store when they were take
     with no brim and no lift, so the flipped pose stays for the reprint and **no brim is needed
     at that contact**. The as-extracted 251 mm² remains untested, and there is now no reason to
     test it.
+- **The Waveshare board mounts to `WaveShare_Mounting_Plate` on its own brass standoffs, pressed
+  into the plate's Ø5 mm teardrop holes as a friction fit.** Resolved 2026-09-08 from Waveshare's
+  own YouTube assembly guide, after the printed plate was test-fitted and the holes looked
+  unusable: they are through-holes on the board's 37 × 28 mm pattern but twice its Ø2.5 hole size,
+  with no counterbore. Neither the SO-ARM100 README nor the LeRobot SO-101 guide describes the
+  step. The Bus Servo Adapter (A) ships with **4 × M2.5 screws and 4 brass standoffs** — the
+  product page's "Bus Servo Adapter (A) ×1" pack list is wrong on this — and the standoff body is
+  the friction fit; nothing else holds it. The teardrop is the design's standard shape for a hole
+  that is horizontal in print orientation (the plate prints on edge in the upstream plate file)
+  and carries no fastening meaning. If a standoff is loose in a print, that is the print, not the
+  design.
 - **The `STL/SO101/Individual/` STLs are not in print orientation — extract parts from the plate file.**
   `Wrist_Roll_Follower` is 105.4 mm tall in `Individual/` but 65.2 mm on the Ender plate;
   `Under_arm` flips from 64.4 to 24.0. Only `Base` matches. Split `Ender_Follower_SO101.stl`

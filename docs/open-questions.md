@@ -138,6 +138,19 @@ next wanted rather than pre-emptively**; the files are otherwise correct.
   not enough for detail, and at ~0.5 s shutter anything moving smears. The v4l2 settings are in
   [hardware.md](hardware.md). **A cheap USB LED strip on the frame is the real fix** and is a
   prerequisite for treating the camera as useful on any overnight print.
+  - **Confirmed by trial, 2026-09-08.** A temporary LED lamp was set up during the plate 3
+    print at 05:40, well before sunrise. Snapshots went from the essentially-black frames of
+    the night before to **fully diagnostic**: PEI speckle resolves, the bed's "Warning hot
+    surface" text is legible, part outlines and corner adhesion are clearly readable — the same
+    quality as a daylight frame, with **no night-mode v4l2 settings needed at all**. So the
+    fix is genuinely just light; the camera and its auto-exposure are fine.
+  - **No flicker banding across two frames three seconds apart**, which is the specific failure
+    mode a PWM-dimmed strip would cause against a rolling shutter. One pair is not proof —
+    check again on any permanent fitting, and prefer a strip run at constant full output over
+    one with an inline dimmer.
+  - **This makes overnight prints properly watchable and unblocks the 13 h jobs** that were
+    previously "start in daylight or fit the strip first". A permanent frame-mounted strip is
+    still the answer; the trial says it will work.
 - **The camera bracket is still to be designed.** Three things must be measured, not assumed:
   the frame extrusion face width where it mounts (**20 vs 40 mm — the bracket differs
   completely**), whether M5 T-nuts are on hand or the bracket should clip over the extrusion,

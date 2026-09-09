@@ -68,7 +68,7 @@ Open within it:
   diagnostic on 2026-09-08 (see [Machine](#machine)), so a night start is watchable with the lamp
   in place; the strip is still the proper fitting.
 
-### The Thing action figure (Thingiverse 917064) — printed at 200 %, "probably needs to be bigger"
+### The Thing action figure (Thingiverse 917064) — 320 % with tree support queued behind the dragon
 
 Fetched 2026-09-09. Thingiverse blocks unauthenticated downloads (JS shell, API 401, zip link
 redirects), so the user downloaded it in a browser; pulled from `ivory` (WSL2 on the Windows
@@ -96,11 +96,24 @@ area ≤ 14 mm², bed support ≤ 0.55 cm³ — **support-free as arranged; keep
   Z 56.2, no support.** Verified in the G-code: `M140`/`M190 S80` before `M104 S240`; layers
   0.24 then 0.16; footprint X 33–173 / Y 71–171 inside the mesh and clear of the purge line.
   **Printed 2026-09-09, came out OK** — [print-log](print-log.md). `petg_fig` has now run once.
-- **Open: scale.** The user's first reaction to the 200 % figure is that it probably needs to be
-  bigger. Constraint: the nine-piece plate is 63 × 45 mm at 100 %, so it stays inside the
-  202 × 190 mm mesh up to ~320 % (202 × 144 mm), and the legs stand 28 mm × scale. At 250 % the
-  figure is ~140 mm, at 300 % ~170 mm and the plate 190 × 135 mm. Decide after the flexi
-  dragon reprint; nothing sliced yet.
+- **Decided 2026-09-09: 320 %, with organic support for the arms** ("let's max it out"). The
+  designer's layout is 202.6 mm wide at 320 %, fractionally over the mesh and with no room for
+  trees, so the nine shells were **re-packed by translation only, every piece in its original
+  upright pose**, into `~/models/the-thing/The_Thing_320_plate.stl` (md5 `31a3dad9…`, scaled in
+  the file, so slice at 100 %): legs, torso and both arms on one row, head, face, pegs and ball on
+  a second, 8 mm gaps. **Plate 168 × 122 mm → X 20–188 / Y 62–184 centred on 104,123.** Pieces at
+  320 %: legs 40 × 84 × 90 tall, torso 73 tall, arms 68 long, pegs 11.5, ball 16.8 — big enough
+  that no brim is planned. Assembled height ~170–185 mm.
+- **Profile `petg_fig_tree`**: `petg_fig` plus the `plaplus_soarm` support block with
+  `style = organic`, `buildplate_only = 1`, contact 0.25. **PETG support release at that gap is
+  unverified here and PETG supports have welded before** — the arms are the test; the interface
+  hangs under the arm from a bed-rooted tree, the case the user expects to release.
+- **Cost, extrapolated from the 200 % print (34.6 g / 4 h 51) by volume ×4.1: roughly 140 g and
+  about 20 h plus support.** Measured figures come from the slice.
+- **Slice when the dragon finishes (~06:00 UTC 2026-09-10)**: `slice-print.sh` on the plate STL
+  with `petg_fig_tree` puts it at the bed centre, so use the flatpak CLI directly with
+  `--center 104,123`; verify footprint, heating order, support under both arms and nowhere on
+  the part.
 
 ### `Kinetic_Toy.gcode` is sliced, correct and waiting
 

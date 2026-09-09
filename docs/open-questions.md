@@ -71,7 +71,7 @@ Open within it:
   diagnostic on 2026-09-08 (see [Machine](#machine)), so a night start is watchable with the lamp
   in place; the strip is still the proper fitting.
 
-### The Thing action figure (Thingiverse 917064) — staged, scale to confirm, not yet sliced
+### The Thing action figure (Thingiverse 917064) — staged, decided, waiting to slice
 
 Fetched 2026-09-09. Thingiverse blocks unauthenticated downloads (JS shell, API 401, zip link
 redirects), so the user downloaded it in a browser; pulled from `ivory` (WSL2 on the Windows
@@ -83,14 +83,21 @@ README and licence beside it. One STL holding **9 shells already arranged flat o
 3.6 mm pegs and a 5.2 mm ball. Screened with `orientation-study.py`: overhang 2–15 %, dropped
 area ≤ 14 mm², bed support ≤ 0.55 cm³ — **support-free as arranged; keep the designer's layout.**
 
-- **Scale is the open decision.** At 100 % the assembled figure is ~55 mm and the joints are
-  tiny. [decisions.md](decisions.md#superhero-figures) wants 100–120 mm and two copies, so the
-  working assumption is **200 %** (~110 mm, plate 127 × 90 mm, two plates fit the mesh side by
-  side). Bed contact per piece at 100 % is 9–104 mm², ×4 at 200 %; the heads and pegs still
-  want a brim.
-- **`ender5s1_plaplus_fig.ini` created 2026-09-09**: `plaplus` with `layer_height = 0.16`, nothing
-  else. Untested. White PLA+ is loaded, which matches "print white to paint".
-- Slice after the `Wrist_Roll_Pitch` print ends; verify footprint and heating order as always.
+- **Decided 2026-09-09: 200 %, orange PETG, unpainted, `petg_fig`** — see
+  [decisions.md](decisions.md#superhero-figures). At 200 % the plate is 127 × 90 mm, so **two
+  copies do not fit side by side in the 202 mm mesh**; they would stack in Y with 5 mm to spare,
+  which is too tight — **one figure per job**, and the first job validates the profile. Bed contact
+  per piece at 100 % is 9–104 mm², ×4 at 200 %; slice with a **4 mm brim** for the heads, pegs
+  and ball (5 mm risks neighbouring brims fusing across the gaps between pieces).
+- Profiles created 2026-09-09, both untested: `ender5s1_petg_fig.ini` (this print) and
+  `ender5s1_plaplus_fig.ini` (for a figure that will be painted). Each is its base profile with
+  `layer_height = 0.16` and nothing else.
+- **The spool changes to orange PETG for this print.** PETG runs 240/80 with the enclosure as
+  it was for PETG before; the PLA+ "open the enclosure" rule does not apply.
+- Slice after the `Wrist_Roll_Pitch` print ends: `--load ender5s1_petg_fig.ini --scale 200%
+  --brim-width 4 --center 104,123` on the single STL (keeps the designer's layout, no `--merge`);
+  verify footprint, heating order (`M140`/`M190` before `M104 S240`) and the 0.16 mm layer
+  heights in the emitted G-code.
 
 ### `Kinetic_Toy.gcode` is sliced, correct and waiting
 

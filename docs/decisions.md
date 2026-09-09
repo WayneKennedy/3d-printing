@@ -352,6 +352,11 @@ are here because the printer repo was the only context store when they were take
 - **Print in white so he can paint them himself.** Chosen over character colours: it makes the
   figure something he did rather than something he was given, and one roll covers every
   character asked for next.
+- **A figure printed in its final colour is not painted, so it is PETG — The Thing in orange
+  PETG, decided 2026-09-09.** The white-PLA rule is for figures that will be painted; it does not
+  bind when the filament colour is the character's colour. Scale **200 %** (~110 mm assembled),
+  inside the 100–120 mm rule below. Profile `petg_fig` (0.16 mm layers, otherwise canonical
+  `petg`, untested); one figure per job, the first job being the profile's validation.
 - **PLA over PETG for anything to be painted.** PETG is stringier, rounds off fine detail, has
   glossier layer lines under paint and resists sanding. If PETG is used instead, tell the
   painter it needs a primer key and a light scuff first.

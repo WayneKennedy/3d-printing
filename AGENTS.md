@@ -72,6 +72,7 @@ write G-code into `~/printer_data/gcodes/`, where Mainsail lists it. `<material>
 | `plaplus_soarm` | `plaplus` + snug build-plate-only supports | validated, support-needing parts |
 | `plaplus_soarm_all` | `plaplus_soarm` with supports **everywhere** | for a part whose overhang sits above the part, not the bed — see [decisions.md](docs/decisions.md#supports) |
 | `plaplus_fig` | `plaplus` at 0.16 mm layers | **untested** — figurines to be painted, see [decisions.md](docs/decisions.md#superhero-figures) |
+| `petg_fig` | `petg` at 0.16 mm layers | **untested** — figurines printed in their final colour, unpainted |
 | `pla` | 210/205, bed 60 | **untested — no plain PLA has been printed** |
 | `petg_koala`, `petg_koalacoupon` | 4 perim, 30 % gyroid | built for a superseded spec; **not** the koala-bot standard |
 

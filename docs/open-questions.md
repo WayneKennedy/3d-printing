@@ -9,7 +9,7 @@ holds it authoritatively. Query it, or run `tools/print-monitor.py` — see
 
 ## Active work
 
-### SO-ARM101 follower — 9 of 11 done, plate 4 (the last two) printing
+### SO-ARM101 follower — 10 of 11 printed; `Wrist_Roll_Pitch` needs tree support
 
 Sliced figures are measured, not estimated. Slice with `slice-plate.sh`, which centres on the
 measured mesh; **verify the emitted footprint against the mesh bounds before printing**, and
@@ -32,12 +32,21 @@ merely old. Re-run this check rather than assuming it still holds after an upstr
 | Plate | Parts | Profile | Time | g | Status |
 |---|---|---|---|---|---|
 | 3 | `Upper_arm`, `Under_arm`, `Wrist_Roll_Pitch` flipped | `plaplus_soarm` | 13 h 30 | 136.9 | **Done 2026-09-08 17:26.** Two good; `Wrist_Roll_Pitch` fork face printed into air, unusable — [print-log](print-log.md), [decisions](decisions.md#supports) |
-| 3b | `Wrist_Roll_Pitch` flipped, **supports everywhere** | `plaplus_soarm_all` | 4 h 06 | 39.9 | **Done 2026-09-08 22:00** as `wrp_flip_all.gcode`; fork face supported — [print-log](print-log.md) |
-| 4 | `Wrist_Roll_Follower`, `Moving_Jaw` | `plaplus_soarm` + **5 mm brim** | 6 h 19 | 59.6 | **Started 2026-09-08 23:26** as `soarm_plate4.gcode`. Both pass `--bands` as extracted (61 and 2 mm² dropped, scattered). Brim because `Moving_Jaw` has only 30 mm² of flat bed contact (aspect 4.09); passed as `--brim-width 5` on the command line, not a profile change. Footprint X 41–167 / Y 67–173 verified inside the mesh |
+| 3b | `Wrist_Roll_Pitch` flipped, **supports everywhere** | `plaplus_soarm_all` | 4 h 06 | 39.9 | **Failed 2026-09-08**: support welded to both fork faces — [print-log](print-log.md), [decisions](decisions.md#supports) |
+| 4 | `Wrist_Roll_Follower`, `Moving_Jaw` | `plaplus_soarm` + **5 mm brim** | 6 h 19 | 59.6 | **Done 2026-09-09 05:43**, parts not yet inspected. Both pass `--bands` as extracted (61 and 2 mm² dropped, scattered). Brim because `Moving_Jaw` has only 30 mm² of flat bed contact (aspect 4.09); passed as `--brim-width 5` on the command line, not a profile change. Footprint X 41–167 / Y 67–173 verified inside the mesh |
 
-**Next: when plate 4 completes, the follower's 11 parts are all printed.** Then assembly, in
-the order below, and the fit of every support-cleaned face gets reported into
-[print-log.md](print-log.md).
+**Next: `Wrist_Roll_Pitch` with organic support from the bed, which needs PrusaSlicer ≥ 2.6.**
+Both fork faces hang over the part; support standing on the part welds (decided, see
+[decisions.md](decisions.md#supports)); tree support reaching in from the side is the remaining
+way to print the face. Checked 2026-09-09: **neither printhub (2.5.0, no upgrade path) nor the
+workstation (no slicer at all) has one.** Route: a PrusaSlicer x86_64 AppImage on the
+workstation, the existing `.ini` profile plus `support_material_style = organic` and
+`buildplate_only = 1`, verified the same way (support inside the fork footprint at Z 30–47,
+footprint in the mesh, heating order), then uploaded to Moonraker. **Open: whether organic
+support with `buildplate_only` will actually reach under the upper tine** — the gap is open at
+the sides, but this is unverified until sliced. Also open: keep the flip (577 mm² contact, held
+13 h) or revisit, since the flip was chosen partly on bed-built support cost that organic
+support changes.
 
 Per-part figures for what remains, sliced and measured 2026-09-06 with **supports everywhere**,
 so these are **upper bounds** for anything sliced `plaplus_soarm`:

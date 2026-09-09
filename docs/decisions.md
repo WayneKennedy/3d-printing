@@ -137,12 +137,32 @@ it stops the next agent re-deriving it. Anything undecided lives in
   cantilevered over the part below prints into air. `Wrist_Roll_Pitch` lost its servo-fork face
   that way on 2026-09-08; the 2026-09-07 correction below has the rule. For such a part use
   `plaplus_soarm_all` (`buildplate_only = 0`, otherwise identical) and accept the bore support.
-- **`support_material_contact_distance = 0.25`.** PrusaSlicer's default 0.2 is not an
-  improvement; 0.25 is. Widening it further is the right lever when supports are unavoidable
-  on a part whose surface matters — but prefer support-free models and better orientation
-  first.
+- ~~**`support_material_contact_distance = 0.25`** is enough.~~ **Wrong for PLA+ on a face —
+  corrected 2026-09-09.** Support has now welded solid twice: `Motor_holder_Base` (2026-09-06,
+  grid, walls and pockets) and the `Wrist_Roll_Pitch` reprint (2026-09-08, snug + everywhere,
+  both inner fork faces, unremovable). The emitted settings explain it: the profile leaves
+  PrusaSlicer's defaults of **`support_material_interface_layers = 3` and
+  `support_material_interface_spacing = 0`, i.e. a solid three-layer sheet 0.25 mm from the
+  face, top and bottom** (`bottom_interface_layers = -1` and `bottom_contact_distance = 0` both
+  mean "same as top"). PLA+'s stronger layer bonding — the reason it was chosen — is exactly what
+  makes a solid interface at 0.25 mm fuse.
+- **Support standing on the part is never used — decided by the user 2026-09-09.** The contact
+  gap is meaningless for support laid down *on top of* a face: the interface is extruded onto the
+  part and welds, whatever the nominal Z distance. `support_material_buildplate_only = 1` stays
+  on for every part, and `plaplus_soarm_all` is retired for anything but a test. **A face that
+  hangs over the part with nothing beneath it needs support that reaches it from the bed by
+  going around the part — tree/organic support — which PrusaSlicer 2.5.0 on printhub cannot
+  generate (`organic` arrived in 2.6).** So `Wrist_Roll_Pitch` waits on a ≥2.6 slicer; route in
+  [open-questions.md](open-questions.md). Do not spend another 4 h on interface tuning.
 - **Tree/organic supports are not available.** PrusaSlicer on printhub is 2.5.0; organic
   supports arrived in 2.6. Upgrading the slicer is the only route to them.
+  - **No upgrade path on the Pi itself, checked 2026-09-09:** it is Debian bookworm (aarch64),
+    whose only package is 2.5.0+dfsg-4, and no flatpak. Prusa publishes Linux AppImages for
+    x86_64. So a ≥2.6 slicer means slicing on an x86_64 machine and uploading the G-code to
+    Moonraker, with the same `.ini` profiles (later PrusaSlicer versions load them).
+  - **`--cut` in the 2.5.0 CLI is a silent no-op** — exit 0, no file — and **`xvfb-run` is not
+    installed on the Pi**, so the fallback branch in `slice-print.sh`/`slice-plate.sh` has never
+    run and would fail with "command not found" if it did.
 - ~~**Percentage of surface area identifies parts that need support.**~~ **Wrong — corrected
   2026-09-07** by the delaminated WaveShare plate, sliced support-free on the strength of
   "1.7 % overhang". **A percentage hides a small contiguous overhang on a large part.** The

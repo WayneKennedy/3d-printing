@@ -154,12 +154,22 @@ it stops the next agent re-deriving it. Anything undecided lives in
   going around the part — tree/organic support — which PrusaSlicer 2.5.0 on printhub cannot
   generate (`organic` arrived in 2.6).** So `Wrist_Roll_Pitch` waits on a ≥2.6 slicer; route in
   [open-questions.md](open-questions.md). Do not spend another 4 h on interface tuning.
-- **Tree/organic supports are not available.** PrusaSlicer on printhub is 2.5.0; organic
-  supports arrived in 2.6. Upgrading the slicer is the only route to them.
-  - **No upgrade path on the Pi itself, checked 2026-09-09:** it is Debian bookworm (aarch64),
-    whose only package is 2.5.0+dfsg-4, and no flatpak. Prusa publishes Linux AppImages for
-    x86_64. So a ≥2.6 slicer means slicing on an x86_64 machine and uploading the G-code to
-    Moonraker, with the same `.ini` profiles (later PrusaSlicer versions load them).
+- ~~**Tree/organic supports are not available.**~~ **Available since 2026-09-09: PrusaSlicer 2.9.6
+  installed on printhub from Flathub** (`flatpak --user`, `com.prusa3d.PrusaSlicer`, 276 MB plus
+  ~2 GB of runtimes, `filesystems=home` so it reads `~/models`, `~/slicer` and writes
+  `~/printer_data/gcodes`). Headless CLI: `flatpak run --user --command=prusa-slicer
+  com.prusa3d.PrusaSlicer <args>`; `slice-print.sh` and `slice-plate.sh` resolve to it first and
+  print which slicer ran. It loads the 2.5-era `.ini` profiles unchanged and emits the same
+  bed-first `M140`/`M190`/`M104` head — verified on the first slice. **The Debian 2.5.0 binary
+  stays as fallback.** First print sliced by 2.9.6 is the organic `Wrist_Roll_Pitch`; treat any
+  behaviour difference from the 2.5.0-validated profiles as unproven until it has printed.
+  - **`support_material_style = organic` with `buildplate_only = 1` reaches a face that hangs
+    over the part.** Verified in G-code on `Wrist_Roll_Pitch` flipped: support inside the fork
+    footprint continuously from Z 0 to the interface at Z 45–50, rooted on the bed. 37.8 g /
+    4 h 21, against 31.9 g / 3 h 30 with the face missing. As extracted it is 37.5 g / 4 h 21 —
+    the same — so **the flip stays, on bed contact alone** (577 vs 251 mm²).
+  - **apt cannot upgrade it**: Debian bookworm's only package is 2.5.0+dfsg-4 and Prusa ships no
+    arm64 Linux build. Flathub builds aarch64, which is why flatpak.
   - **`--cut` in the 2.5.0 CLI is a silent no-op** — exit 0, no file — and **`xvfb-run` is not
     installed on the Pi**, so the fallback branch in `slice-print.sh`/`slice-plate.sh` has never
     run and would fail with "command not found" if it did.

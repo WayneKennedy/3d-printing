@@ -99,8 +99,11 @@ un-homed machine needs no action first.
 - **Open the enclosure for PLA and PLA+.** Enclosures are for ABS/ASA; a warm chamber causes
   heat creep in this direct-drive hotend and undermines the 100 % part cooling these profiles
   specify. Front and top are left open by default.
-- **PrusaSlicer on the Pi is 2.5.0** — no tree/organic supports (those arrived in 2.6). `snug`
-  is the closest this version offers.
+- **Support must never stand on the part.** An interface laid on top of a face welds in PLA+
+  whatever the contact gap (`Wrist_Roll_Pitch`, 2026-09-08). Keep `buildplate_only = 1`; a face
+  that hangs over the part gets **organic** support reaching in from the bed. That needs the
+  **flatpak PrusaSlicer 2.9.6** on the Pi, which the slice scripts pick automatically and name
+  in their first output line; the Debian 2.5.0 binary is the fallback and has no organic style.
 
 Full detail, with the measurements behind each: [docs/workflow.md](docs/workflow.md).
 

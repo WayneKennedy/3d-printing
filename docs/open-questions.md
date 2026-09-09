@@ -9,7 +9,7 @@ holds it authoritatively. Query it, or run `tools/print-monitor.py` — see
 
 ## Active work
 
-### SO-ARM101 follower — 10 of 11 printed; `Wrist_Roll_Pitch` organic reprint sliced, waiting for a clear bed
+### SO-ARM101 follower — all 11 printed; `Wrist_Roll_Pitch` organic reprint awaiting inspection
 
 Sliced figures are measured, not estimated. Slice with `slice-plate.sh`, which centres on the
 measured mesh; **verify the emitted footprint against the mesh bounds before printing**, and
@@ -35,20 +35,17 @@ merely old. Re-run this check rather than assuming it still holds after an upstr
 | 3b | `Wrist_Roll_Pitch` flipped, **supports everywhere** | `plaplus_soarm_all` | 4 h 06 | 39.9 | **Failed 2026-09-08**: support welded to both fork faces — [print-log](print-log.md), [decisions](decisions.md#supports) |
 | 4 | `Wrist_Roll_Follower`, `Moving_Jaw` | `plaplus_soarm` + **5 mm brim** | 6 h 19 | 59.6 | **Done 2026-09-09 05:43**, parts not yet inspected. Both pass `--bands` as extracted (61 and 2 mm² dropped, scattered). Brim because `Moving_Jaw` has only 30 mm² of flat bed contact (aspect 4.09); passed as `--brim-width 5` on the command line, not a profile change. Footprint X 41–167 / Y 67–173 verified inside the mesh |
 
-**Next: start `wrp_flip_organic.gcode` once plate 4 is off the bed.** Sliced 2026-09-09 on the
-new PrusaSlicer 2.9.6 (`plaplus_soarm` + `--support-material-style organic`, `buildplate_only`
-still 1): 37.8 g, 4 h 21. Verified in the emitted G-code: organic support inside the fork
-footprint continuously from the bed to the interface under the face at Z 45–50; footprint
-X 73–132 / Y 69–164 inside the mesh; bed-first heating. Nothing stands on the part. Open until
-it has printed: whether the organic interface under the fork face releases cleanly (it hangs
-below the face from the tree, the case the user expects to release), and whether 2.9.6 prints
-the 2.5-validated profile identically. Decision record: [decisions.md](decisions.md#supports).
+**Next: inspect the organic `Wrist_Roll_Pitch` and report two things** — whether the interface
+hanging under the fork face released cleanly, and whether the trees marked the outer faces. A
+clean part closes the SO-ARM101 printing and validates PrusaSlicer 2.9.6 on the 2.5-era profile.
+Then assembly, base up, with every support-cleaned face's fit reported into
+[print-log.md](print-log.md).
 
 | `Wrist_Roll_Pitch` flipped | g | Time | Outcome |
 |---|---|---|---|
 | snug, bed-only (plate 3) | 31.9 | 3 h 30 | fork face in air |
 | snug, everywhere (3b) | 39.9 | 4 h 06 | welded |
-| **organic, bed-only** | **37.8** | **4 h 21** | sliced, not yet printed |
+| **organic, bed-only** | **37.8** | **4 h 21** | **printed 2026-09-09, 4 h 15, not yet inspected** — [print-log](print-log.md) |
 
 Per-part figures for what remains, sliced and measured 2026-09-06 with **supports everywhere**,
 so these are **upper bounds** for anything sliced `plaplus_soarm`:
@@ -71,7 +68,7 @@ Open within it:
   diagnostic on 2026-09-08 (see [Machine](#machine)), so a night start is watchable with the lamp
   in place; the strip is still the proper fitting.
 
-### The Thing action figure (Thingiverse 917064) — staged, decided, waiting to slice
+### The Thing action figure (Thingiverse 917064) — sliced as `the_thing_200.gcode`, ready
 
 Fetched 2026-09-09. Thingiverse blocks unauthenticated downloads (JS shell, API 401, zip link
 redirects), so the user downloaded it in a browser; pulled from `ivory` (WSL2 on the Windows
@@ -94,10 +91,12 @@ area ≤ 14 mm², bed support ≤ 0.55 cm³ — **support-free as arranged; keep
   `layer_height = 0.16` and nothing else.
 - **The spool changes to orange PETG for this print.** PETG runs 240/80 with the enclosure as
   it was for PETG before; the PLA+ "open the enclosure" rule does not apply.
-- Slice after the `Wrist_Roll_Pitch` print ends: `--load ender5s1_petg_fig.ini --scale 200%
-  --brim-width 4 --center 104,123` on the single STL (keeps the designer's layout, no `--merge`);
-  verify footprint, heating order (`M140`/`M190` before `M104 S240`) and the 0.16 mm layer
-  heights in the emitted G-code.
+- **Sliced 2026-09-09 as `the_thing_200.gcode`** (2.9.6, `petg_fig`, `--scale 200% --brim-width 4
+  --center 104,123`, single STL so the designer's layout is kept): **34.6 g, 4 h 54, 351 layers to
+  Z 56.2, no support.** Verified in the G-code: `M140`/`M190 S80` before `M104 S240`; layers
+  0.24 then 0.16; footprint X 33–173 / Y 71–171 inside the mesh and clear of the purge line.
+  **Start when the orange PETG is loaded and the bed is clear.** This is the first print on
+  `petg_fig` and the first PETG since the garage move.
 
 ### `Kinetic_Toy.gcode` is sliced, correct and waiting
 

@@ -37,6 +37,7 @@ a new profile cannot be silently left out.
 | `ender5s1_plaplus.ini` | `~/slicer/ender5s1_plaplus.ini` — **PLA+ is not PLA**: same profile, 220/215 not 210/205. **Validated 2026-09-06** on `Motor_holder_Base` |
 | `ender5s1_plaplus_soarm.ini` | `~/slicer/ender5s1_plaplus_soarm.ini` — plain `plaplus` plus supports (`snug`, `buildplate_only`, contact 0.25). For the **6 SO-ARM101 parts that need support**; the other 5 use plain `plaplus` |
 | `ender5s1_plaplus_soarm_all.ini` | `~/slicer/ender5s1_plaplus_soarm_all.ini` — `plaplus_soarm` with `buildplate_only = 0`, nothing else changed. For a part whose overhang sits **above the part**, which `buildplate_only` drops so the face prints into air (`Wrist_Roll_Pitch`, 2026-09-08). Brings support back inside horizontal bores, so not the default. See [decisions](../docs/decisions.md#supports) |
+| `ender5s1_plaplus_fig.ini` | `~/slicer/ender5s1_plaplus_fig.ini` — `plaplus` with `layer_height = 0.16`, nothing else. Figurines to be painted; **untested** |
 | `ender5s1_petg_koala.ini` | `~/slicer/ender5s1_petg_koala.ini` — project profile, not the koala-bot spec |
 | `ender5s1_petg_koalacoupon.ini` | `~/slicer/ender5s1_petg_koalacoupon.ini` — as above |
 | `slice-print.sh` | `~/slicer/slice-print.sh` — one model |

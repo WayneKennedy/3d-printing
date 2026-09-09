@@ -71,6 +71,27 @@ Open within it:
   diagnostic on 2026-09-08 (see [Machine](#machine)), so a night start is watchable with the lamp
   in place; the strip is still the proper fitting.
 
+### The Thing action figure (Thingiverse 917064) — staged, scale to confirm, not yet sliced
+
+Fetched 2026-09-09. Thingiverse blocks unauthenticated downloads (JS shell, API 401, zip link
+redirects), so the user downloaded it in a browser; pulled from `ivory` (WSL2 on the Windows
+machine) at `/mnt/d/Users/wkenn/Downloads/FANTASTIC 4 THE THING ACTION FIGURE - 917064/`.
+**"Fantastic 4 The Thing action figure" by Masterclip, CC BY-SA.** Staged on the Pi as
+`~/models/the-thing/The_Thing_001.stl` (md5 `77343ecd…`, binary, 274 386 triangles) with the
+README and licence beside it. One STL holding **9 shells already arranged flat on the bed**,
+63 × 45 × 28 mm as a plate: legs (28 mm tall), torso (23), two arms, head, a second face, two
+3.6 mm pegs and a 5.2 mm ball. Screened with `orientation-study.py`: overhang 2–15 %, dropped
+area ≤ 14 mm², bed support ≤ 0.55 cm³ — **support-free as arranged; keep the designer's layout.**
+
+- **Scale is the open decision.** At 100 % the assembled figure is ~55 mm and the joints are
+  tiny. [decisions.md](decisions.md#superhero-figures) wants 100–120 mm and two copies, so the
+  working assumption is **200 %** (~110 mm, plate 127 × 90 mm, two plates fit the mesh side by
+  side). Bed contact per piece at 100 % is 9–104 mm², ×4 at 200 %; the heads and pegs still
+  want a brim.
+- **`ender5s1_plaplus_fig.ini` created 2026-09-09**: `plaplus` with `layer_height = 0.16`, nothing
+  else. Untested. White PLA+ is loaded, which matches "print white to paint".
+- Slice after the `Wrist_Roll_Pitch` print ends; verify footprint and heating order as always.
+
 ### `Kinetic_Toy.gcode` is sliced, correct and waiting
 
 Re-sliced 2026-09-03 with bed-first heating and corrected retraction — 13 h 41, 87.4 g,

@@ -68,7 +68,7 @@ Open within it:
   diagnostic on 2026-09-08 (see [Machine](#machine)), so a night start is watchable with the lamp
   in place; the strip is still the proper fitting.
 
-### The Thing action figure (Thingiverse 917064) — sliced as `the_thing_200.gcode`, ready
+### The Thing action figure (Thingiverse 917064) — printed at 200 %, "probably needs to be bigger"
 
 Fetched 2026-09-09. Thingiverse blocks unauthenticated downloads (JS shell, API 401, zip link
 redirects), so the user downloaded it in a browser; pulled from `ivory` (WSL2 on the Windows
@@ -95,8 +95,12 @@ area ≤ 14 mm², bed support ≤ 0.55 cm³ — **support-free as arranged; keep
   --center 104,123`, single STL so the designer's layout is kept): **34.6 g, 4 h 54, 351 layers to
   Z 56.2, no support.** Verified in the G-code: `M140`/`M190 S80` before `M104 S240`; layers
   0.24 then 0.16; footprint X 33–173 / Y 71–171 inside the mesh and clear of the purge line.
-  **Start when the orange PETG is loaded and the bed is clear.** This is the first print on
-  `petg_fig` and the first PETG since the garage move.
+  **Printed 2026-09-09, came out OK** — [print-log](print-log.md). `petg_fig` has now run once.
+- **Open: scale.** The user's first reaction to the 200 % figure is that it probably needs to be
+  bigger. Constraint: the nine-piece plate is 63 × 45 mm at 100 %, so it stays inside the
+  202 × 190 mm mesh up to ~320 % (202 × 144 mm), and the legs stand 28 mm × scale. At 250 % the
+  figure is ~140 mm, at 300 % ~170 mm and the plate 190 × 135 mm. Decide after the flexi
+  dragon reprint; nothing sliced yet.
 
 ### `Kinetic_Toy.gcode` is sliced, correct and waiting
 
@@ -118,10 +122,10 @@ bores 37.3/37.5/37.7. Smallest that fits wins; **test from the top face down**, 
 `elefant_foot_compensation = 0` leaves the bottom edge slightly proud. Feeds koala-bot's
 `params.py`. Needs screws and the motor body in hand.
 
-### Four sliced files still heat the nozzle during the bed soak
+### Three sliced files still heat the nozzle during the bed soak
 
-Audited 2026-09-06. Still emitting `M104` before `M190`: **`LittleGrassDragon`,
-`Flexi-Rex-200`, `Flexi-Rex-improved`, `coupon_ladder`**. Correct already: `3DBenchy`,
+Audited 2026-09-06. Still emitting `M104` before `M190`: **`Flexi-Rex-200`,
+`Flexi-Rex-improved`, `coupon_ladder`** (`LittleGrassDragon` re-sliced correctly 2026-09-09). Correct already: `3DBenchy`,
 `Godzilla`, `Kinetic_Toy`, `first_layer_test`. **Not chronological** — `3DBenchy` predates the
 fix but was sliced correctly, so **check the file, not its date**:
 `grep -avE '^;|^$' FILE | head -6`. Consequence is a blob of ooze and a dirty nozzle exactly as

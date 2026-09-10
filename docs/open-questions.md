@@ -68,7 +68,7 @@ Open within it:
   diagnostic on 2026-09-08 (see [Machine](#machine)), so a night start is watchable with the lamp
   in place; the strip is still the proper fitting.
 
-### The Thing action figure (Thingiverse 917064) — 320 % with tree support queued behind the dragon
+### The Thing action figure (Thingiverse 917064) — 320 % sliced as `the_thing_320_tree.gcode`, ready
 
 Fetched 2026-09-09. Thingiverse blocks unauthenticated downloads (JS shell, API 401, zip link
 redirects), so the user downloaded it in a browser; pulled from `ivory` (WSL2 on the Windows
@@ -108,12 +108,12 @@ area ≤ 14 mm², bed support ≤ 0.55 cm³ — **support-free as arranged; keep
   `style = organic`, `buildplate_only = 1`, contact 0.25. **PETG support release at that gap is
   unverified here and PETG supports have welded before** — the arms are the test; the interface
   hangs under the arm from a bed-rooted tree, the case the user expects to release.
-- **Cost, extrapolated from the 200 % print (34.6 g / 4 h 51) by volume ×4.1: roughly 140 g and
-  about 20 h plus support.** Measured figures come from the slice.
-- **Slice when the dragon finishes (~06:00 UTC 2026-09-10)**: `slice-print.sh` on the plate STL
-  with `petg_fig_tree` puts it at the bed centre, so use the flatpak CLI directly with
-  `--center 104,123`; verify footprint, heating order, support under both arms and nowhere on
-  the part.
+- **Sliced 2026-09-10 06:11 UTC: 111.5 g, 12 h 33, 562 layers to Z 90.** Far under the
+  volume extrapolation (~140 g / ~20 h) — the 200 % print's brim and fixed overheads do not
+  scale. Verified in the G-code: `M140`/`M190 S80` before `M104 S240`; footprint X 12–191 /
+  Y 54–190 including skirt and tree bases, inside the mesh; organic support under both arms
+  (Z 0–30), under the legs, torso, head and face, all bed-rooted (`buildplate_only = 1`).
+- **Start when the dragon is off the bed.** First print on `petg_fig_tree`.
 
 ### `Kinetic_Toy.gcode` is sliced, correct and waiting
 

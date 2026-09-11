@@ -165,7 +165,8 @@ it stops the next agent re-deriving it. Anything undecided lives in
   behaviour difference from the 2.5.0-validated profiles as unproven until it has printed.~~
   **Validated 2026-09-11**: the organic `Wrist_Roll_Pitch` (PLA+, `plaplus_soarm`), the dragon
   (PETG, `petg`) and The Thing at 320 % (PETG, `petg_fig_tree`) all completed from 2.9.6 with
-  the profiles unchanged, and its time estimates land within 0.1 % where 2.5.0 ran ~2 % long.
+  the profiles unchanged. Its time estimates are no more accurate than 2.5.0's: dragon +0.1 %,
+  The Thing 200 % −1.1 %, The Thing 320 % −2.4 % actual against estimate.
   - **`support_material_style = organic` with `buildplate_only = 1` reaches a face that hangs
     over the part.** Verified in G-code on `Wrist_Roll_Pitch` flipped: support inside the fork
     footprint continuously from Z 0 to the interface at Z 45–50, rooted on the bed. 37.8 g /

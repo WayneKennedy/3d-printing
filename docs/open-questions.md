@@ -124,8 +124,7 @@ area ≤ 14 mm², bed support ≤ 0.55 cm³ — **support-free as arranged; keep
 - **Printed, successful (user's verdict 2026-09-11)** — first print on `petg_fig_tree`, now
   validated; the PETG organic support under the arms came off clean with no marks. **The orange PETG strung badly
   across the nine pieces**, which is why that spool is now for single-piece plates — see
-  [decisions.md](decisions.md#superhero-figures). Job timing and filament are still to be read
-  from Moonraker history into [print-log.md](print-log.md); printhub was offline when logged.
+  [decisions.md](decisions.md#superhero-figures). 12 h 15, 111.5 g — [print-log](print-log.md).
   Open: is 320 % the final scale, and does the figure assemble cleanly (pegs, ball joint)?
 
 ### `Kinetic_Toy.gcode` is sliced, correct and waiting

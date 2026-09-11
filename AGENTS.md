@@ -72,8 +72,8 @@ write G-code into `~/printer_data/gcodes/`, where Mainsail lists it. `<material>
 | `plaplus_soarm` | `plaplus` + snug build-plate-only supports | validated, support-needing parts |
 | `plaplus_soarm_all` | `plaplus_soarm` with supports **everywhere** | for a part whose overhang sits above the part, not the bed — see [decisions.md](docs/decisions.md#supports) |
 | `plaplus_fig` | `plaplus` at 0.16 mm layers | **untested** — figurines to be painted, see [decisions.md](docs/decisions.md#superhero-figures) |
-| `petg_fig` | `petg` at 0.16 mm layers | validated 2026-09-09 on The Thing at 200 % — figurines in their final colour, unpainted |
-| `petg_fig_tree` | `petg_fig` + organic bed-only supports | **untested** — needs the flatpak 2.9.6 slicer; PETG support release unverified |
+| `petg_fig` | `petg` at 0.16 mm layers | validated 2026-09-09 on The Thing at 200 % — figurines in their final colour, unpainted. **The orange PETG spool strings badly across multi-part plates; load it for single-piece jobs** — [decisions.md](docs/decisions.md#superhero-figures) |
+| `petg_fig_tree` | `petg_fig` + organic bed-only supports | validated 2026-09-11 on The Thing at 320 % — PETG organic support released from under the arms; needs the flatpak 2.9.6 slicer |
 | `pla` | 210/205, bed 60 | **untested — no plain PLA has been printed** |
 | `petg_koala`, `petg_koalacoupon` | 4 perim, 30 % gyroid | built for a superseded spec; **not** the koala-bot standard |
 

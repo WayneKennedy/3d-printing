@@ -9,7 +9,7 @@ holds it authoritatively. Query it, or run `tools/print-monitor.py` — see
 
 ## Active work
 
-### SO-ARM101 follower — all 11 printed; `Wrist_Roll_Pitch` organic reprint awaiting inspection
+### SO-ARM101 follower — all 11 parts usable; next is assembly
 
 Sliced figures are measured, not estimated. Slice with `slice-plate.sh`, which centres on the
 measured mesh; **verify the emitted footprint against the mesh bounds before printing**, and
@@ -35,17 +35,19 @@ merely old. Re-run this check rather than assuming it still holds after an upstr
 | 3b | `Wrist_Roll_Pitch` flipped, **supports everywhere** | `plaplus_soarm_all` | 4 h 06 | 39.9 | **Failed 2026-09-08**: support welded to both fork faces — [print-log](print-log.md), [decisions](decisions.md#supports) |
 | 4 | `Wrist_Roll_Follower`, `Moving_Jaw` | `plaplus_soarm` + **5 mm brim** | 6 h 19 | 59.6 | **Done 2026-09-09 05:43**, parts not yet inspected. Both pass `--bands` as extracted (61 and 2 mm² dropped, scattered). Brim because `Moving_Jaw` has only 30 mm² of flat bed contact (aspect 4.09); passed as `--brim-width 5` on the command line, not a profile change. Footprint X 41–167 / Y 67–173 verified inside the mesh |
 
-**Next: inspect the organic `Wrist_Roll_Pitch` and report two things** — whether the interface
-hanging under the fork face released cleanly, and whether the trees marked the outer faces. A
-clean part closes the SO-ARM101 printing and validates PrusaSlicer 2.9.6 on the 2.5-era profile.
-Then assembly, base up, with every support-cleaned face's fit reported into
-[print-log.md](print-log.md).
+**Printing is closed as of 2026-09-11**: the organic `Wrist_Roll_Pitch` is usable after
+craft-knife clean-up ([print-log](print-log.md)), so every one of the 11 follower parts has a
+usable copy. Still unreported: whether the trees marked its outer faces, and the plate-4 parts
+(`Wrist_Roll_Follower`, `Moving_Jaw`) have not been inspected. **Next: assembly, base up, with
+every support-cleaned face's fit reported into [print-log.md](print-log.md)** — the fork faces
+of `Wrist_Roll_Pitch` against the idler horn in particular, since that is the knife-cleaned
+interface.
 
 | `Wrist_Roll_Pitch` flipped | g | Time | Outcome |
 |---|---|---|---|
 | snug, bed-only (plate 3) | 31.9 | 3 h 30 | fork face in air |
 | snug, everywhere (3b) | 39.9 | 4 h 06 | welded |
-| **organic, bed-only** | **37.8** | **4 h 21** | **printed 2026-09-09, 4 h 15, not yet inspected** — [print-log](print-log.md) |
+| **organic, bed-only** | **37.8** | **4 h 21** | **printed 2026-09-09, 4 h 15; usable after craft-knife clean-up** (inspected 2026-09-11) — [print-log](print-log.md), [decisions](decisions.md#supports) |
 
 Per-part figures for what remains, sliced and measured 2026-09-06 with **supports everywhere**,
 so these are **upper bounds** for anything sliced `plaplus_soarm`:
@@ -68,7 +70,7 @@ Open within it:
   diagnostic on 2026-09-08 (see [Machine](#machine)), so a night start is watchable with the lamp
   in place; the strip is still the proper fitting.
 
-### The Thing action figure (Thingiverse 917064) — 320 % sliced as `the_thing_320_tree.gcode`, ready
+### The Thing action figure (Thingiverse 917064) — 320 % printed successfully 2026-09-11
 
 Fetched 2026-09-09. Thingiverse blocks unauthenticated downloads (JS shell, API 401, zip link
 redirects), so the user downloaded it in a browser; pulled from `ivory` (WSL2 on the Windows
@@ -113,7 +115,12 @@ area ≤ 14 mm², bed support ≤ 0.55 cm³ — **support-free as arranged; keep
   scale. Verified in the G-code: `M140`/`M190 S80` before `M104 S240`; footprint X 12–191 /
   Y 54–190 including skirt and tree bases, inside the mesh; organic support under both arms
   (Z 0–30), under the legs, torso, head and face, all bed-rooted (`buildplate_only = 1`).
-- **Start when the dragon is off the bed.** First print on `petg_fig_tree`.
+- **Printed, successful (user's verdict 2026-09-11)** — first print on `petg_fig_tree`, now
+  validated; the PETG organic support under the arms released. **The orange PETG strung badly
+  across the nine pieces**, which is why that spool is now for single-piece plates — see
+  [decisions.md](decisions.md#superhero-figures). Job timing and filament are still to be read
+  from Moonraker history into [print-log.md](print-log.md); printhub was offline when logged.
+  Open: is 320 % the final scale, and does the figure assemble cleanly (pegs, ball joint)?
 
 ### `Kinetic_Toy.gcode` is sliced, correct and waiting
 

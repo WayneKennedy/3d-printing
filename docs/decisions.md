@@ -161,13 +161,23 @@ it stops the next agent re-deriving it. Anything undecided lives in
   com.prusa3d.PrusaSlicer <args>`; `slice-print.sh` and `slice-plate.sh` resolve to it first and
   print which slicer ran. It loads the 2.5-era `.ini` profiles unchanged and emits the same
   bed-first `M140`/`M190`/`M104` head — verified on the first slice. **The Debian 2.5.0 binary
-  stays as fallback.** First print sliced by 2.9.6 is the organic `Wrist_Roll_Pitch`; treat any
-  behaviour difference from the 2.5.0-validated profiles as unproven until it has printed.
+  stays as fallback.** ~~First print sliced by 2.9.6 is the organic `Wrist_Roll_Pitch`; treat any
+  behaviour difference from the 2.5.0-validated profiles as unproven until it has printed.~~
+  **Validated 2026-09-11**: the organic `Wrist_Roll_Pitch` (PLA+, `plaplus_soarm`), the dragon
+  (PETG, `petg`) and The Thing at 320 % (PETG, `petg_fig_tree`) all completed from 2.9.6 with
+  the profiles unchanged, and its time estimates land within 0.1 % where 2.5.0 ran ~2 % long.
   - **`support_material_style = organic` with `buildplate_only = 1` reaches a face that hangs
     over the part.** Verified in G-code on `Wrist_Roll_Pitch` flipped: support inside the fork
     footprint continuously from Z 0 to the interface at Z 45–50, rooted on the bed. 37.8 g /
     4 h 21, against 31.9 g / 3 h 30 with the face missing. As extracted it is 37.5 g / 4 h 21 —
     the same — so **the flip stays, on bed contact alone** (577 vs 251 mm²).
+  - **Organic bed-only support is the answer for a face that hangs over the part — proven in
+    both materials.** `Wrist_Roll_Pitch` (PLA+, 2026-09-09, inspected 2026-09-11): the interface
+    under the fork face released, and the part is usable after craft-knife clean-up at the
+    contact, where snug bed-only left the face in air and snug everywhere welded. The Thing at
+    320 % (PETG, `petg_fig_tree`, contact 0.25, 2026-09-11): the support under both arms
+    released — the first PETG support here that has not welded. Expect some knife work at the
+    interface; that is the trade, not a defect. The `buildplate_only = 1` rule stands.
   - **apt cannot upgrade it**: Debian bookworm's only package is 2.5.0+dfsg-4 and Prusa ships no
     arm64 Linux build. Flathub builds aarch64, which is why flatpak.
   - **`--cut` in the 2.5.0 CLI is a silent no-op** — exit 0, no file — and **`xvfb-run` is not
@@ -357,6 +367,16 @@ are here because the printer repo was the only context store when they were take
   bind when the filament colour is the character's colour. Scale **200 %** (~110 mm assembled),
   inside the 100–120 mm rule below. Profile `petg_fig` (0.16 mm layers, otherwise canonical
   `petg`, untested); one figure per job, the first job being the profile's validation.
+  **Printed at 200 % (2026-09-09, "OK but needs to be bigger") and then at 320 % (2026-09-11,
+  successful, organic support for the arms on `petg_fig_tree`)** — [print-log](print-log.md).
+- **The orange PETG spool goes on single-piece plates, not multi-part ones.** It "strings
+  horribly" (user, 2026-09-11, on the nine-piece 320 % Thing plate). Stringing is laid down on
+  travel between islands, so a plate of one piece gives it almost nowhere to appear; the dragon,
+  a single print-in-place body, was clean on the same spool. This is a rule about which spool
+  to load for a multi-part job, not a profile change: the `petg` retraction settings were
+  tuned deliberately and `retract_length` stays at 0.8 mm for the heat-creep reason in
+  [workflow.md](workflow.md#profile-essentials). If a multi-part job must run in orange, that is the
+  case for revisiting temperature (235 °C) before retraction length.
 - **PLA over PETG for anything to be painted.** PETG is stringier, rounds off fine detail, has
   glossier layer lines under paint and resists sanding. If PETG is used instead, tell the
   painter it needs a primer key and a light scuff first.

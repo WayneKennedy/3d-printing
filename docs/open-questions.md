@@ -37,8 +37,9 @@ merely old. Re-run this check rather than assuming it still holds after an upstr
 
 **Printing is closed as of 2026-09-11**: the organic `Wrist_Roll_Pitch` is usable after
 craft-knife clean-up ([print-log](print-log.md)), so every one of the 11 follower parts has a
-usable copy. Still unreported: whether the trees marked its outer faces, and the plate-4 parts
-(`Wrist_Roll_Follower`, `Moving_Jaw`) have not been inspected. **Next: assembly, base up, with
+usable copy — though its supported flat fork face was badly scuffed and needed a lot of
+craft-knife work to take a servo ([decisions](decisions.md#supports)). The plate-4 parts
+(`Wrist_Roll_Follower`, `Moving_Jaw`) have not been reported as inspected. **Next: assembly, base up, with
 every support-cleaned face's fit reported into [print-log.md](print-log.md)** — the fork faces
 of `Wrist_Roll_Pitch` against the idler horn in particular, since that is the knife-cleaned
 interface.
@@ -66,6 +67,11 @@ check that would have caught `Wrist_Roll_Pitch`. Assembly order from the base up
 
 Open within it:
 
+- **PLA+ support interface scuffs a flat mating face at a 0.25 mm gap; PETG releases clean at
+  the same gap** (2026-09-11, [decisions](decisions.md#supports)). If another PLA+ part needs a
+  supported flat face, the untested options are a larger contact gap (0.3–0.35 mm, at the cost
+  of a rougher underside) or lowering the interface temperature. Not worth a test print until
+  a part needs it.
 - **Permanent LED strip before plate 4?** The temporary lamp made overnight camera frames fully
   diagnostic on 2026-09-08 (see [Machine](#machine)), so a night start is watchable with the lamp
   in place; the strip is still the proper fitting.
@@ -116,7 +122,7 @@ area ≤ 14 mm², bed support ≤ 0.55 cm³ — **support-free as arranged; keep
   Y 54–190 including skirt and tree bases, inside the mesh; organic support under both arms
   (Z 0–30), under the legs, torso, head and face, all bed-rooted (`buildplate_only = 1`).
 - **Printed, successful (user's verdict 2026-09-11)** — first print on `petg_fig_tree`, now
-  validated; the PETG organic support under the arms released. **The orange PETG strung badly
+  validated; the PETG organic support under the arms came off clean with no marks. **The orange PETG strung badly
   across the nine pieces**, which is why that spool is now for single-piece plates — see
   [decisions.md](decisions.md#superhero-figures). Job timing and filament are still to be read
   from Moonraker history into [print-log.md](print-log.md); printhub was offline when logged.

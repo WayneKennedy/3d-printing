@@ -173,11 +173,17 @@ it stops the next agent re-deriving it. Anything undecided lives in
     the same — so **the flip stays, on bed contact alone** (577 vs 251 mm²).
   - **Organic bed-only support is the answer for a face that hangs over the part — proven in
     both materials.** `Wrist_Roll_Pitch` (PLA+, 2026-09-09, inspected 2026-09-11): the interface
-    under the fork face released, and the part is usable after craft-knife clean-up at the
-    contact, where snug bed-only left the face in air and snug everywhere welded. The Thing at
-    320 % (PETG, `petg_fig_tree`, contact 0.25, 2026-09-11): the support under both arms
-    released — the first PETG support here that has not welded. Expect some knife work at the
-    interface; that is the trade, not a defect. The `buildplate_only = 1` rule stands.
+    under the fork face released, where snug bed-only left the face in air and snug everywhere
+    welded — **but the large flat face was badly scuffed and took a lot of craft-knife work
+    before it would take a servo.** The Thing at 320 % (PETG, `petg_fig_tree`, 2026-09-11): the
+    support under both arms **came off clean, no marks on the surfaces** — the first PETG
+    support here that has not welded. Both jobs used `support_material_contact_distance =
+    0.25`, so the difference is the material, not the gap: **PLA+ fuses to its support
+    interface at a gap PETG releases from.** The rule: organic bed-only support in either
+    material, but in PLA+ a supported flat mating face is a finishing job, not a print-and-fit,
+    and the surface budget for it is the knife. Untested ways to soften that (separate
+    open question): a larger gap for PLA+, or a PETG interface under PLA+ on a single-extruder
+    machine, which is not available. The `buildplate_only = 1` rule stands.
   - **apt cannot upgrade it**: Debian bookworm's only package is 2.5.0+dfsg-4 and Prusa ships no
     arm64 Linux build. Flathub builds aarch64, which is why flatpak.
   - **`--cut` in the 2.5.0 CLI is a silent no-op** — exit 0, no file — and **`xvfb-run` is not

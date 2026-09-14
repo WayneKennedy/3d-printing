@@ -74,6 +74,7 @@ write G-code into `~/printer_data/gcodes/`, where Mainsail lists it. `<material>
 | `plaplus_fig` | `plaplus` at 0.16 mm layers | **untested** — figurines to be painted, see [decisions.md](docs/decisions.md#superhero-figures) |
 | `petg_fig` | `petg` at 0.16 mm layers | validated 2026-09-09 on The Thing at 200 % — figurines in their final colour, unpainted. **The orange PETG spool strings badly across multi-part plates; load it for single-piece jobs** — [decisions.md](docs/decisions.md#superhero-figures) |
 | `petg_fig_tree` | `petg_fig` + organic bed-only supports | validated 2026-09-11 on The Thing at 320 % — PETG organic support released from under the arms; needs the flatpak 2.9.6 slicer |
+| `petg_riser` | `petg` at **50 % cubic** infill, 4/4 solid | **printing** 2026-09-14 (desk risers) — structural-but-not-solid parts; see [decisions.md](docs/decisions.md#slicing) |
 | `pla` | 210/205, bed 60 | **untested — no plain PLA has been printed** |
 | `petg_koala`, `petg_koalacoupon` | 4 perim, 30 % gyroid | built for a superseded spec; **not** the koala-bot standard |
 
@@ -93,9 +94,12 @@ un-homed machine needs no action first.
   footprint against the mesh bounds before printing.**
 - **`START_PRINT`'s purge line runs at Y8, X15→X205.** Anything placed there gets a prime line
   drawn through it.
-- **`prusa-slicer --merge` is unreliable** — it has thrown "Objects could not fit on the bed"
-  for two small parts, and spilled a 7-part plate from X −42 to 250. Translate parts into
-  position and merge to one STL, or keep plates to a modest fill and check the footprint.
+- **`prusa-slicer --merge` is unreliable, and on the flatpak 2.9.6 it segfaults** (exit 139,
+  no message, no output file — even for one known-good STL). So **`slice-plate.sh` does not
+  work with the current slicer.** Generate or translate parts into one STL and slice it with
+  `slice-print.sh`, or call the slicer with `--center 104,123` and no `--merge`. Under 2.5.0 it
+  threw "Objects could not fit on the bed" for two small parts and spilled a 7-part plate from
+  X −42 to 250.
 - **PLA+ is not PLA.** Same base resin plus impact modifiers: tougher, better layer adhesion,
   but glass transition is unchanged at ~55–60 °C, so it buys **no extra heat resistance**.
   It runs hotter (210–230 °C). Slicing it at plain-PLA temperatures under-fuses it.
@@ -156,7 +160,7 @@ leaves the nozzle parked on the part at temperature. See
 | [docs/decisions.md](docs/decisions.md) | Settled decisions and why — **do not re-litigate** |
 | [docs/open-questions.md](docs/open-questions.md) | Genuinely undecided, and active work |
 | `reference/` | Snapshots of the live files on the Pi |
-| `tools/` | `print-monitor.py`, `sync-reference.sh`, `extract-soarm-parts.py` |
+| `tools/` | `print-monitor.py`, `sync-reference.sh`, `extract-soarm-parts.py`, `make-riser.py` (dependency-free frustum STL generator) |
 
 **The Pi holds the authoritative copies; `reference/` is a version-controlled cache.** Refresh
 with `./tools/sync-reference.sh` before trusting anything in it, and after any change made on

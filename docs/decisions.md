@@ -119,6 +119,25 @@ it stops the next agent re-deriving it. Anything undecided lives in
   on the bed" for two small parts on a 220 × 220 bed, and spilled a 7-part plate from X −42 to
   250. Work around it by translating parts into position and writing one merged STL, or keep
   plates to a modest fill and verify the footprint every time.
+  **On the flatpak 2.9.6 `--merge` is worse than unreliable: it segfaults** (2026-09-14, exit
+  139, nothing on stdout/stderr after the `[trace]` filter, no output file) on both the two-part
+  riser STL and the single known-good `LittleGrassDragon.stl`. `--center 104,123` alone works
+  and lands the bbox where `slice-plate.sh` intended. **`slice-plate.sh` is therefore dead on
+  the current slicer** — it prints `Done:  bytes` and no file — and every plate since 2.9.6 was
+  in fact sliced as a pre-merged single STL through `slice-print.sh`. Left in place unchanged
+  because the Debian 2.5.0 fallback still runs it; fixing it means dropping `--merge` and
+  requiring a pre-merged STL, which is what the guidance above already says.
+- **Simple geometry is generated, not downloaded.** The desk risers (2026-09-14) are two
+  frustums from [`tools/make-riser.py`](../tools/make-riser.py), pure Python with no
+  dependencies because neither the workstation nor the Pi has OpenSCAD, numpy or trimesh, and
+  the repo must stand alone. It writes both parts into one STL at their final spacing, which
+  sidesteps `--merge` entirely. `--info` on the result: manifold, 2 parts, 12 edges fixed.
+- **`petg_riser` = `petg` with `fill_density = 50%`, `fill_pattern = cubic`.** For load-bearing
+  parts that must not be solid. Cubic rather than grid because grid at high density crosses
+  itself every layer and rattles the nozzle; cubic is self-supporting and near-isotropic in
+  compression. 4 top / 4 bottom solid layers are the `petg` defaults, unchanged. First use: the
+  desk risers, 5 h 59 estimated, 87.5 g for two 80 → 75 × 12 mm frustums. **Not yet validated
+  as a profile until that print is inspected.**
 
 ## Supports
 

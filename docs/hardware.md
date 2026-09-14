@@ -83,7 +83,8 @@ night. Measured at ~25 °C ambient with the enclosure in place. See
 - Klipper `v0.13.0-439-g2cc360894` (host and MCU firmware in lockstep).
 - Touchscreen: **QDtech MPI1001** (`0484:5750`), an HID multitouch panel running
   KlipperScreen. Its display blanks on idle; a tap wakes it. Cosmetic only.
-- `crowsnest` (webcam daemon) is **active**; the camera was unplugged for the garage move on
+- `crowsnest` (webcam daemon) is **failed as of 2026-09-14 because the camera is off the
+  printer on loan** — see [open-questions.md](open-questions.md#machine). The camera was unplugged for the garage move on
   2026-09-06 and refitted the same day. When no camera is attached, `lsusb` shows only the
   touchscreen and the CH340, there is no `/dev/video0` (the `/dev/video*` nodes that remain are
   the Pi's hardware codecs), and the service fails.

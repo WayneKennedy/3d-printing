@@ -159,6 +159,12 @@ next wanted rather than pre-emptively**; the files are otherwise correct.
 
 ## Machine
 
+- **The camera is off the printer, lent out for SO-ARM101 observations.** It was absent when
+  the Pi booted on 2026-09-13 16:28, so crowsnest stopped on "No usable Devices Found" and the
+  snapshot URL returns nginx 502. The user plans to refit it on **2026-09-15**. **Until then
+  every print is telemetry-only, and the 502 is expected, not a fault to debug.** After it is
+  plugged back in, run the reset-and-restart in [hardware.md](hardware.md#host-printhub) and
+  confirm a ~200 KB frame, then delete this bullet and restore "active" in hardware.md.
 - **Night monitoring needs a light.** With the room dark, an auto-exposure snapshot is
   essentially black (mean 0–2/255) and auto mode caps its own shutter. Forced manual exposure
   rescues it to **gross failure detection only** — enough to confirm nothing has come loose,

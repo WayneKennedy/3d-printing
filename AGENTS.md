@@ -74,7 +74,7 @@ write G-code into `~/printer_data/gcodes/`, where Mainsail lists it. `<material>
 | `plaplus_fig` | `plaplus` at 0.16 mm layers | **untested** — figurines to be painted, see [decisions.md](docs/decisions.md#superhero-figures) |
 | `petg_fig` | `petg` at 0.16 mm layers | validated 2026-09-09 on The Thing at 200 % — figurines in their final colour, unpainted. **The orange PETG spool strings badly across multi-part plates; load it for single-piece jobs** — [decisions.md](docs/decisions.md#superhero-figures) |
 | `petg_fig_tree` | `petg_fig` + organic bed-only supports | validated 2026-09-11 on The Thing at 320 % — PETG organic support released from under the arms; needs the flatpak 2.9.6 slicer |
-| `petg_riser` | `petg` at **50 % cubic** infill, 4/4 solid | **printing** 2026-09-14 (desk risers) — structural-but-not-solid parts; see [decisions.md](docs/decisions.md#slicing) |
+| `petg_riser` | `petg` at **50 % cubic** infill, 4/4 solid | **validated** 2026-09-14 on the desk risers — structural-but-not-solid parts; see [decisions.md](docs/decisions.md#slicing) |
 | `pla` | 210/205, bed 60 | **untested — no plain PLA has been printed** |
 | `petg_koala`, `petg_koalacoupon` | 4 perim, 30 % gyroid | built for a superseded spec; **not** the koala-bot standard |
 

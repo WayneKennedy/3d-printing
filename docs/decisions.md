@@ -136,8 +136,8 @@ it stops the next agent re-deriving it. Anything undecided lives in
   parts that must not be solid. Cubic rather than grid because grid at high density crosses
   itself every layer and rattles the nozzle; cubic is self-supporting and near-isotropic in
   compression. 4 top / 4 bottom solid layers are the `petg` defaults, unchanged. First use: the
-  desk risers, 5 h 59 estimated, 87.5 g for two 80 → 75 × 12 mm frustums. **Not yet validated
-  as a profile until that print is inspected.**
+  desk risers, 5 h 55 actual against 5 h 59 estimated, 87.5 g for two 80 → 75 × 12 mm
+  frustums. **Validated 2026-09-14** — user inspected both parts, "printed great".
 
 ## Supports
 

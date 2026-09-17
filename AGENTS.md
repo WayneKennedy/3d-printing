@@ -179,3 +179,9 @@ verify rather than trust: [docs/workflow.md](docs/workflow.md#a-fresh-clone-assu
 produced them, including conclusions that were reached, tested and found wrong — those
 corrections are kept deliberately so the next agent does not re-derive a known-wrong answer.
 Never state an open question as settled.
+
+**Check what is owned before suggesting a purchase** — filament, parts, tools. Read the private
+[wk-inventory `docs/stock.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/stock.md)
+and search the owner's invoices, and say what was found. Full rule and the owner's goal (fewer
+unused parts, more finished projects):
+[wk-inventory `AGENTS.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/AGENTS.md#before-anything-is-bought).

@@ -167,10 +167,37 @@ into position with a script and writing one merged binary STL
 (`~/models/godzilla/godzilla_plate.stl`), then slicing that as a single object. **Reuse that
 approach for any multi-part model**; do not trust `--merge`.
 
+## h743-deck — flight-controller deck for the Holybro 10" (2026-09-18)
+
+First print of a part designed in this house rather than downloaded: the deck that carries a
+Matek H743-WING V3 on a Holybro X500 V2 upper plate, from the parametric CadQuery source in
+[wk-drones `aircraft/holybro-10/print/`](https://github.com/WayneKennedy/wk-drones/tree/main/aircraft/holybro-10/print).
+Red PETG, profile `petg_riser`, started 23:25 on 2026-09-17.
+
+- **Completed 03:10, 4 h 40 m, 11.29 m of filament.** The slice said 4 h 42 m and 11.276 m —
+  **accurate to two minutes and 14 mm**, which re-confirms the lesson banked 2026-09-01 on a
+  geometry nothing like the coupon.
+- **`virtual_sdcard.progress` misled in the same direction again.** Extrapolating from 21.5 %
+  at 53 min gave ~4 h 06 m against an actual 4 h 40 m. Byte-position races through the sparse
+  rib bays and crawls through the solid flange slab at z 15–18. **Do not quote an ETA derived
+  from it**; quote the slicer's.
+- **Pre-flight checks that are worth repeating for any self-designed part.** The STL was
+  verified watertight before upload (8,272 triangles, zero open or non-manifold edges, signed
+  volume 29.83 cm³ matching the CAD); md5 checked after transfer; the emitted G-code was
+  grepped for the load-bearing `M140`/`M190`/`M104` tokens; and the extruding footprint
+  (X 71.9–148.1, Y 57.9–162.1) was checked against the saved mesh and the Y8 purge line.
+- **No supports.** The part was drawn so every overhang stays inside 45°, except sixteen 4 mm
+  flat bridges over the rib windows and four Ø5 counterbore ceilings under the deck.
+- **Outcome: printed, inspection pending.** Nothing has been looked at — the camera is blind
+  at that hour and the owner was not at the machine. What to check: the 4 mm window bridges,
+  the four counterbore ceilings, and whether 30.5 mm across the boss centres and Ø3.4 through
+  the M3 pillars survive shrinkage.
+
 ## Current state
 
-Printer is powered on and `ready`, MCU on `/dev/ttyUSB1`, idle after completing
-`coupon_ladder`. Klipper was restarted at 18:11 for the `START_PRINT` change; `START_PRINT`
+Printer is powered on, idle after completing `h743-deck` at 03:10 on 2026-09-18 with both
+heaters commanded off and cooling. MCU on `/dev/ttyUSB1`. **The printed part is still on the
+bed, uninspected.** Klipper was restarted at 18:11 for the `START_PRINT` change; `START_PRINT`
 homes on its own, so the un-homed state needs no action. Machine is still on the desk, not yet
 in the garage.
 

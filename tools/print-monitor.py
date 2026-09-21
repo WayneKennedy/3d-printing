@@ -80,6 +80,13 @@ def main():
         if new != state:
             if state is not None:
                 emit(f"STATE {state} -> {new} at {pct:.1f}% ({ps['filename']})")
+            # A job can end without a terminal state ever being polled: M112 then
+            # FIRMWARE_RESTART inside one interval goes printing -> standby. Without
+            # this the monitor ran on into the next job (2026-09-21, TPU tower).
+            if state in ("printing", "paused") and new == "standby":
+                emit(f"ENDED {ps['filename'] or '(job)'} without a terminal state seen "
+                     f"— check /server/history")
+                return 1
             state = new
             if new in TERMINAL:
                 emit(f"{new.upper()} {ps['filename']} after {hms(dur)}, "

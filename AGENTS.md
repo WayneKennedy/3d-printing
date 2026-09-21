@@ -94,12 +94,16 @@ un-homed machine needs no action first.
   footprint against the mesh bounds before printing.**
 - **`START_PRINT`'s purge line runs at Y8, X15→X205.** Anything placed there gets a prime line
   drawn through it.
-- **`prusa-slicer --merge` is unreliable, and on the flatpak 2.9.6 it segfaults** (exit 139,
-  no message, no output file — even for one known-good STL). So **`slice-plate.sh` does not
-  work with the current slicer.** Generate or translate parts into one STL and slice it with
-  `slice-print.sh`, or call the slicer with `--center 104,123` and no `--merge`. Under 2.5.0 it
-  threw "Objects could not fit on the bed" for two small parts and spilled a 7-part plate from
-  X −42 to 250.
+- **`--merge` means "arrange, then merge" — which binary you run decides whether it works.**
+  On the **flatpak 2.9.6 it always segfaults** (exit 139, no message, no output file — even for
+  one clean part), so **`slice-plate.sh`, which picks the flatpak, does not work.** On the
+  **Debian 2.5.0** (`/usr/bin/prusa-slicer`) it works **provided every input STL sits on Z0**;
+  one part not on Z0 aborts it with "Objects could not fit on the bed" (exit 134). XY offset
+  made no difference. Tested A/B 2026-09-21 — [decisions.md](docs/decisions.md#slicing). For a
+  multi-part plate: drop each STL to Z0, then
+  `prusa-slicer --load <profile> --merge --center 104,123`, and check the footprint. **Check
+  Z-min of every STL first**: koala-bot's CadQuery exports sit on Z0; the downloaded Godzilla
+  parts were in assembly coordinates, 15 mm below the bed to 15 mm above it.
 - **PLA+ is not PLA.** Same base resin plus impact modifiers: tougher, better layer adhesion,
   but glass transition is unchanged at ~55–60 °C, so it buys **no extra heat resistance**.
   It runs hotter (210–230 °C). Slicing it at plain-PLA temperatures under-fuses it.

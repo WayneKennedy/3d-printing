@@ -157,6 +157,22 @@ fix but was sliced correctly, so **check the file, not its date**:
 the first layer starts, which is self-limiting (the purge line cleans the tip). **Re-slice when
 next wanted rather than pre-emptively**; the files are otherwise correct.
 
+### `slice-plate.sh` cannot make a plate — how to fix it
+
+Raised 2026-09-21 by the `--merge` A/B ([decisions.md](decisions.md#slicing)). The script
+prefers the flatpak 2.9.6, whose `--merge` always segfaults, and its `| tail -5` pipeline hides
+the exit code, so it prints `Done:` with no file. The Debian 2.5.0 `--merge` works, but only if
+every STL sits on Z0; the script's header says source coordinates "do not matter", which holds
+for XY and is wrong for Z. Undecided between:
+
+- **Force the Debian binary for `--merge`** and drop each input to Z0 first. Keeps one-command
+  plates; loses organic support on plates, which only the flatpak has.
+- **Drop `--merge`**: pre-merge into one Z0 STL (as `make-riser.py` and the Godzilla plate did)
+  and slice with either binary. Keeps organic support; needs an arranging step.
+
+Either way it should fail on a non-zero exit instead of printing `Done:`. Until decided, slice
+plates by hand with `/usr/bin/prusa-slicer --merge` on Z0 inputs, as in [AGENTS.md](../AGENTS.md).
+
 ## Machine
 
 - **The camera is off the printer, lent out for SO-ARM101 observations.** It was absent when
@@ -241,7 +257,11 @@ next wanted rather than pre-emptively**; the files are otherwise correct.
 
 - **ABS profile** — missing, and a drop-in file.
 - **TPU profile.** A 3/4 spool of red TPU is on hand, previously dialled in on an Ender-3 for
-  drone parts. **Those settings are gone and would not have transferred anyway** — that machine
+  drone parts. **A second spool, new, is to be printed first** (owner, 2026-09-21): Reprapper
+  Silk TPU, yellow, 1.75 mm, 250 g, batch 20260407S01, for the Holybro 10"'s rev B
+  flight-controller deck and a Bee35 part. 95A per the product listing; the label gives no
+  hardness. **The label and the listing disagree on temperature** — label 205–230 °C,
+  listing 180–220 °C — so the tower should span both. **Those settings are gone and would not have transferred anyway** — that machine
   was Bowden, and its retraction compensates for tube compliance this direct-drive machine does
   not have. Temperatures and speeds would have carried; those are the easier half to re-derive.
   (This loss is what prompted putting these notes under version control.)

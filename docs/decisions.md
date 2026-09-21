@@ -115,18 +115,38 @@ it stops the next agent re-deriving it. Anything undecided lives in
   the origin and below Z0 and the fit check runs before `--center` can help. Translating it to
   sit on Z0 centred at the origin fixed it. This extends the `--merge` warning below: the arrange
   is fragile about input coordinates, not only about object count.
-- **`prusa-slicer --merge` is not trusted.** Its headless arrange threw "Objects could not fit
-  on the bed" for two small parts on a 220 × 220 bed, and spilled a 7-part plate from X −42 to
-  250. Work around it by translating parts into position and writing one merged STL, or keep
-  plates to a modest fill and verify the footprint every time.
+- **`prusa-slicer --merge` on the Debian 2.5.0 works when every input sits on Z0; it fails
+  when any does not.** *Corrected 2026-09-21.* It was recorded here on 2026-09-02 as "not
+  trusted" and "broken for any multi-object slice", after it threw "Objects could not fit on the
+  bed" for Godzilla's two legs and two arms on a 220 × 220 bed. koala-bot then sliced a 4-up
+  `root_socket` plate with it (`--merge --center 104,123`, 2026-09-18) that printed clean, so
+  the two records contradicted each other. `--merge` is documented by the binary itself as
+  *"Arrange the supplied models in a plate and merge them"* — the arranger is the fragile part,
+  and the Rotation_Pitch bullet above had already found it fails on input coordinates.
+  **A/B on the Pi, 2026-09-21, printer idle, base `ender5s1_petg.ini`, `--merge --center 104,123`:**
+
+  | Case | Inputs | 2.5.0 result |
+  |---|---|---|
+  | koala 4-up | `root_socket` L, L, R, R (SHA `298f0eff`/`cbd58598`), all Z 0–28, XY-centred | slices, X 50–158 Y 79–167, in mesh |
+  | Godzilla raw, 7 parts | as downloaded: Z −15.1 to +15.1, legs and arms off the bed | **exit 134, "Objects could not fit on the bed"** |
+  | Godzilla raw, legs + arms | the four-part case recorded 2026-09-02 | **exit 134, same error** — reproduced |
+  | Godzilla, Z-min → 0 only | XY untouched | slices, X 28.5–179.5 Y 58.6–183.3, in mesh |
+  | Godzilla, Z → 0 and XY-centred | | identical footprint and time; G-code differs only by 0.001 mm rounding |
+
+  So **Z is the variable; XY offset and part count are not.** Drop every STL to Z0 before
+  `--merge`, then verify the footprint as always. The X −42 to 250 spill of 2026-09-02 was not
+  reproduced and its inputs are not recorded; it remains unexplained.
   **On the flatpak 2.9.6 `--merge` is worse than unreliable: it segfaults** (2026-09-14, exit
   139, nothing on stdout/stderr after the `[trace]` filter, no output file) on both the two-part
   riser STL and the single known-good `LittleGrassDragon.stl`. `--center 104,123` alone works
   and lands the bbox where `slice-plate.sh` intended. **`slice-plate.sh` is therefore dead on
   the current slicer** — it prints `Done:  bytes` and no file — and every plate since 2.9.6 was
-  in fact sliced as a pre-merged single STL through `slice-print.sh`. Left in place unchanged
-  because the Debian 2.5.0 fallback still runs it; fixing it means dropping `--merge` and
-  requiring a pre-merged STL, which is what the guidance above already says.
+  in fact sliced as a pre-merged single STL through `slice-print.sh`. **Re-confirmed
+  2026-09-21:** exit 139 on the koala 4-up, on Z0-normalised Godzilla, and on one clean
+  `root_socket` alone; the same single part without `--merge` slices. It is the flatpak's own
+  crash, independent of input coordinates. (Testing it needs inputs under `$HOME`: the flatpak
+  sandbox cannot see `/tmp`, and fails there with exit 1 "No such file" — not the crash.)
+  `slice-plate.sh` is unchanged; how to fix it is open — [open-questions.md](open-questions.md).
 - **Simple geometry is generated, not downloaded.** The desk risers (2026-09-14) are two
   frustums from [`tools/make-riser.py`](../tools/make-riser.py), pure Python with no
   dependencies because neither the workstation nor the Pi has OpenSCAD, numpy or trimesh, and

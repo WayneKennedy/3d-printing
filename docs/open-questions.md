@@ -26,9 +26,9 @@ they disagree, so the tower spans both. For two wk-drones parts
   (3) **first-layer flatness and release** — the FC seats on the first-layer face. Target
   natural frequency 25–40 Hz is tuned from flight logs, so **batch consistency matters more
   than the absolute hardness** — keep the batch number with the part.
-- **A Bee35 part — which one is unknown.** wk-drones' `aircraft/bee35/print/sources.md` lists
-  TPU candidates (GPS mounts incl. `220.stl`, the MTF-01P case, camera tilt inserts). Ask the
-  owner.
+- **Bee35: a mount for the Matek M10Q-5883 GPS** (owner, 2026-09-21), whose widest element is
+  its 20 × 20 mm PCB. Candidate `220.stl` (pocket 20.4 × 22.4) per wk-drones'
+  `aircraft/bee35/print/sources.md`; the choice of model is wk-drones'.
 
 **What those parts need decides what gets calibrated: press-fit, thin-wall width and the first
 layer — not bridging, overhangs or surface finish.**
@@ -45,12 +45,14 @@ extrusion 2.50 mm³/s (2.9.6) / 2.04 (2.5.0), ~6 g, ~53 min. **`START_PRINT` nee
 for TPU: its purge runs ≈1.6 mm³/s and its retractions are 0.5 mm and 2 mm at 30 mm/s.
 
 **Before the first TPU print:**
-- **A glue-stick release layer on the PEI.** TPU bonds to PEI aggressively and is one of the
-  few materials that can lift coating off a sheet on removal. No glue stick is recorded in
-  [wk-inventory `stock.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/stock.md) —
-  ask; do not assume.
-- **Is the spool dry?** TPU is hygroscopic; wet TPU pops, strings and bonds badly, which would
-  corrupt the tower. Unknown whether it came sealed. No dryer is recorded in inventory.
+- **No glue-stick release layer — owner's decision, 2026-09-21.** None is owned. TPU bonds to
+  PEI aggressively and can lift coating on removal; the owner accepted that on the grounds
+  that the plate is double-sided and they have printed TPU on PEI before without damage (on
+  another machine; not recorded here). **If a part will not release, let the plate cool fully
+  and flex it; do not lever the part off.**
+- **The spool is dry**: new, vacuum bag opened the morning of 2026-09-21 (owner). If it sits
+  out for weeks, that no longer holds — TPU is hygroscopic and wet TPU pops, strings and bonds
+  badly.
 - **The owner watches the first layer** (AGENTS.md rule 6); babystep if it is over-squished —
   TPU tolerates a slightly high first layer better than a crushed one.
 
@@ -61,9 +63,9 @@ that no consumer part depends on.
 
 | # | Print | Settles | Read it by | Est. |
 |---|---|---|---|---|
-| 1 | **Temperature tower, 230 → 180 °C in 5 °C bands** (11 bands, spans both ranges), `M104` inserted at each band's first layer | nozzle temperature | bend and try to tear each band by hand: lowest band that will not split between layers, then the silk sheen and stringing among those that pass. Owner reports; nothing inferred from telemetry | ~8 g, ~2 h |
+| 1 | **Temperature tower, 230 → 180 °C in 5 °C bands** (11 bands, spans both ranges). **Sliced 2026-09-21: `tpu_temp_tower.gcode`**, 2.9.6, 60 min, 5.9 g, footprint X 87–121 Y 113–133, no gap fill; STL `~/models/calibration/tpu_tower.stl` from [`tools/temp-tower.py`](../tools/temp-tower.py). Band *n* (0 = bottom) is Z 5n–5n+5 at 230 − 5n °C | nozzle temperature | bend and try to tear each band by hand: lowest band that will not split between layers, then the silk sheen and stringing among those that pass. Owner reports; nothing inferred from telemetry | ~8 g, ~2 h |
 | 2 | **Single-wall 20 mm cube** (spiral vase), at the #1 temperature | `extrusion_multiplier` | calipers on the wall at 8 points against the 0.45 mm extrusion width | ~2 g, 20 min |
-| 3 | **Deck coupon**, on a flat base printed like rev C's first-layer face: three **Ø11 × 19.8 mm pillars with hex holes at 4.45 / 4.55 / 4.65 AF** (the real pillar, so hoop stiffness and grip length match); three **arms 5.0 mm tall × 30 mm at 1.8 / 2.0 / 2.2 mm wide**, solid perimeters, no infill | the hex size rev C should draw; whether 2.0 mm prints at 2.0 | a brass standoff pressed into each pillar (goes in by hand? holds? splits?); arm widths by calipers at 5 points; the base checked flat on glass. **Before printing, check the arm G-code for gap fill** — a width that is not a whole number of perimeter lines prints a gap-fill seam down the spring, and the fix is a CAD width, not a setting | ~8 g, ~1.5 h |
+| 3 | **Deck coupon**, on a flat base printed like rev C's first-layer face: three **Ø11 × 19.8 mm pillars with hex holes at 4.45 / 4.55 / 4.65 AF** (the real pillar, so hoop stiffness and grip length match); three **arms 5.0 mm tall × 30 mm at 1.8 / 2.0 / 2.2 mm wide**, solid perimeters, no infill; **20 × 20 mm square pockets at +0.2 / +0.4 / +0.6** for the M10Q-5883 PCB | the hex size rev C should draw; whether 2.0 mm prints at 2.0; the clearance a 20 mm board needs | a brass standoff pressed into each pillar (goes in by hand? holds? splits?); the GPS board tried in each pocket; arm widths by calipers at 5 points; the base checked flat on glass. **Before printing, check the arm G-code for gap fill** — a width that is not a whole number of perimeter lines prints a gap-fill seam down the spring, and the fix is a CAD width, not a setting | ~8 g, ~1.5 h |
 | 4 | **First real part — owner's choice** once rev C is approved or the Bee35 part is named | the profile, on a real part | the part passes or not | — |
 
 Skipped unless something forces them: a **retraction test** (stringing is cosmetic on these
@@ -71,8 +73,8 @@ parts, and TPU trades it for reliable feeding) and a **volumetric ceiling test**
 only matters if jobs are too slow, and these parts are small). **Pressure advance stays off**,
 as for every other material here — `printer.cfg` sets none.
 
-**Open:** the calibration models do not exist yet. Neither host has OpenSCAD, so they are
-generated in pure Python as [`tools/make-riser.py`](../tools/make-riser.py) is. `220.stl` is
+**Open:** the flow cube and deck coupon do not exist yet. Neither host has OpenSCAD, so they are
+generated in pure Python as [`tools/temp-tower.py`](../tools/temp-tower.py) is. `220.stl` is
 on neither host — wk-drones records its source (SpeedyBee's Bee35 download) but not the file;
 it matters only if the owner names the GPS mount as the Bee35 part. When `tpu` is validated,
 koala-bot's provisional `hardware/print/manufacturing-tpu.ini` (230/50) should layer on it

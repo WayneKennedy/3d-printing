@@ -165,7 +165,7 @@ leaves the nozzle parked on the part at temperature. See
 | [docs/decisions.md](docs/decisions.md) | Settled decisions and why — **do not re-litigate** |
 | [docs/open-questions.md](docs/open-questions.md) | Genuinely undecided, and active work |
 | `reference/` | Snapshots of the live files on the Pi |
-| `tools/` | `print-monitor.py`, `sync-reference.sh`, `extract-soarm-parts.py`, `make-riser.py` (dependency-free frustum STL generator) |
+| `tools/` | `print-monitor.py`, `sync-reference.sh`, `extract-soarm-parts.py`, `make-riser.py` (dependency-free frustum STL generator), `temp-tower.py` (temperature-tower STL + band patcher) |
 
 **The Pi holds the authoritative copies; `reference/` is a version-controlled cache.** Refresh
 with `./tools/sync-reference.sh` before trusting anything in it, and after any change made on

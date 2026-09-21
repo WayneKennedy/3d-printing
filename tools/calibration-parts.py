@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Dependency-free calibration STLs, each a set of closed prisms (no booleans).
 
-    tools/calibration-parts.py flow-cube   OUT.stl [--size 20]
+    tools/calibration-parts.py flow-cube   OUT.stl [--size 20] [--height H]
     tools/calibration-parts.py deck-coupon OUT.stl
 
 flow-cube: a plain box, to slice in spiral-vase mode (one perimeter, no top) and
-measure the wall against the extrusion width -> extrusion_multiplier.
+measure the wall against the extrusion width -> extrusion_multiplier. For TPU use
+--height 8 or so: a one-line TPU wall went floppy about a third of the way up a
+20 mm cube and was dragged into loops (2026-09-21); only the lower wall was usable.
 
 deck-coupon: the wk-drones Holybro 10" FC deck rev C's risky features at real size,
 plus the Bee35 GPS pocket (3d-printing open-questions.md, "TPU 95A"). Every body
@@ -123,11 +125,12 @@ def deck_coupon():
 ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
 sp = ap.add_subparsers(dest="cmd", required=True)
 c = sp.add_parser("flow-cube"); c.add_argument("out"); c.add_argument("--size", type=float, default=20.0)
+c.add_argument("--height", type=float, help="default: same as --size")
 d = sp.add_parser("deck-coupon"); d.add_argument("out")
 a = ap.parse_args()
 if a.cmd == "flow-cube":
     s = a.size / 2
-    tris = box(-s, -s, s, s, a.size)
+    tris = box(-s, -s, s, s, a.height or a.size)
 else:
     tris = deck_coupon()
 tris, (bx, by) = centred(tris)

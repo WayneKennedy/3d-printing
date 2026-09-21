@@ -49,7 +49,11 @@ not answer over the tailnet. The trailing slash is load-bearing — `/webcam?act
    commands; the user handles paper and filament only.
 5. **Z cannot go below 0.** `[stepper_z]` declares no `position_min`, so any move under Z0 is
    rejected. Work the paper test in the 0.0–0.3 mm window.
-6. **The user is at the machine and can see it.** Ask what the nozzle or first layer actually
+6. **Never plug anything into printhub's USB during a print** — not a light, not a charger. A
+   USB LED lamp plugged in mid-print tripped over-current on every port at once, dropped the
+   MCU and killed a 2 h job (2026-09-21, [open-questions.md](docs/open-questions.md#usb-over-current-dropped-the-mcu-mid-print-2026-09-21--cause-found)).
+   Power lights and accessories from anything else.
+7. **The user is at the machine and can see it.** Ask what the nozzle or first layer actually
    did rather than inferring it from telemetry.
 
 ## Slicing and printing

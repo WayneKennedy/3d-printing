@@ -73,8 +73,14 @@ parts, and TPU trades it for reliable feeding) and a **volumetric ceiling test**
 only matters if jobs are too slow, and these parts are small). **Pressure advance stays off**,
 as for every other material here — `printer.cfg` sets none.
 
-**Open:** the flow cube and deck coupon do not exist yet. Neither host has OpenSCAD, so they are
-generated in pure Python as [`tools/temp-tower.py`](../tools/temp-tower.py) is. `220.stl` is
+**Flow cube and deck coupon generated 2026-09-21, not yet sliced** (slicing waits for the tower
+print to finish, rule 1, and for its temperature): `~/models/calibration/flow_cube.stl` and
+`deck_coupon.stl` from [`tools/calibration-parts.py`](../tools/calibration-parts.py), whose
+docstring gives the coupon's layout. Both verified closed and outward-facing, with volumes matching
+hand calculation. The coupon adds a **2.08 mm arm** — 5 perimeter lines at PrusaSlicer's spacing,
+whereas 2.0 is not a whole number of lines — so the slice can show whether rev C should draw
+2.08. **The three pillars come off as loose parts: mark each (left → right = 4.45 / 4.55 /
+4.65 AF) before lifting it off.** `220.stl` is
 on neither host — wk-drones records its source (SpeedyBee's Bee35 download) but not the file;
 it matters only if the owner names the GPS mount as the Bee35 part. When `tpu` is validated,
 koala-bot's provisional `hardware/print/manufacturing-tpu.ini` (230/50) should layer on it

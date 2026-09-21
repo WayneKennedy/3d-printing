@@ -76,6 +76,7 @@ write G-code into `~/printer_data/gcodes/`, where Mainsail lists it. `<material>
 | `petg_fig_tree` | `petg_fig` + organic bed-only supports | validated 2026-09-11 on The Thing at 320 % — PETG organic support released from under the arms; needs the flatpak 2.9.6 slicer |
 | `petg_riser` | `petg` at **50 % cubic** infill, 4/4 solid | **validated** 2026-09-14 on the desk risers — structural-but-not-solid parts; see [decisions.md](docs/decisions.md#slicing) |
 | `pla` | 210/205, bed 60 | **untested — no plain PLA has been printed** |
+| `tpu` | 215/220, bed 50, retract 0.4 @ 20, ≤ 2.5 mm³/s | **untested** — created 2026-09-21 for Silk TPU 95A; calibration plan in [open-questions.md](docs/open-questions.md#tpu-95a--profile-and-calibration). **Glue stick on the PEI first** |
 | `petg_koala`, `petg_koalacoupon` | 4 perim, 30 % gyroid | built for a superseded spec; **not** the koala-bot standard |
 
 **A bare `START_PRINT` is always safe** — it defaults to PETG 240/80. It homes on its own, so an

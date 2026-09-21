@@ -9,6 +9,59 @@ holds it authoritatively. Query it, or run `tools/print-monitor.py` — see
 
 ## Active work
 
+### TPU 95A — profile and calibration
+
+**Spool loaded 2026-09-21** (owner): Reprapper **Silk** TPU, yellow, 1.75 mm, 250 g, batch
+20260407S01. 95A (owner; product listing). **Temperature: label 205–230 °C, listing 180–220 °C** —
+they disagree, so the tower spans both. For: the Bee35 GPS mount (`220.stl`, 3.4 cm³, a push-fit pocket for the
+20 × 20 mm M10Q-5883) and the Holybro 10" rev B deck (thin TPU flexure arms that set the
+isolation frequency, with 4.55 AF brass hex standoffs) — both in
+[wk-drones](https://github.com/WayneKennedy/wk-drones). **What those parts need decides what
+gets calibrated: bonding, pocket fit and thin-wall thickness, not surface finish.**
+
+**Profile `tpu` — created 2026-09-21, untested.** `~/slicer/ender5s1_tpu.ini`, `petg` with:
+215 °C (220 first layer), inside the overlap of both ranges; bed 50 °C; retraction 0.4 mm at
+20 mm/s, no wipe, no lift, not on layer change, only on travels over 2 mm; fan 30–50 %, off
+for layer 1 only; speeds 15–25 mm/s; `max_volumetric_speed = 2.5`; `avoid_crossing_perimeters`.
+**Do not copy PETG's retraction** (`retract_before_travel = 1`, `wipe = 1`, 40 mm/s): TPU
+buckles under compression, so it wants little retraction, slowly, and accepts stringing as the
+price. Every value is a starting point, not a measurement. Verified by slicing koala-bot's
+`front_contact_pad` on both binaries: bed-first header intact, 220 → 215 after layer 1, peak
+extrusion 2.50 mm³/s (2.9.6) / 2.04 (2.5.0), ~6 g, ~53 min. **`START_PRINT` needs no change**
+for TPU: its purge runs ≈1.6 mm³/s and its retractions are 0.5 mm and 2 mm at 30 mm/s.
+
+**Before the first TPU print:**
+- **A glue-stick release layer on the PEI.** TPU bonds to PEI aggressively and is one of the
+  few materials that can lift coating off a sheet on removal. No glue stick is recorded in
+  [wk-inventory `stock.md`](https://github.com/WayneKennedy/wk-inventory/blob/main/docs/stock.md) —
+  ask; do not assume.
+- **Is the spool dry?** TPU is hygroscopic; wet TPU pops, strings and bonds badly, which would
+  corrupt the tower. Unknown whether it came sealed. No dryer is recorded in inventory.
+- **The owner watches the first layer** (AGENTS.md rule 6); babystep if it is over-squished —
+  TPU tolerates a slightly high first layer better than a crushed one.
+
+**Calibration prints, in order.** Grams and times are estimates until sliced; the whole plan
+should cost ~20 g of the 250 g spool. The spool is small, so do not print a calibration step
+that no consumer part depends on.
+
+| # | Print | Settles | Read it by | Est. |
+|---|---|---|---|---|
+| 1 | **Temperature tower, 230 → 180 °C in 5 °C bands** (11 bands, spans both ranges), `M104` inserted at each band's first layer | nozzle temperature | bend and try to tear each band by hand: lowest band that will not split between layers, then the silk sheen and stringing among those that pass. Owner reports; nothing inferred from telemetry | ~8 g, ~2 h |
+| 2 | **Single-wall 20 mm cube** (spiral vase), at the #1 temperature | `extrusion_multiplier` | calipers on the wall at 8 points against the 0.45 mm extrusion width | ~2 g, 20 min |
+| 3 | **Fit coupon**: 20.0 mm square pockets at +0 / +0.2 / +0.4; 4.55 AF hex pockets at −0.1 / 0 / +0.1 / +0.2; strips 0.8 / 1.2 / 1.6 / 2.0 mm thick × 30 mm | the offsets the drone CAD should use; how thin a flexure prints true | the M10Q board and a brass standoff tried in each pocket; strips measured with calipers | ~6 g, ~1 h |
+| 4 | **Bee35 GPS mount `220.stl`** | the profile, on a real part | fit of the M10Q-5883; the part passes or not | ~4 g |
+
+Skipped unless something forces them: a **retraction test** (stringing is cosmetic on these
+parts, and TPU trades it for reliable feeding) and a **volumetric ceiling test** (2.5 mm³/s
+only matters if jobs are too slow, and these parts are small). **Pressure advance stays off**,
+as for every other material here — `printer.cfg` sets none.
+
+**Open:** the calibration models do not exist yet. Neither host has OpenSCAD, so they are
+generated in pure Python as [`tools/make-riser.py`](../tools/make-riser.py) is. `220.stl` is
+on neither host — wk-drones records its source (SpeedyBee's Bee35 download) but not the file.
+When `tpu` is validated, koala-bot's provisional `hardware/print/manufacturing-tpu.ini` (230/50)
+should layer on it rather than on `petg`.
+
 ### SO-ARM101 follower — all 11 parts usable; next is assembly
 
 Sliced figures are measured, not estimated. Slice with `slice-plate.sh`, which centres on the
@@ -256,21 +309,12 @@ plates by hand with `/usr/bin/prusa-slicer --merge` on Z0 inputs, as in [AGENTS.
 ## Materials wanted
 
 - **ABS profile** — missing, and a drop-in file.
-- **TPU profile.** A 3/4 spool of red TPU is on hand, previously dialled in on an Ender-3 for
-  drone parts. **A second spool, new, is to be printed first** (owner, 2026-09-21): Reprapper
-  Silk TPU, yellow, 1.75 mm, 250 g, batch 20260407S01, for the Holybro 10"'s rev B
-  flight-controller deck and a Bee35 part. 95A per the product listing; the label gives no
-  hardness. **The label and the listing disagree on temperature** — label 205–230 °C,
-  listing 180–220 °C — so the tower should span both. **Those settings are gone and would not have transferred anyway** — that machine
-  was Bowden, and its retraction compensates for tube compliance this direct-drive machine does
-  not have. Temperatures and speeds would have carried; those are the easier half to re-derive.
-  (This loss is what prompted putting these notes under version control.)
-  - **Do not inherit the PETG retraction settings.** `retract_before_travel = 1`, `wipe = 1`
-    and 40 mm/s are right for PETG and wrong for a material that buckles under compression.
-    TPU wants near-zero retraction at much lower speed and accepts stringing as the price.
-  - **Protect the PEI plate.** TPU bonds to PEI aggressively and is one of the few materials
-    that can lift coating off a sheet on removal. Use a glue stick as a release layer rather
-    than find out.
+- **TPU profile** — in progress; see [TPU 95A — profile and calibration](#tpu-95a--profile-and-calibration).
+  The 3/4 spool of **red TPU** (hardness unrecorded) was dialled in on a Bowden Ender-3 for
+  drone parts; **those settings are gone and would not have transferred anyway** — Bowden
+  retraction compensates for tube compliance this direct-drive machine does not have. (This
+  loss is what prompted putting these notes under version control.) Re-run the temperature
+  tower for it when it is next wanted; the rest of the yellow spool's calibration should carry.
 - **Lightweight (foaming) PLA profile**, for RC planes. **Treat as a separate problem, not a
   PLA variant** — nozzle temperature drives foaming expansion, so **temperature sets density**
   rather than just flow quality. Flow runs down to ~40–50 % to let the material expand, and

@@ -5,9 +5,10 @@
     tools/calibration-parts.py deck-coupon OUT.stl
 
 flow-cube: a plain box, to slice in spiral-vase mode (one perimeter, no top) and
-measure the wall against the extrusion width -> extrusion_multiplier. For TPU use
---height 8 or so: a one-line TPU wall went floppy about a third of the way up a
-20 mm cube and was dragged into loops (2026-09-21); only the lower wall was usable.
+measure the wall against the extrusion width -> extrusion_multiplier. For TPU try
+--height 8: the first TPU cube (2026-09-21) turned to loops a third of the way up,
+either a floppy one-line wall or feeding already failing - the next job extruded
+nothing - so the cause is not known.
 
 deck-coupon: the wk-drones Holybro 10" FC deck rev C's risky features at real size,
 plus the Bee35 GPS pocket (3d-printing open-questions.md, "TPU 95A"). Every body

@@ -13,11 +13,25 @@ holds it authoritatively. Query it, or run `tools/print-monitor.py` — see
 
 **Spool loaded 2026-09-21** (owner): Reprapper **Silk** TPU, yellow, 1.75 mm, 250 g, batch
 20260407S01. 95A (owner; product listing). **Temperature: label 205–230 °C, listing 180–220 °C** —
-they disagree, so the tower spans both. For: the Bee35 GPS mount (`220.stl`, 3.4 cm³, a push-fit pocket for the
-20 × 20 mm M10Q-5883) and the Holybro 10" rev B deck (thin TPU flexure arms that set the
-isolation frequency, with 4.55 AF brass hex standoffs) — both in
-[wk-drones](https://github.com/WayneKennedy/wk-drones). **What those parts need decides what
-gets calibrated: bonding, pocket fit and thin-wall thickness, not surface finish.**
+they disagree, so the tower spans both. For two wk-drones parts
+([wk-drones](https://github.com/WayneKennedy/wk-drones)):
+- **Holybro 10" FC deck, rev C** — drawn, under the owner's review, **not approved** (rev B is
+  superseded). A 38 × 56 × 5 mm platform carrying the FC hangs on four Z-shaped flexure arms
+  between two anchor blocks; 20 mm brass hex standoffs (4.55 AF) are pressed through Ø11 ×
+  19.8 mm TPU pillars. Prints **upside down, FC face on the bed**; no bridges or overhangs.
+  Per the wk-drones session, 2026-09-21, in priority order: (1) the **hex press-fit** — drawn
+  at nominal 4.55 AF on the untested assumption that TPU holes print undersize and grip;
+  (2) **arm width** — the arms are 2.0 wide × 5.0 tall, solid perimeters, and are the
+  isolator's spring: stiffness goes with width³, so a 10 % width error is ~30 % in stiffness;
+  (3) **first-layer flatness and release** — the FC seats on the first-layer face. Target
+  natural frequency 25–40 Hz is tuned from flight logs, so **batch consistency matters more
+  than the absolute hardness** — keep the batch number with the part.
+- **A Bee35 part — which one is unknown.** wk-drones' `aircraft/bee35/print/sources.md` lists
+  TPU candidates (GPS mounts incl. `220.stl`, the MTF-01P case, camera tilt inserts). Ask the
+  owner.
+
+**What those parts need decides what gets calibrated: press-fit, thin-wall width and the first
+layer — not bridging, overhangs or surface finish.**
 
 **Profile `tpu` — created 2026-09-21, untested.** `~/slicer/ender5s1_tpu.ini`, `petg` with:
 215 °C (220 first layer), inside the overlap of both ranges; bed 50 °C; retraction 0.4 mm at
@@ -41,15 +55,16 @@ for TPU: its purge runs ≈1.6 mm³/s and its retractions are 0.5 mm and 2 mm at
   TPU tolerates a slightly high first layer better than a crushed one.
 
 **Calibration prints, in order.** Grams and times are estimates until sliced; the whole plan
-should cost ~20 g of the 250 g spool. The spool is small, so do not print a calibration step
+should cost ~20 g of the 250 g spool.
+The tower needs no bridge or overhang features: nothing it serves has them. The spool is small, so do not print a calibration step
 that no consumer part depends on.
 
 | # | Print | Settles | Read it by | Est. |
 |---|---|---|---|---|
 | 1 | **Temperature tower, 230 → 180 °C in 5 °C bands** (11 bands, spans both ranges), `M104` inserted at each band's first layer | nozzle temperature | bend and try to tear each band by hand: lowest band that will not split between layers, then the silk sheen and stringing among those that pass. Owner reports; nothing inferred from telemetry | ~8 g, ~2 h |
 | 2 | **Single-wall 20 mm cube** (spiral vase), at the #1 temperature | `extrusion_multiplier` | calipers on the wall at 8 points against the 0.45 mm extrusion width | ~2 g, 20 min |
-| 3 | **Fit coupon**: 20.0 mm square pockets at +0 / +0.2 / +0.4; 4.55 AF hex pockets at −0.1 / 0 / +0.1 / +0.2; strips 0.8 / 1.2 / 1.6 / 2.0 mm thick × 30 mm | the offsets the drone CAD should use; how thin a flexure prints true | the M10Q board and a brass standoff tried in each pocket; strips measured with calipers | ~6 g, ~1 h |
-| 4 | **Bee35 GPS mount `220.stl`** | the profile, on a real part | fit of the M10Q-5883; the part passes or not | ~4 g |
+| 3 | **Deck coupon**, on a flat base printed like rev C's first-layer face: three **Ø11 × 19.8 mm pillars with hex holes at 4.45 / 4.55 / 4.65 AF** (the real pillar, so hoop stiffness and grip length match); three **arms 5.0 mm tall × 30 mm at 1.8 / 2.0 / 2.2 mm wide**, solid perimeters, no infill | the hex size rev C should draw; whether 2.0 mm prints at 2.0 | a brass standoff pressed into each pillar (goes in by hand? holds? splits?); arm widths by calipers at 5 points; the base checked flat on glass. **Before printing, check the arm G-code for gap fill** — a width that is not a whole number of perimeter lines prints a gap-fill seam down the spring, and the fix is a CAD width, not a setting | ~8 g, ~1.5 h |
+| 4 | **First real part — owner's choice** once rev C is approved or the Bee35 part is named | the profile, on a real part | the part passes or not | — |
 
 Skipped unless something forces them: a **retraction test** (stringing is cosmetic on these
 parts, and TPU trades it for reliable feeding) and a **volumetric ceiling test** (2.5 mm³/s
@@ -58,9 +73,10 @@ as for every other material here — `printer.cfg` sets none.
 
 **Open:** the calibration models do not exist yet. Neither host has OpenSCAD, so they are
 generated in pure Python as [`tools/make-riser.py`](../tools/make-riser.py) is. `220.stl` is
-on neither host — wk-drones records its source (SpeedyBee's Bee35 download) but not the file.
-When `tpu` is validated, koala-bot's provisional `hardware/print/manufacturing-tpu.ini` (230/50)
-should layer on it rather than on `petg`.
+on neither host — wk-drones records its source (SpeedyBee's Bee35 download) but not the file;
+it matters only if the owner names the GPS mount as the Bee35 part. When `tpu` is validated,
+koala-bot's provisional `hardware/print/manufacturing-tpu.ini` (230/50) should layer on it
+rather than on `petg`.
 
 ### SO-ARM101 follower — all 11 parts usable; next is assembly
 

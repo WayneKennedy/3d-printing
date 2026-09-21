@@ -63,7 +63,7 @@ that no consumer part depends on.
 
 | # | Print | Settles | Read it by | Est. |
 |---|---|---|---|---|
-| 1 | **Temperature tower, 230 → 180 °C in 5 °C bands** (11 bands, spans both ranges). **Sliced 2026-09-21: `tpu_temp_tower.gcode`**, 2.9.6, 60 min, 5.9 g, footprint X 87–121 Y 113–133, no gap fill; STL `~/models/calibration/tpu_tower.stl` from [`tools/temp-tower.py`](../tools/temp-tower.py). Band *n* (0 = bottom) is Z 5n–5n+5 at 230 − 5n °C. **Printed 2026-09-21: under-extrudes from 190 °C (band 8), no extrusion at 180, stopped by `M112`** ([print log](print-log.md)); 195 is the coolest clean band. **Profile floor ~205 °C** (reasoning, not measurement: 15 °C over the 190 onset, because under-extrusion thins the arms and arm width is what sets their stiffness). Tear test pending | nozzle temperature | bend and try to tear each band by hand: lowest band that will not split between layers, then the silk sheen and stringing among those that pass. Owner reports; nothing inferred from telemetry | ~8 g, ~2 h |
+| 1 | **Temperature tower, 230 → 180 °C in 5 °C bands** (11 bands, spans both ranges). **Sliced 2026-09-21: `tpu_temp_tower.gcode`**, 2.9.6, 60 min, 5.9 g, footprint X 87–121 Y 113–133, no gap fill; STL `~/models/calibration/tpu_tower.stl` from [`tools/temp-tower.py`](../tools/temp-tower.py). Band *n* (0 = bottom) is Z 5n–5n+5 at 230 − 5n °C. **Printed 2026-09-21: under-extrudes from 190 °C (band 8), no extrusion at 180, stopped by `M112`** ([print log](print-log.md)); 195 is the coolest clean band. **Profile floor ~205 °C** (reasoning, not measurement: 15 °C over the 190 onset, because under-extrusion thins the arms and arm width is what sets their stiffness). **Tear test (owner): no layer tears by fingertip and nail anywhere 0–40 mm (230–195 °C); tears easily above 40.** Sheen best and uniform 20–35 mm (210–200 °C). Released from bare PEI very easily, plate unmarked by report. **Tower peaked at 2.04 mm³/s (mean 1.44)**, so the onset holds only up to ~2.0. **→ Profile set 2026-09-21: 210 °C (215 first layer), `max_volumetric_speed` 2.0, slicer `z_offset` −0.02** (TPU G-code only; `printer.cfg` untouched) | nozzle temperature | bend and try to tear each band by hand: lowest band that will not split between layers, then the silk sheen and stringing among those that pass. Owner reports; nothing inferred from telemetry | ~8 g, ~2 h |
 | 2 | **Single-wall 20 mm cube** (spiral vase), at the #1 temperature | `extrusion_multiplier` | calipers on the wall at 8 points against the 0.45 mm extrusion width | ~2 g, 20 min |
 | 3 | **Deck coupon**, on a flat base printed like rev C's first-layer face: three **Ø11 × 19.8 mm pillars with hex holes at 4.45 / 4.55 / 4.65 AF** (the real pillar, so hoop stiffness and grip length match); three **arms 5.0 mm tall × 30 mm at 1.8 / 2.0 / 2.2 mm wide**, solid perimeters, no infill; **20 × 20 mm square pockets at +0.2 / +0.4 / +0.6** for the M10Q-5883 PCB | the hex size rev C should draw; whether 2.0 mm prints at 2.0; the clearance a 20 mm board needs | a brass standoff pressed into each pillar (goes in by hand? holds? splits?); the GPS board tried in each pocket; arm widths by calipers at 5 points; the base checked flat on glass. **Before printing, check the arm G-code for gap fill** — a width that is not a whole number of perimeter lines prints a gap-fill seam down the spring, and the fix is a CAD width, not a setting | ~8 g, ~1.5 h |
 | 4 | **First real part — owner's choice** once rev C is approved or the Bee35 part is named | the profile, on a real part | the part passes or not | — |
@@ -73,13 +73,18 @@ parts, and TPU trades it for reliable feeding) and a **volumetric ceiling test**
 only matters if jobs are too slow, and these parts are small). **Pressure advance stays off**,
 as for every other material here — `printer.cfg` sets none.
 
-**Flow cube and deck coupon generated 2026-09-21, not yet sliced** (slicing waits for the tower
-print to finish, rule 1, and for its temperature): `~/models/calibration/flow_cube.stl` and
-`deck_coupon.stl` from [`tools/calibration-parts.py`](../tools/calibration-parts.py), whose
-docstring gives the coupon's layout. Both verified closed and outward-facing, with volumes matching
-hand calculation. The coupon adds a **2.08 mm arm** — 5 perimeter lines at PrusaSlicer's spacing,
-whereas 2.0 is not a whole number of lines — so the slice can show whether rev C should draw
-2.08. **The three pillars come off as loose parts: mark each (left → right = 4.45 / 4.55 /
+**Flow cube and deck coupon sliced 2026-09-21 at the tower's settings**, both in Mainsail, first
+layer at Z 0.22, footprints in the mesh: `tpu_flow_cube.gcode` (spiral vase, 1 perimeter,
+3 bottom layers, 16 min, 1.1 g) and `tpu_deck_coupon.gcode` (2 h 05, 11.6 g — above the ~8 g
+estimate). STLs `~/models/calibration/` from
+[`tools/calibration-parts.py`](../tools/calibration-parts.py), whose docstring gives the
+coupon's layout; both verified closed and outward-facing, volumes matching hand calculation.
+**No arm has gap fill, 2.0 mm included** — 2.9.6's variable-width perimeters print 2.0, 2.08 and
+2.2 as the same loops (1.8 one loop fewer), so the extra 2.08 arm, added on fixed-width
+arithmetic, was unnecessary: **rev C can keep 2.0**, and its accuracy is a flow question. 2.9.6
+warns "Low bed adhesion — consider brim" for the coupon; **not acted on**: the 55 mm tower on a
+12 mm core stood without a brim, and a brim would distort the bottom of the arms and pillars
+being measured. **Before either: check the filament for a gear notch** from the 185/180 bands. **The three pillars come off as loose parts: mark each (left → right = 4.45 / 4.55 /
 4.65 AF) before lifting it off.** `220.stl` is
 on neither host — wk-drones records its source (SpeedyBee's Bee35 download) but not the file;
 it matters only if the owner names the GPS mount as the Bee35 part. When `tpu` is validated,

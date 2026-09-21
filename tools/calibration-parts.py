@@ -17,8 +17,10 @@ sits on the bed:
   middle row three Ø11 x 19.8 mm pillars, hex holes 4.45 / 4.55 / 4.65 AF, left to
              right. They come off the bed as loose parts: MARK EACH BEFORE LIFTING
   front row  four arms 30 mm long x 5 mm tall, 1.8 / 2.0 / 2.08 / 2.2 mm wide, back
-             to front. 2.08 = 5 perimeter lines at PrusaSlicer's spacing
-             (0.45 + 4 x 0.407); 2.0 is not a whole number of lines.
+             to front. 2.08 was added as the nearest whole number of fixed-width
+             lines to 2.0; in the event PrusaSlicer 2.9.6's variable-width perimeters
+             print 2.0, 2.08 and 2.2 all as the same loops with no gap fill, so 2.08
+             is only an extra data point (sliced 2026-09-21).
 """
 import argparse
 import math

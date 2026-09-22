@@ -161,7 +161,7 @@ just another `<mat>` string.
 | `petg_koala` | 0.2 | 4 | 30 % gyroid | built 2026-09-01 against a superseded spec; unused |
 | `petg_koalacoupon` | 0.15 | 4 | 30 % gyroid | as above; unused |
 | `pla` | 0.2 | 3 | 15 % grid | **UNTESTED** — built 2026-09-02, no PLA has been printed yet |
-| `tpu` | 0.2 | 3 | 15 % grid | **UNTESTED** — built 2026-09-21; see [open-questions.md](open-questions.md#tpu-95a--profile-and-calibration) |
+| `tpu` | 0.2 | 3 | 15 % grid | **calibrated 2026-09-21**, 210 °C, flow 1.0, ≤ 2.0 mm³/s — see [open-questions.md](open-questions.md#tpu-95a--profile-and-calibration) |
 
 ### `pla` — built 2026-09-02, untested
 

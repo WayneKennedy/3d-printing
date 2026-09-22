@@ -19,7 +19,9 @@ they disagree, so the tower spans both. For two wk-drones parts
   superseded). Modelled in CadQuery from the 2D drawing, with the coupon's corrections (arms drawn
   1.9, hex 4.85 AF untested): wk-drones `aircraft/holybro-10/print/src/h743-deck-revc.py`, commit
   `1b11e03`. `h743_deck_revc.gcode`: upside down (`--rotate-x 180`), no support, 3 h 00, 17.1 g.
-  **Printed 2026-09-22 00:45**, 176 min, full filament delivered; inspection pending. A 38 × 56 × 5 mm platform carrying the FC hangs on four Z-shaped flexure arms
+  **Printed 2026-09-22 00:45**, 176 min, full filament delivered. **Owner: "perfect"; the 4.85 AF
+  hex takes a standoff by hand and needs pliers to remove** — press-fit answered, allowances
+  moved to [decisions.md](decisions.md#materials). The pillars-only coupon is no longer needed. A 38 × 56 × 5 mm platform carrying the FC hangs on four Z-shaped flexure arms
   between two anchor blocks; 20 mm brass hex standoffs (4.55 AF) are pressed through Ø11 ×
   19.8 mm TPU pillars. Prints **upside down, FC face on the bed**; no bridges or overhangs.
   Per the wk-drones session, 2026-09-21, in priority order: (1) the **hex press-fit** — drawn

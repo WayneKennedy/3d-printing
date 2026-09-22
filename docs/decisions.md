@@ -305,6 +305,18 @@ it stops the next agent re-deriving it. Anything undecided lives in
   steps of an M3 clearance ladder, but the same order as the margin on a **press-fit**
   dimension. Re-run a coupon on the new spool before committing a press-fit dimension;
   clearance holes do not need this.
+- **TPU 95A drawing allowances** — measured 2026-09-21/22 on Reprapper Silk TPU 95A, yellow,
+  batch 20260407S01, profile `tpu`, PrusaSlicer 2.9.6. Spool-specific, per the bullet above.
+  - **Brass hex press-fit: draw the hole ~0.3 mm over the hex across flats.** A 4.55 AF standoff
+    in a 4.85 AF hole through a Ø11 × 19.8 mm pillar pushes in by hand and needs pliers to pull
+    out (owner, Holybro deck rev C — one pillar tried). 4.55 and 4.65 AF would not take it by
+    hand. Likely why (unmeasured): printed internal corners round off and bind the brass hex's
+    sharp corners before the flats do.
+  - **Thin walls print ~0.1 mm wide.** Drawn 2.0 / 2.08 / 2.2 mm printed 2.10 / 2.20 / 2.30
+    (1.8 → 1.98). Draw 0.1 under the wanted width where width matters, as for a flexure,
+    whose stiffness goes with width³.
+  - **A square pocket for a 20.0 mm board: draw 20.2** (snug); 20.4 is already loose.
+  Evidence: [open-questions.md](open-questions.md#tpu-95a--profile-and-calibration).
 
 ## Project decisions
 

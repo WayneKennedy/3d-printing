@@ -115,6 +115,10 @@ un-homed machine needs no action first.
 - **Open the enclosure for PLA and PLA+.** Enclosures are for ABS/ASA; a warm chamber causes
   heat creep in this direct-drive hotend and undermines the 100 % part cooling these profiles
   specify. Front and top are left open by default.
+- **No brim unless a failed print of that part proved it needs one** (house rule,
+  2026-09-23). Profiles leave it off; overlays and `--brim-width` flags have been what added
+  it. Check the emitted G-code: `grep -aE '^; brim_width' FILE` must read 0 —
+  [decisions.md](docs/decisions.md#slicing).
 - **Support must never stand on the part.** An interface laid on top of a face welds in PLA+
   whatever the contact gap (`Wrist_Roll_Pitch`, 2026-09-08). Keep `buildplate_only = 1`; a face
   that hangs over the part gets **organic** support reaching in from the bed. That needs the
@@ -169,7 +173,7 @@ leaves the nozzle parked on the part at temperature. See
 | [docs/decisions.md](docs/decisions.md) | Settled decisions and why — **do not re-litigate** |
 | [docs/open-questions.md](docs/open-questions.md) | Genuinely undecided, and active work |
 | `reference/` | Snapshots of the live files on the Pi |
-| `tools/` | `print-monitor.py`, `sync-reference.sh`, `extract-soarm-parts.py`, `make-riser.py` (dependency-free frustum STL generator), `temp-tower.py` (temperature-tower STL + band patcher), `calibration-parts.py` (flow cube, TPU deck coupon) |
+| `tools/` | `print-monitor.py`, `sync-reference.sh`, `extract-soarm-parts.py`, `make-riser.py` (dependency-free frustum STL generator), `temp-tower.py` (temperature-tower STL + band patcher), `calibration-parts.py` (flow cube, TPU deck coupon), `gridfinity.sh` (Gridfinity Rebuilt baseplates and bins) |
 
 **The Pi holds the authoritative copies; `reference/` is a version-controlled cache.** Refresh
 with `./tools/sync-reference.sh` before trusting anything in it, and after any change made on

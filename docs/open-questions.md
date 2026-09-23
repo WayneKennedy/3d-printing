@@ -9,6 +9,44 @@ holds it authoritatively. Query it, or run `tools/print-monitor.py` — see
 
 ## Active work
 
+### Desk Gridfinity and openGrid — test parts sliced 2026-09-23, nothing printed
+
+Decided so far: [decisions.md](decisions.md#desk-gridfinity). STLs come from
+[`tools/gridfinity.sh`](../tools/gridfinity.sh) (Gridfinity Rebuilt pinned at `910e22d`).
+
+- **Proposed grid, not confirmed: 11 × 16 units = 462 × 672 mm** in the 500 × 700 area, which
+  leaves 38 × 28 mm spare. How to use the margin (centre it, pad the edge tiles with the
+  script's `distancex`/`distancey`, or leave it open) is undecided.
+- **Tile split: 4+4+3 across × 4+4+4+4 deep = 8 × `bp_4x4` + 4 × `bp_3x4`.** 4 × 4 (168 mm)
+  is the largest plate that fits the mesh.
+- **Sliced in `petg`, centred `104,123`, on the Debian 2.5.0 binary.** Footprints include the skirt
+  and stay inside the mesh:
+
+  | Part | Time | PETG | Footprint X / Y |
+  |---|---|---|---|
+  | `bp_4x4` | 2 h 17 m | 25.6 g | 16–192 / 35–211 |
+  | `bp_3x4` | 1 h 43 m | 19.1 g | 37–171 / 35–211 |
+  | `bin_1x1x3` | 1 h 11 m | 13.7 g | 82–126 / 101–145 |
+  | `bin_2x1x3` | 2 h 01 m | 23.2 g | 61–147 / 101–145 |
+
+  All 12 baseplates: about **25 h and 281 g**, before any bins.
+- **Plan: print one `bp_4x4` and a bin first.** Check how the bin seats and how the plate lies
+  flat on the desk before committing the other 11 plates. Nothing is decided yet about keeping
+  loose tiles from creeping apart on the desk.
+- **openGrid panel:** waiting for the back panel to arrive. Its dimensions, tile size (28 mm
+  grid) and Full vs Lite are all open.
+
+### koala-bot brims contradict the no-brim rule
+
+The [house rule](decisions.md#slicing) (2026-09-23) says no brim without a recorded failure.
+koala-bot still adds them: `hardware/print/manufacturing-petg.ini` and
+`manufacturing-petg-tree.ini` set `brim_width = 4`, `manufacturing-tpu.ini` sets 3, and
+`hardware/src/koala_hardware/export.py` flags "brim" for tall or small-footprint parts
+(`tray_spacer` in `docs/bom.md`). koala-bot's DEC-39 permits declared brims. **Not changed
+yet:** on 2026-09-23 koala-bot had 42 uncommitted files, `export.py` among them, so it was
+left for whoever owns that work. Until it is changed, override on the command line with
+`--brim-width 0` when slicing koala-bot parts here.
+
 ### TPU 95A — profile and calibration
 
 **Spool loaded 2026-09-21** (owner): Reprapper **Silk** TPU, yellow, 1.75 mm, 250 g, batch
@@ -343,6 +381,16 @@ plates by hand with `/usr/bin/prusa-slicer --merge` on Z0 inputs, as in [AGENTS.
   figures stop being comparable with everything already measured, and note that a newer
   PrusaSlicer would also change support behaviour (organic supports arrive in 2.6). This is the
   same conclusion the multi-printer section reaches from a different direction.
+  - **Containerising the slicer on printhub — raised 2026-09-23, parked by the owner ("leave
+    printhub alone for now").** A container alone does not isolate CPU; only cgroup limits do
+    (Docker `--cpuset-cpus`, LXD `limits.cpu`, or with nothing installed
+    `systemd-run --scope -p AllowedCPUs=1-3 -p CPUWeight=10 nice -n 19 …` in the slice scripts).
+    printhub is Debian 12 arm64 (MainsailOS), cgroup v2 with `cpuset`/`cpu`, no Docker or snap.
+    Ubuntu Workshop (Canonical, May 2026; snap on LXD) targets Ubuntu dev workstations — a
+    candidate for a pinned-version slicer on `ivory` if that runs Ubuntu (unverified), not for
+    printhub. **Rule 1's harm has never been measured**: no print in the log was damaged by
+    slicing. The test, if revisited: slice during a print and compare `buffer_time`/`sysload`
+    in `klippy.log`'s `Stats` lines against a quiet stretch.
 - **Keep the flashing microSD with the printer.** MCU firmware updates still go via SD; see
   [klipper-setup.md](klipper-setup.md#consequence).
 
@@ -528,6 +576,10 @@ USB constraint above applies to it and not to the KE.
   present and intact, belts not slack, Z lead screw free, wheels not flat-spotted. The last
   machine out of that garage was missing its build surface, and it cost two failed prints and
   hours of confident wrong diagnosis.
+- **Gridfinity baseplates are a second case for it** (owner, 2026-09-23). On the nominal
+  350 × 350 bed a 7 × 7 plate (294 mm) should fit — **unverified until its mesh bounds are
+  known**. The desk's proposed 11 × 16 grid ([Desk Gridfinity](#desk-gridfinity-and-opengrid--test-parts-sliced-2026-09-23-nothing-printed))
+  would drop from 12 plates on the S1 to 4 (6+5 × 8+8). Not being commissioned yet.
 - **Proposed split if commissioned:** S1 = PETG, TPU, detailed figures; Plus = large flat
   parts, plain PLA, LW-PLA, potentially carbon-filled. Driven by bed size and hotend
   capability, not extruder type, since both are direct drive.

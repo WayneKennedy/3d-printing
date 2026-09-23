@@ -75,6 +75,21 @@ it stops the next agent re-deriving it. Anything undecided lives in
 
 ## Slicing
 
+- **House rule: no brim** (owner, 2026-09-23). A part gets a brim only after a **failed print
+  of that specific part** proves it needs one; record that failure in
+  [print-log.md](print-log.md) and name it where the brim is set. The default is a detached
+  skirt: every `ender5s1_*.ini` pins `brim_width = 0` explicitly (added 2026-09-23; before
+  that it rode on PrusaSlicer's default) and sets `skirts = 2`, one layer. Why: brims were being added
+  on anticipated need — `--brim-width` on the command line (SO-ARM `Moving_Jaw`, The Thing)
+  and koala-bot's slicing overlays (`manufacturing-petg.ini`/`-petg-tree.ini` `brim_width = 4`,
+  `manufacturing-tpu.ini` `brim_width = 3`) — on flat-bottomed parts that did not need them.
+  The PEI plate holds small contact areas without help: `Wrist_Roll_Pitch` carried a 62 mm
+  part on 577 mm² for 13 h with no brim ([print-log.md](print-log.md)). **Check every emitted
+  G-code: `grep -aE '^; brim_width' FILE` must read 0** unless a recorded failure says
+  otherwise — an overlay or CLI flag overrides the profile silently.
+  - **Open:** koala-bot's overlays and `export.py` still add brims; they belong to that repo and
+    are not yet changed — [open-questions.md](open-questions.md#koala-bot-brims-contradict-the-no-brim-rule).
+
 - **Bed-first heating, since 2026-09-01.** Parallel heating got the hotend to 240 °C about two
   minutes early and it oozed while waiting for the bed; the wipe passes were not clearing it.
   Costs ~1.5 min per print. Side benefit: `G28` now runs with the bed at operating temperature.
@@ -446,6 +461,17 @@ are here because the printer repo was the only context store when they were take
   lines read through paint as banding on curved surfaces. Do not change the standing profile.
 - **No articulated/flexi model exists for either character** — print-in-place collections cover
   Marvel's A-list only. These will be static figures.
+
+### Desk Gridfinity
+
+Decided by the owner 2026-09-23.
+
+- **Gridfinity on the right side of the desk, an area 500 × 700 mm (W × D).** openGrid goes on
+  a desk-mounted back panel (ordered; MDF to be fixed to it) behind and around the monitor. The
+  monitor stays on its own separate stand.
+- **No magnets in the first parts.** Thin baseplate (`style_plate=0`), and no magnet or screw
+  holes in plates or bins. [`tools/gridfinity.sh`](../tools/gridfinity.sh) bakes these in.
+- **Printed in PETG** (white spool), `petg` profile.
 
 ### koala-bot
 

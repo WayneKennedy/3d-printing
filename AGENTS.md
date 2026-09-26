@@ -79,6 +79,7 @@ write G-code into `~/printer_data/gcodes/`, where Mainsail lists it. `<material>
 | `petg_fig` | `petg` at 0.16 mm layers | validated 2026-09-09 on The Thing at 200 % — figurines in their final colour, unpainted. **The orange PETG spool strings badly across multi-part plates; load it for single-piece jobs** — [decisions.md](docs/decisions.md#superhero-figures) |
 | `petg_fig_tree` | `petg_fig` + organic bed-only supports | validated 2026-09-11 on The Thing at 320 % — PETG organic support released from under the arms; needs the flatpak 2.9.6 slicer |
 | `petg_riser` | `petg` at **50 % cubic** infill, 4/4 solid | **validated** 2026-09-14 on the desk risers — structural-but-not-solid parts; see [decisions.md](docs/decisions.md#slicing) |
+| `petg_fast` | `petg` speeds ~2×, per-feature accel, flow cap 8 mm³/s, `gcode_flavor = marlin` | **validated** 2026-09-23 on Gridfinity plate 2: "indistinguishable" from plate 1 on `petg` (owner), 1 h 31 m vs 2 h 15 m; why `marlin`: [decisions.md](docs/decisions.md#slicing) |
 | `pla` | 210/205, bed 60 | **untested — no plain PLA has been printed** |
 | `tpu` | 210/215, bed 50, retract 0.4 @ 20, ≤ 2.0 mm³/s, flow 1.0, slicer `z_offset` −0.02 | **calibrated 2026-09-21** on Reprapper Silk TPU 95A (tower, flow cube) and **validated** on the Bee35 GPS mount and the Holybro deck rev C. Drawing allowances (hex press-fit, thin walls, pockets): [decisions.md](docs/decisions.md#materials). Bare PEI, no glue stick (owner's call); remove cool or with a firm warm tug. **Keep the spool free to turn** — a tangle starved two jobs silently. [open-questions.md](docs/open-questions.md#tpu-95a--profile-and-calibration) |
 | `petg_koala`, `petg_koalacoupon` | 4 perim, 30 % gyroid | built for a superseded spec; **not** the koala-bot standard |
@@ -187,6 +188,11 @@ false elsewhere. That is worse than no note at all, because an agent will trust 
 plan on it. **Prefer tooling that checks its own preconditions and fails saying what is
 missing**, the way [`tools/sync-reference.sh`](tools/sync-reference.sh) does. Host inventory, to
 verify rather than trust: [docs/workflow.md](docs/workflow.md#a-fresh-clone-assumes-nothing).
+
+**Times: any time given in UTC says "UTC"** (owner, 2026-09-24). Local (UK, BST in summer) or
+UTC are both fine for people; an unlabelled UTC time is not. Robot compute runs UTC throughout —
+wk-robotics `docs/common.md` → *Robots run on UTC*. Here, the workstation (and so
+`print-monitor.py`) is UTC; printhub's clock is Europe/London.
 
 **Distinguish decided from open.** `decisions.md` records conclusions with the evidence that
 produced them, including conclusions that were reached, tested and found wrong — those

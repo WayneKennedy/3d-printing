@@ -3,9 +3,13 @@
 #
 #   tools/gridfinity.sh baseplate <gridx> <gridy>          -> scratch/gridfinity/bp_<x>x<y>.stl
 #   tools/gridfinity.sh bin <gridx> <gridy> <gridz>        -> scratch/gridfinity/bin_<x>x<y>x<z>.stl
+#   tools/gridfinity.sh lite <gridx> <gridy> <gridz>       -> scratch/gridfinity/lite_<x>x<y>x<z>.stl
 #
 # Settled parameters (docs/decisions.md#desk-gridfinity): thin baseplate, no magnet or screw
-# holes in plates or bins. Anything else, pass extra OpenSCAD args after the sizes, e.g.
+# holes in plates or bins; bins get one compartment, the stock label tab (40.7 x 14.5 mm
+# flat face -- sized for 12 mm tape) and NO stacking lip (owner: open tops, never stacked).
+# See docs/decisions.md#desk-gridfinity.
+# Anything else, pass extra OpenSCAD args after the sizes, e.g.
 #   tools/gridfinity.sh bin 2 1 3 -D divx=2
 #
 # Needs an OpenSCAD newer than 2021.01: Ubuntu's 2021.01 renders baseplates but fails to
@@ -22,7 +26,7 @@ SRC=scratch/gridfinity-rebuilt-openscad
 OUT=scratch/gridfinity
 OPENSCAD="${OPENSCAD:-openscad}"
 
-usage() { sed -n 4,5p "$0" | sed 's/^# *//' >&2; exit 2; }
+usage() { sed -n 4,6p "$0" | sed 's/^# *//' >&2; exit 2; }
 
 command -v "$OPENSCAD" >/dev/null || { echo "OpenSCAD not found: set \$OPENSCAD to a snapshot build (see header)" >&2; exit 1; }
 command -v git >/dev/null || { echo "git not found" >&2; exit 1; }
@@ -54,7 +58,14 @@ case "$kind" in
     x=$1 y=$2 z=$3; shift 3
     f="$OUT/bin_${x}x${y}x${z}.stl"
     (cd "$SRC" && "$OPENSCAD" "${BACKEND[@]}" -q -o "$f" -D gridx="$x" -D gridy="$y" -D gridz="$z" \
-      -D refined_holes=false -D magnet_holes=false -D screw_holes=false "$@" gridfinity-rebuilt-bins.scad) ;;
+      -D include_lip=false -D refined_holes=false -D magnet_holes=false -D screw_holes=false "$@" gridfinity-rebuilt-bins.scad) ;;
+  lite)
+    [ $# -ge 3 ] || usage
+    x=$1 y=$2 z=$3; shift 3
+    f="$OUT/lite_${x}x${y}x${z}.stl"
+    (cd "$SRC" && "$OPENSCAD" "${BACKEND[@]}" -q -o "$f" -D gridx="$x" -D gridy="$y" -D gridz="$z" \
+      -D divx=1 -D divy=1 -D style_lip=2 \
+      -D refined_holes=false -D magnet_holes=false -D screw_holes=false "$@" gridfinity-rebuilt-lite.scad) ;;
   *) usage ;;
 esac
 [ -s "$f" ] || { echo "OpenSCAD produced no output for $f" >&2; exit 1; }

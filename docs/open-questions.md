@@ -9,16 +9,17 @@ holds it authoritatively. Query it, or run `tools/print-monitor.py` — see
 
 ## Active work
 
-### Desk Gridfinity and openGrid — test parts sliced 2026-09-23, nothing printed
+### Desk Gridfinity and openGrid — all 12 plates printed 2026-09-25
 
 Decided so far: [decisions.md](decisions.md#desk-gridfinity). STLs come from
 [`tools/gridfinity.sh`](../tools/gridfinity.sh) (Gridfinity Rebuilt pinned at `910e22d`).
 
-- **Proposed grid, not confirmed: 11 × 16 units = 462 × 672 mm** in the 500 × 700 area, which
-  leaves 38 × 28 mm spare. How to use the margin (centre it, pad the edge tiles with the
-  script's `distancex`/`distancey`, or leave it open) is undecided.
-- **Tile split: 4+4+3 across × 4+4+4+4 deep = 8 × `bp_4x4` + 4 × `bp_3x4`.** 4 × 4 (168 mm)
-  is the largest plate that fits the mesh.
+- **Grid decided: twelve 4 × 4 plates, 504 × 672 mm** — [decisions.md](decisions.md#desk-gridfinity).
+  **All 12 printed by 2026-09-25 16:02 BST** ([print-log.md](print-log.md)); fixing by
+  double-sided tape is the owner's next step. Test bins: 4 × 2 × 3 (fit "perfect"), 4 × 2 × 9
+  divided (overnight, not yet judged); 2 × 2 × 9 sliced, not printed. **4 × 4 × 3 with 16 × 1 × 1
+  bays, no tabs, no lip** (`divx=4 divy=4 style_tab=5`) printing 2026-09-26 from 20:17 BST —
+  6 h 58 m est., 135 g: the 24 divider walls dominate.
 - **Sliced in `petg`, centred `104,123`, on the Debian 2.5.0 binary.** Footprints include the skirt
   and stay inside the mesh:
 
@@ -30,11 +31,145 @@ Decided so far: [decisions.md](decisions.md#desk-gridfinity). STLs come from
   | `bin_2x1x3` | 2 h 01 m | 23.2 g | 61–147 / 101–145 |
 
   All 12 baseplates: about **25 h and 281 g**, before any bins.
-- **Plan: print one `bp_4x4` and a bin first.** Check how the bin seats and how the plate lies
-  flat on the desk before committing the other 11 plates. Nothing is decided yet about keeping
-  loose tiles from creeping apart on the desk.
+- **Skeletonized 4 × 4 with screw holes, sliced 2026-09-23 — rejected, files deleted** (owner): **6 h 36 m on `petg`, 4 h 13 m on `petg_fast`, 64.7 g
+  either way** — 2.5× the thin plate's filament. Footprint X 16–192 Y 35–211, bed-first
+  header, no brim. Twelve plates at this rate: ~45 h and ~700 g (8 × 4 × 4 + 4 × 3 × 4, the
+  3 × 4 not yet sliced). White spool: nearly a full 1 kg (owner, 2026-09-23), enough either way.
+  **Owner rejected the time** ("6.5 hours per grid… absurd"). Printables pages quote ~40–56 min
+  for a thin 4 × 4 and 5 h 04 m for a floored one with mounting holes, printer unstated.
+  **Thin on `petg_fast`: 1 h 26 m, 25.6 g** (`gf_bp_4x4_petg_fast.gcode`) — ~16 h for all 12.
+  Thin plates are back in play; how to fix them down is open: mounting tape, screw tabs into
+  the 19/14 mm margin on perimeter plates, or M2 at interior nodes (solid Ø~9 at z0 but only
+  Ø3.5 at the top face, so an M2 head (~Ø3.8) sits proud — bin-corner clearance ~1.8 mm).
+- **Test bin 4 × 2 × 3 printing 2026-09-23 on `petg_fast`: standard style** (owner: "bare box,
+  no dividers, auto label"), stock tab, scoop, stacking lip — 3 h 09 m est., 70.3 g. Lite was
+  2 h 12 m / 41.2 g for comparison.
+- **First `bp_4x4` (thin) printed 2026-09-23 17:34, white PETG.** Check how a bin seats and how the
+  plate lies flat on the desk before committing the other 11 plates.
+- **Next: print the ten remaining plates plain (thin, no tabs), then test the layout on the
+  desk** (owner, 2026-09-23); the row/side joins and tab plan are settled after that. File:
+  `gf_bp_4x4_petg_fast.gcode`, one plate per run. **Tabs added later to plain plates must be
+  glued to the outer face or come with reprinted plates** — a separate piece clamped over the
+  rim collides with edge bins (rim top is at 5 mm at the very edge; a bin wall stands 0.25 mm
+  inside it).
+- **Planned extension (owner, 2026-09-23, "probably"): a straight row of 4 × 4 plates across the
+  back of the keyboard / soldering-mat area, lined up from the right-hand grid, joining a single
+  column down the left side of the mat** — a U round the mat. Unknown: row length, column
+  length, and whether 168 mm of depth is clear between keyboard and the monitor stand / MDF
+  back panel. It turns some grid edges into plate-to-plate joints, so **the tab variants wait
+  on the full outline.**
+  The U adds **inner-corner tabs** (owner, 2026-09-23) at its two concave corners: a lap tab
+  whose halves meet at 90°, pointing into the mat area. Tab types then: outer corner (1 plate),
+  straight edge joint (2, lap), inner corner (2, lap at 90°). Proposed build: generate every
+  plate from one layout list of plate positions, deriving outer edges, joints and corner types.
+- ~~**Fixing: screw-down tabs**~~ **Dropped 2026-09-25 for double-sided tape** ([decisions.md](decisions.md#desk-gridfinity)). Was: tabs at the grid's corners and perimeter edge joints (owner leaning,
+  2026-09-23; plan-view draft sent, not approved). 14 screws: 4 corner tabs, 10 lap-joint tabs
+  (half from each neighbouring plate, one screw through both, so the joint is tied too). Tabs
+  sit in the 14 mm front/back margin and **2 mm beyond the 500 mm area at the sides** (the grid
+  is 504 wide), below the 5 mm plate top; the two thin middle plates carry none
+  and are trapped by the ring. Screws unknown — none in wk-inventory `stock.md` or `purchases/`
+  (searched 2026-09-23). Supersedes the frame idea below if approved.
+- ~~**Frame: printed corners around the grid (owner).**~~ **Dropped 2026-09-25.** The spare margin fits a border exactly:
+  19 mm each side and 14 mm front and back brings 462 × 672 out to 500 × 700. Open: corners only,
+  or corners plus straight edge pieces (with corners alone, the middle plates along an edge can
+  still slide outward); the frame's height and how it holds the plates' edge.
+  **Deferred by the owner until two plates are printed and their alignment is seen.**
 - **openGrid panel:** waiting for the back panel to arrive. Its dimensions, tile size (28 mm
   grid) and Full vs Lite are all open.
+
+### Drawer Gridfinity — 7-drawer unit, waiting for the Ender-5 Plus
+
+**Owner's decision, 2026-09-24: wait for the Plus** — partly as the push to commission it.
+Symmetric layout wanted (18 mm fill at each side). **Preferred: two prints per drawer**, a 4 × 8
+padded left (186 × 336 mm) and a 5 × 8 padded right (228 × 336), **if the Plus's usable area
+takes 336 mm plus skirt** — unknown until its mesh is probed. **Fallback: 18 | 4×4 | 1×4 | 4×4 |
+18 in two rows** (2 left-padded + 2 right-padded 4 × 4 at 186 × 168, 2 plain 1 × 4 strips),
+all within the S1. 5 × 4 is not printable on the S1 (210 mm > ~194 usable).
+
+
+Owner, 2026-09-24: a 7-drawer unit (Amazon), **internal 414 W × 335 D mm, 70 mm deep**
+(re-measured; the first figures, 410 × 330, were wrong). **Two `bp_4x4` fit front to back
+"perfectly snugly"** (owner, test-fitted plates 1–2): 8 units deep, no padding, and the snug fit
+holds them. Across, 9 units = 378 mm leaves **36 mm**. Earlier S1-only proposal, superseded by the decision above:
+- Per drawer: 4 × `bp_4x4` (8 × 8 units) + a 1-unit column padded to fill the 36 mm,
+  printed as two 1 × 4 strips ≈ 78 × 168 mm (Gridfinity Rebuilt `distancex`, or split 18 mm
+  each side). All within the S1's 4 × 4 limit. (The Plus
+  may not manage a 336 mm-deep plate; its mesh is unmeasured.)
+- 7 drawers: 28 × `bp_4x4` (1 h 31 m, 25.6 g each) + 14 strips (unsliced) ≈ 45 h, ~800 g —
+  more than the white spool holds. Check wk-inventory filament before buying.
+- **Bins: 9 U** (decided — [decisions.md](decisions.md#desk-gridfinity)); 63 mm in a 70 mm drawer,
+  clearance under the drawer above still to confirm.
+- Location codes `DRW1`–`DRW7` (wk-inventory `AGENTS.md`); proposed top = `DRW1`, unconfirmed.
+
+### Print speed — how fast this machine can go (raised 2026-09-23)
+
+**Owner's aim:** print the second desk `bp_4x4` at the fastest this printer can manage, "for science",
+and learn what would speed it up generally. Plan, **nothing run yet**:
+1. **Measure the hotend's max volumetric flow in PETG** (air extrusion, 100 mm at rising
+   mm³/s, owner measures the mark). **No measured Sprite figure exists anywhere** — a forum
+   thread asking exactly this is unanswered
+   ([3dprintingspace](https://3dprintingspace.com/t/sprite-extruder-maximum-flow/7659)).
+   Creality's "50 mm³" is a melt-chamber volume, not a rate.
+2. **`petg_max` profile:** `max_volumetric_speed` ≈ 85 % of measured, all feature speeds at the
+   300 mm/s Klipper cap so flow decides, slicer accelerations 5000, first layer unchanged. No
+   `printer.cfg` change, so this is the ceiling **as currently configured**.
+   **Owner clarified 2026-09-23: fidelity is paramount — the fastest settings that do not
+   distort the part, not the absolute maximum.**
+3. Slice `bp_4x4` with it and compare to 2 h 17 m. **Where plate 1's time goes** (G-code
+   parse, trapezoid model: 135 min vs slicer 137): perimeters 50 min (45 mm/s), external
+   perimeters 42 min (30), **solid infill 27 min at 20 mm/s on every layer**, the rest 16. Modelled,
+   not sliced: 80/50/80/120 mm/s (perim/ext/solid/infill), travel 250 → ~89 min; 100/60/100/150 →
+   ~81 min, peak flow 9 mm³/s. Accel 20 000 (CoreXY-class) at today's speeds saves only 7 min;
+   at 100/60/100/150 it gives ~68 min — acceleration pays only once speeds are up. Then tune
+   pressure advance and keep external-perimeter acceleration lower for ringing. A speed-induced dimensional error would
+   confound the two-plate alignment check the frame design waits on.
+
+**Where this printer stands** (live via Moonraker 2026-09-23; `reference/printer.cfg` agrees):
+`kinematics: cartesian`, `max_velocity 300`, `max_accel 5000`, `square_corner_velocity 5`,
+**`pressure_advance 0` (never tuned), no `[input_shaper]`, no `[adxl345]`.** The `petg` profile
+runs perimeters 45, external 30, infill 60, travel 150 mm/s and emits no `M204`, so every move
+gets Klipper's 5000. At 60 mm/s × 0.45 × 0.2 infill needs only ~5.4 mm³/s — **the profile, not
+the machine, is the limit today.** Estimates land within 1–2 % of actual, consistent with
+speeds low enough that acceleration barely matters.
+
+**Why the Sovol SV08 is fast — checked 2026-09-23.** A GPL-3.0 derivative of the Voron 2.4
+([Sovol3d/SV08](https://github.com/Sovol3d/SV08)): flying-gantry CoreXY on linear rails, so
+the bed moves only in Z and both XY motors are frame-mounted — low moving mass. Stock config
+has an `[adxl345]` on the toolhead, input shaper (mzv 35 Hz), `pressure_advance 0.025`,
+`max_accel 40000`, `max_velocity 700`. Hotend flow ≤ 30 mm³/s is **manufacturer-only**.
+**Independent:** ~12–13½ min speed Benchy ([Tom's Hardware](https://www.tomshardware.com/3d-printing/sovol-sv08-review)),
+which recommends 200–300 mm/s for quality prints; adhesion at speed and default over-extrusion
+needed fixing. "Open source" holds but is a **Sovol fork of Klipper 0.12**, criticised as stale
+([issue #28](https://github.com/Sovol3d/SV08/issues/28)); going mainline needs an ST-Link.
+£389 at sovol.uk on 2026-09-23 (out of stock). **The Ender-5 S1 is a Cartesian cube with its
+X motor on the moving gantry** ([Creality](https://www.creality.com/products/ender-5-s1-3d-printer);
+reviews put it at ~90–120 mm/s before ringing, [3DPrintBeginner](https://3dprintbeginner.com/creality-ender-5-s1-review/)).
+It cannot reach SV08 accelerations; its headroom is in flow, pressure advance and input shaping.
+
+**Speed levers here, cheapest first** (none tried):
+- **Profile speeds up to the measured flow** — free; step 1–2 above.
+- **Tune pressure advance** (Klipper tuning tower) — free; keeps corners clean at speed.
+- **Input shaper** — needs an ADXL345 (**check wk-inventory before buying**) or Klipper's
+  manual ringing-tower method, which needs nothing. Then accel can be raised with less ringing.
+  Needs a `printer.cfg` change — never during a print (AGENTS.md rule 2).
+- **Fewer, thicker layers for functional parts** (0.28 mm; a 0.6 mm nozzle) — the Gridfinity
+  plates are the obvious case.
+- **Hotend hardware** (high-flow nozzle) — only if the flow test shows the hotend is the limit.
+
+### bam-rig (wk-robotics) — moved to the Ender-3 V3 KE, other filament
+
+**Owner, 2026-09-24 23:10 BST: the white PETG spool is reserved for Gridfinity; bam-rig will print
+on the Ender-3 V3 KE in another filament.** The S1 G-codes below are therefore not used as they
+stand — the KE needs its own slice, and a different material may need its own profile.
+
+Staged 2026-09-24 in `~/bam-rig` on printhub (outside Mainsail) by a wk-robotics session;
+parts and requirements are that repo's. **Owner chose two plates** (2026-09-24), overnight,
+possibly split between this printer and the Ender-3 V3 KE if it is commissioned in time:
+`bam-rig-plate1-bracket-arms-100pc.gcode` (6 h 15 m, 125.6 g, 100 % rectilinear) and
+`bam-rig-plate2-pots-lids.gcode` (4 h 54 m, 107.7 g) — both verified 2026-09-24 against this
+repo's rules (no brim/support, `M204 S`, bed-first header, footprint in mesh). Both are S1
+G-code; the KE needs its own slice. A one-plate 3MF (`bam-rig-oneplate.gcode`, 11 h 07 m) was
+built and verified but not chosen: it saves ~15 min and risks every part on one run.
 
 ### koala-bot brims contradict the no-brim rule
 
@@ -306,6 +441,13 @@ plates by hand with `/usr/bin/prusa-slicer --merge` on Z0 inputs, as in [AGENTS.
 
 ## Machine
 
+- **Moonraker briefly stops answering, twice now** — 2026-09-23 ~20:50 BST (just after plate 2
+  completed: Moonraker and SSH both hung ~2 min while `tailscale ping` answered) and 2026-09-24
+  19:39 BST (an empty reply to a status query ~11 min after plate 7 completed; answered in
+  0.24 s moments later). Both recovered unaided, no reboot, low load, no wlan/OOM journal lines
+  on the first. Cause unknown. **Consequence for tooling: a start command gated on a status
+  query can silently not start** — check for an empty reply and say so rather than `&&`-chain.
+
 - **The camera is off the printer, lent out for SO-ARM101 observations.** It was absent when
   the Pi booted on 2026-09-13 16:28, so crowsnest stopped on "No usable Devices Found" and the
   snapshot URL returns nginx 502. The user plans to refit it on **2026-09-15**. **Until then
@@ -491,6 +633,53 @@ sharing a USB ground tree. The latter would present as `ch341-uart: converter no
 
 **Likely commissioned before the Ender-5 Plus, on desk space.** 220 × 220 × 240.
 
+**Commissioning 2026-09-24 (owner), for throughput** — "we need throughput!": a second printer
+for the ten remaining desk Gridfinity plates. That settles the order: **stock first** (prove
+the hardware, print plates on day one, Creality Print as slicer), **helper script next**
+(same Moonraker API as the S1, so this repo's tools drive it), **bypass only later if ever**
+(printhub USB cabling is barred during S1 prints by AGENTS.md rule 6, plus a from-scratch
+config). Day-one checklist:
+1. Confirm the model on the box (V3 KE) and the contents against the manual; physical
+   inspection before power — build surface present and intact, belts, frame, no shipping damage.
+2. Stock first power-up: Creality's self-test / auto-calibration, then its own test print.
+3. First plate: `gf_bp_4x4` (Gridfinity Rebuilt thin 4 × 4, no magnets, see
+   [decisions.md](decisions.md#desk-gridfinity)) sliced for the KE — **check the footprint
+   against its bed mesh** before printing; S1's G-code is not portable (different start macros).
+4. Record what was verified here, and move settled facts to decisions.md.
+Before any automation: decide the addressing convention (a second Moonraker on 7125).
+
+**Owner, 2026-09-24: assembled, not powered; wants no Creality Cloud, and to drop the Nebula
+Pad (bypass route).** Researched the same day — community sources, **nothing verified on this
+machine**:
+- **Mainboard CR4NS200320C13, GD32F303RET6** (Klipper builds it as STM32F103), **no USB port
+  and no SD slot**; the visible USB ports are the Pad's. The Pad talks to it over **UART
+  (USART2 PA2/PA3) at 230400 baud** through a **10-pin box header** — pinout per
+  [salami738](https://github.com/salami738/ender3-v3-ke-klipper-mainline/blob/main/pinout/creality-mainboard-pinout.md):
+  1, 5 GND · 4 PA2 (MCU TX) · 9 PA3 (MCU RX) · **6 +5 V out from the mainboard** · 8, 10 NC ·
+  2, 3, 7 uncertain. Logic level 3.3 V implied, unverified. **Wire TX/RX/GND only.**
+- **Pi link:** most common is Creality's "Sonic Pad Serial Cable" (USB ID `1a86`, WCH — the
+  CH340 family, so **printhub's `by-path` rule applies**), as used by
+  [lividhen/Klipper-Ender-3-V3-KE](https://github.com/lividhen/Klipper-Ender-3-V3-KE) (Pi 4,
+  MainsailOS). A generic 3.3 V USB-TTL adapter on pins 4/9/GND should work; no KE report found.
+  **wk-inventory lists no USB-serial adapter or SWD probe** (stock + purchases, 2026-09-24).
+- **Flashing may be unnecessary:** stock MCU firmware was "protocol compatible with the most
+  recent build of klipper" as of 2025-01-11 (lividhen) — unverified against today's Klipper;
+  a mismatch makes Klipper refuse to connect, which harms nothing. Flashing mainline needs an
+  **SWD probe soldered to pads** by the ribbon connector (no SD, no USB), Katapult at 8 KiB
+  offset, 8 MHz crystal, USART2, 230400 (**250000 fails**). Katapult overwrites Creality's
+  bootloader: **dump the full 512 KB flash first** — the only way back.
+- **Config:** none in mainline `config/`. Community: lividhen (Pi host, Kalico fork, 5 stars),
+  [salami738](https://github.com/salami738/ender3-v3-ke-klipper-mainline) (mainline on the Pad,
+  updated 2026-09). CR Touch = plain `[bltouch]` (PC13/PC14); the "PR-touch" load cell (HX711)
+  has partial mainline support. **Accelerometer is read by the Pad**, so dropping it loses input
+  shaping calibration unless another accelerometer is added. No toolhead MCU (inferred).
+- **Lost with the Pad:** touchscreen, Creality UI, Pad accelerometer, PR-touch Z-offset UX.
+  Camera is sold as USB (UVC → Crowsnest); unverified on a Pi.
+- **Seen on the machine (owner photo, 2026-09-24):** the Pad carries a keyed, shrouded **10-pin
+  (2 × 5) box header** plus a **USB-C port** (purpose unknown); the ribbon to the mainboard has
+  an IDC plug with a pin-1 stripe. **The pinout above is the mainboard end** — before wiring
+  anything, power on with the Pad unplugged and meter the cable end: pin 6–1 ≈ 5 V, pins 4 and 9
+  idle ≈ 3.3 V to GND. That confirms orientation, the 5 V pin and the logic level in one go.
 **Nothing below is verified on the machine — the box is unopened.** These are vendor and
 community facts that shape the plan; confirm each on the hardware before acting, per the
 never-guess-hardware rule in [AGENTS.md](../AGENTS.md).
@@ -578,8 +767,15 @@ USB constraint above applies to it and not to the KE.
   hours of confident wrong diagnosis.
 - **Gridfinity baseplates are a second case for it** (owner, 2026-09-23). On the nominal
   350 × 350 bed a 7 × 7 plate (294 mm) should fit — **unverified until its mesh bounds are
-  known**. The desk's proposed 11 × 16 grid ([Desk Gridfinity](#desk-gridfinity-and-opengrid--test-parts-sliced-2026-09-23-nothing-printed))
+  known**. The desk's proposed 11 × 16 grid ([Desk Gridfinity](#desk-gridfinity-and-opengrid--all-12-plates-printed-2026-09-25))
   would drop from 12 plates on the S1 to 4 (6+5 × 8+8). Not being commissioned yet.
+- **Owner's original plan: convert it to CoreXY** (stated 2026-09-23) — to take the X motor
+  off the moving gantry, the same reason the Sovol SV08 is fast
+  ([Print speed](#print-speed--how-fast-this-machine-can-go-raised-2026-09-23)). The bed already
+  moves only in Z, so the conversion is the belt path and motor mounts, plus `kinematics:
+  corexy` in Klipper. **Not scoped:** no kit or design chosen, and the conversion would
+  invalidate the stock sample config's XY stepper sections as well as the NG-extruder items
+  above. Its gain is acceleration headroom, which pays only once profile speeds are up.
 - **Proposed split if commissioned:** S1 = PETG, TPU, detailed figures; Plus = large flat
   parts, plain PLA, LW-PLA, potentially carbon-filled. Driven by bed size and hotend
   capability, not extruder type, since both are direct drive.

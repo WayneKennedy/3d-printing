@@ -75,6 +75,32 @@ it stops the next agent re-deriving it. Anything undecided lives in
 
 ## Slicing
 
+- **Debian PrusaSlicer 2.5.0 aborts on an ungenerated locale** (reproduced 2026-09-24): with
+  `LANG`/`LC_ALL` naming a locale printhub lacks (e.g. `en_US.UTF-8`) it exits 1 with "An
+  error occured while setting up locale". printhub has only `C`, `C.utf8`, `en_GB.utf8`,
+  `POSIX`. Unset, `C.UTF-8` and `en_GB.UTF-8` all work. Likely trigger: an SSH client
+  forwarding its own locale (a bam-rig slicing session hit it; its env was not captured).
+  Fix per call: `LANG=C.UTF-8 LC_ALL=C.UTF-8 prusa-slicer …`. The same session also reported
+  the flatpak writing nothing into `~/printer_data/gcodes`; **not reproduced** — with an
+  absolute path it writes there fine (flatpak has `filesystems=home`). Cause unknown.
+- **Klipper ignores `M204 P…` on its own — per-feature accelerations need `gcode_flavor =
+  marlin`** (verified 2026-09-23 in `~/klipper/klippy/toolhead.py` `cmd_M204`: it takes `S`,
+  or the minimum of `P` *and* `T`, else replies "Invalid M204 command" and changes nothing).
+  PrusaSlicer 2.5's `marlin2` flavour emits `M204 P<n>` only, so any profile setting
+  `perimeter_acceleration` etc. under `marlin2` silently runs every move at `max_accel`
+  (5000). `petg_fast` uses `marlin`, which emits `M204 S<n>`; its other non-motion output was
+  diffed identical to `petg`'s. Profiles that set no accelerations are unaffected. **Check:
+  `grep -aoE '^M204 [^;]*' FILE | sort | uniq -c` must show `S`, not bare `P`.**
+- **`petg_fast` — fidelity-first speeds** (owner: "fidelity is paramount", 2026-09-23).
+  **Validated 2026-09-23:** Gridfinity plate 2 on `petg_fast` is "indistinguishable" from plate 1
+  on `petg` (owner), 1 h 31 m vs 2 h 15 m, same STL and filament. `petg` plus: perimeters 80, external 50, infill 120, solid 80, top solid 50, gap
+  fill 40, bridge 40, travel 250, first layer 20 mm/s; `max_volumetric_speed = 8`; accel
+  default 3000, perimeters 2500, infill 5000, bridge and first layer 1000; machine limits
+  raised to 5000/300 so estimates match Klipper. Previously **`petg` set no
+  `solid_infill_speed`, so solid infill ran at PrusaSlicer's default 20 mm/s on every layer.**
+  Hotend flow at 8 mm³/s and pressure advance are **unmeasured** —
+  [open-questions.md](open-questions.md#print-speed--how-fast-this-machine-can-go-raised-2026-09-23).
+
 - **House rule: no brim** (owner, 2026-09-23). A part gets a brim only after a **failed print
   of that specific part** proves it needs one; record that failure in
   [print-log.md](print-log.md) and name it where the brim is set. The default is a detached
@@ -162,6 +188,29 @@ it stops the next agent re-deriving it. Anything undecided lives in
   crash, independent of input coordinates. (Testing it needs inputs under `$HOME`: the flatpak
   sandbox cannot see `/tmp`, and fails there with exit 1 "No such file" — not the crash.)
   `slice-plate.sh` is unchanged; how to fix it is open — [open-questions.md](open-questions.md).
+  **Root-cause work, 2026-09-24 (flatpak 2.9.6, commit `49c07599`, runtime
+  `org.gnome.Platform/aarch64/50` — the newest on Flathub):** it is **two crashes, not one.**
+  `--merge` on a single `lid.stl` at `--loglevel 5` dies straight after
+  `TriangleMesh::repair() finished`, before any slicing — the **arrange** stage.
+  `--merge --dont-arrange` on two models skips that, slices, **writes the full G-code (6 MB),
+  then still exits 139** — a second crash after export. **Known upstream and unfixed:**
+  [prusa3d/PrusaSlicer#14548](https://github.com/prusa3d/PrusaSlicer/issues/14548) (2.9.2,
+  macOS ARM: `--merge` segfaults model-independently; `--dont-arrange` avoids it until
+  `--export-gcode` is added) and [#14967](https://github.com/prusa3d/PrusaSlicer/issues/14967)
+  (2.9.4 CLI segfault). Both open, labelled `legacy-issue` (pre-3.0.0-alpha), with a bot's
+  final warning of 2026-09-18 that they auto-close after a week without a user comment. Our
+  data adds a **Linux aarch64** reproduction. Not yet tried: a backtrace (no debug SDK
+  installed), and a 3.0 alpha build. **Reported upstream 2026-09-24 (owner's request):**
+  [#14548 comment](https://github.com/prusa3d/PrusaSlicer/issues/14548#issuecomment-5809537825).
+- **A plate with mixed settings needs no `--merge`: write a 3MF.** Place each part's mesh at its
+  final bed coordinates, one `<object>` each, and put per-object overrides in
+  `Metadata/Slic3r_PE_model.config` (`<metadata type="object" key="fill_density" value="100%"/>`).
+  Slice with `--dont-arrange` so positions hold. **Proved 2026-09-24 on the bam-rig plate**
+  (Debian 2.5.0, `petg_fast`): all seven parts on one plate, bracket and arms at 100 %
+  rectilinear, pots and lids at the profile's 15 %; 11 h 07 m / 233.5 g against 11 h 09 m /
+  233.3 g for the same parts on two plates — the per-object infill took. Arrangement came from
+  a raster nesting search (rotations × orderings, true 5 mm clearance), which found room the
+  bounding-box arithmetic said was not there: round parts and an L-shaped bracket nest.
 - **Simple geometry is generated, not downloaded.** The desk risers (2026-09-14) are two
   frustums from [`tools/make-riser.py`](../tools/make-riser.py), pure Python with no
   dependencies because neither the workstation nor the Pi has OpenSCAD, numpy or trimesh, and
@@ -471,7 +520,43 @@ Decided by the owner 2026-09-23.
   monitor stays on its own separate stand.
 - **No magnets in the first parts.** Thin baseplate (`style_plate=0`), and no magnet or screw
   holes in plates or bins. [`tools/gridfinity.sh`](../tools/gridfinity.sh) bakes these in.
-- **Printed in PETG** (white spool), `petg` profile.
+- **Printed in PETG** (white spool), `petg` profile. **That spool is reserved for Gridfinity**
+  (owner, 2026-09-24).
+- **Bins are labelled with location codes — `DSK-nnn` on the desk, `DRWn-nnn` in drawers**
+  (owner, 2026-09-23). The standard lives in wk-inventory `AGENTS.md` → Conventions, beside
+  the stock it locates; not restated here. Labels: 12 × 30 mm white E10 tape, ordered
+  2026-09-23 (back-ordered) — fits the tab's 14.5 mm depth with 2.5 mm spare, 10.7 mm along.
+- **Bins have no stacking lip** (owner, 2026-09-24: "lots of flat surface covered in open top
+  bins… I don't intend ever stacking bins"; after the first test bin). `tools/gridfinity.sh`
+  passes `include_lip=false` (standard) / `style_lip=2` (lite). Heights then are exactly 7 mm ×
+  units: **7 U = 49.0 mm, 9 U = 63.0 mm** overall, inner floor at 7.0 mm; the label tab ends
+  flush with the rim (verified from the STL's top-face area). **3 U is too shallow for the
+  desk** (owner). **Drawer bins: 9 U** (owner, 2026-09-24). Desk height is judged by printing a
+  couple of 9 U bins first and trying them on the desk.
+- **Bin label tabs stay stock; the owner is buying 12 mm tape** for the Supvan E10 (owner,
+  2026-09-23: rather than "make every bin carry a big label"). The E10 takes 12/14/15 mm; the
+  15 mm continuous tape on hand overhangs the stock tab, whose flat face is 40.7 × **14.5** mm
+  (measured from the STL's up-facing faces). `-D _tab_depth=17.5` gives 16.1 mm if ever wanted.
+- **Fixing: double-sided tape first; printed tabs, corners and frame dropped** (owner,
+  2026-09-25). Supersedes the screw-tab and frame designs in open-questions. Tabs remain possible
+  later as glued-on pieces if tape fails.
+- **Grid: 12 × 16 units = twelve 4 × 4 plates in 3 columns × 4 rows, 504 × 672 mm** (owner,
+  2026-09-23: "1 cm over size … rather than 3 cm undersize. It's only the flat desk"). 4 mm
+  wider than the 500 mm area (2 mm each side), 28 mm short of 700 (14 mm front and back). No
+  3 × 4 plates. Replaces the proposed 11 × 16.
+- ~~**Superseded the same day: skeletonized plates with countersunk screw holes, screwed to
+  the desk** (owner, 2026-09-23 evening; `tools/gridfinity.sh baseplate 4 4 -D style_plate=2
+  -D style_hole=1`). 168 × 168 × **8.5 mm**; Ø3 mm holes, 45° countersink to ~Ø8, four per
+  cell. Thin plates cannot take screws — Gridfinity Rebuilt ignores `style_hole` for
+  `style_plate=0` (byte-identical output), its cells have no floor — and mixing 5 mm thin with
+  8.5 mm skeletonized would leave a 3.5 mm step at every joint. Plate 1 (thin, printed) is
+  therefore not part of the desk grid unless the owner says otherwise.~~ Rejected the same
+  evening on print time (6 h 36 m / 4 h 13 m per plate); thin plates are back.
+- ~~**Thin baseplates (`style_plate=0`), held by a printed frame around the grid**~~ (owner,
+  2026-09-23; superseded above). Chosen over Gridfinity Rebuilt's screw-together style, which for a 4 × 4 plate
+  is 11.75 mm tall and 71 cm³ (minimal) or 116 cm³ (full) solid against 23 cm³ thin. The thin
+  style has nothing that joins plates: without a frame they creep apart. Frame design:
+  [open-questions.md](open-questions.md#desk-gridfinity-and-opengrid--all-12-plates-printed-2026-09-25).
 
 ### koala-bot
 

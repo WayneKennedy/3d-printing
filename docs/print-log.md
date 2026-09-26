@@ -64,6 +64,7 @@ UTC+1 in summer). Verified for rows from 2026-09-21 on; earlier rows are assumed
 | 2026-09-25 09:42 | `gf_bp_4x4_petg_fast.gcode` | 91 min | **Complete.** Desk Gridfinity plate 10 of 12, thin 4 × 4, white PETG, `petg_fast`; identical to plates 2–9 (8.4 m). Started from an 18 °C cold bed. |
 | 2026-09-25 13:24 | `gf_bp_4x4_petg_fast.gcode` | 91 min | **Complete.** Desk Gridfinity plate 11 of 12, thin 4 × 4, white PETG, `petg_fast`; identical to plates 2–10 (8.4 m). |
 | 2026-09-25 15:02 | `gf_bp_4x4_petg_fast.gcode` | 91 min | **Complete — the twelfth and last desk plate.** Thin 4 × 4, white PETG, `petg_fast`; identical to plates 2–11 (8.4 m). **Desk grid printed: plate 1 on `petg` (2 h 15 m), plates 2–12 on `petg_fast` (1 h 31 m each)** — every run matched to the minute. |
+| 2026-09-26 21:36 | `gf_bin_4x4x3_16bay_petg_fast.gcode` | 130 min of 418 est.; 14.1 m | **Stopped: filament runout pause at 16.1 % (22:33 BST), then cancelled by the owner at 22:35 BST** — a true runout: the spool was empty (owner: "misjudged how much filament"). `filament_switch_sensor` afterwards: enabled, `filament_detected: False`; toolhead parked X217 Y215, heaters off. **First evidence the runout sensor works and pauses a job.** White PETG used to date ≈ 530 g (12 plates 307 g, bins 224 g incl. this) — **all the white spool had**; the owner's "nearly a full 1 kg" (2026-09-23) was an overestimate. 4 × 4 × 3, 16 × 1 × 1 bays, no tabs, no lip. |
 
 ## Two failures in a row — the pattern (2026-09-01)
 

@@ -19,7 +19,8 @@ Decided so far: [decisions.md](decisions.md#desk-gridfinity). STLs come from
   double-sided tape is the owner's next step. Test bins: 4 × 2 × 3 (fit "perfect"), 4 × 2 × 9
   divided (overnight, not yet judged); 2 × 2 × 9 sliced, not printed. **4 × 4 × 3 with 16 × 1 × 1
   bays, no tabs, no lip** (`divx=4 divy=4 style_tab=5`) printing 2026-09-26 from 20:17 BST —
-  6 h 58 m est., 135 g: the 24 divider walls dominate.
+  6 h 58 m est., 135 g: the 24 divider walls dominate. **Stopped at 16 %: the white spool ran out** (runout sensor
+  paused, owner cancelled; [print-log.md](print-log.md)). Needs a new spool to reprint.
 - **Sliced in `petg`, centred `104,123`, on the Debian 2.5.0 binary.** Footprints include the skirt
   and stay inside the mesh:
 
@@ -34,7 +35,7 @@ Decided so far: [decisions.md](decisions.md#desk-gridfinity). STLs come from
 - **Skeletonized 4 × 4 with screw holes, sliced 2026-09-23 — rejected, files deleted** (owner): **6 h 36 m on `petg`, 4 h 13 m on `petg_fast`, 64.7 g
   either way** — 2.5× the thin plate's filament. Footprint X 16–192 Y 35–211, bed-first
   header, no brim. Twelve plates at this rate: ~45 h and ~700 g (8 × 4 × 4 + 4 × 3 × 4, the
-  3 × 4 not yet sliced). White spool: nearly a full 1 kg (owner, 2026-09-23), enough either way.
+  3 × 4 not yet sliced). White spool: put at nearly 1 kg (owner, 2026-09-23) — **it ran out on 2026-09-26 after ≈ 530 g.**
   **Owner rejected the time** ("6.5 hours per grid… absurd"). Printables pages quote ~40–56 min
   for a thin 4 × 4 and 5 h 04 m for a floored one with mounting holes, printer unstated.
   **Thin on `petg_fast`: 1 h 26 m, 25.6 g** (`gf_bp_4x4_petg_fast.gcode`) — ~16 h for all 12.

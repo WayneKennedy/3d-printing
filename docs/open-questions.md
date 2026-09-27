@@ -15,8 +15,9 @@ Decided so far: [decisions.md](decisions.md#desk-gridfinity). STLs come from
 [`tools/gridfinity.sh`](../tools/gridfinity.sh) (Gridfinity Rebuilt pinned at `910e22d`).
 
 - **Grid decided: twelve 4 × 4 plates, 504 × 672 mm** — [decisions.md](decisions.md#desk-gridfinity).
-  **All 12 printed by 2026-09-25 16:02 BST** ([print-log.md](print-log.md)); fixing by
-  double-sided tape is the owner's next step. Test bins: 4 × 2 × 3 (fit "perfect"), 4 × 2 × 9
+  **All 12 printed by 2026-09-25 16:02 BST** ([print-log.md](print-log.md)); **taped down
+  2026-09-27** ([decisions.md](decisions.md#desk-gridfinity)). **Open: bin colour** — owner
+  undecided; white is out, the 16-bay was printed in orange. Test bins: 4 × 2 × 3 (fit "perfect"), 4 × 2 × 9
   divided (overnight, not yet judged); 2 × 2 × 9 sliced, not printed. **4 × 4 × 3 with 16 × 1 × 1
   bays, no tabs, no lip** (`divx=4 divy=4 style_tab=5`) printing 2026-09-26 from 20:17 BST —
   6 h 58 m est., 135 g: the 24 divider walls dominate. **Stopped at 16 %: the white spool ran out** (runout sensor
@@ -35,7 +36,7 @@ Decided so far: [decisions.md](decisions.md#desk-gridfinity). STLs come from
 - **Skeletonized 4 × 4 with screw holes, sliced 2026-09-23 — rejected, files deleted** (owner): **6 h 36 m on `petg`, 4 h 13 m on `petg_fast`, 64.7 g
   either way** — 2.5× the thin plate's filament. Footprint X 16–192 Y 35–211, bed-first
   header, no brim. Twelve plates at this rate: ~45 h and ~700 g (8 × 4 × 4 + 4 × 3 × 4, the
-  3 × 4 not yet sliced). White spool: put at nearly 1 kg (owner, 2026-09-23) — **it ran out on 2026-09-26 after ≈ 530 g.**
+  3 × 4 not yet sliced). White spool: put at nearly 1 kg (owner, 2026-09-23) — **it ran out on 2026-09-26 after ≈ 866 g** (incl. three owner-started 4 × 2 × 9 bins).
   **Owner rejected the time** ("6.5 hours per grid… absurd"). Printables pages quote ~40–56 min
   for a thin 4 × 4 and 5 h 04 m for a floored one with mounting holes, printer unstated.
   **Thin on `petg_fast`: 1 h 26 m, 25.6 g** (`gf_bp_4x4_petg_fast.gcode`) — ~16 h for all 12.
@@ -424,6 +425,57 @@ fix but was sliced correctly, so **check the file, not its date**:
 the first layer starts, which is self-limiting (the purge line cleans the tip). **Re-slice when
 next wanted rather than pre-emptively**; the files are otherwise correct.
 
+### Single slicer: OrcaSlicer on printhub — assessment started 2026-09-27
+
+**Owner's goal (2026-09-27): one slicer, with proven config and profiles**, replacing the two
+PrusaSlicers (Debian 2.5.0 for `--merge`, flatpak 2.9.6 for organic supports —
+[decisions.md](decisions.md#slicing)). Owner's instruction: if Orca runs headless and has a Pi
+build, install it and assess.
+
+Established 2026-09-27:
+- **Headless CLI works; no display needed.** The x86_64 AppImage still demands host WebKitGTK 4.1
+  libraries even for `--help` (installed `libwebkit2gtk-4.1-0` on blake to test); the flatpak
+  carries its own.
+- **Installed on printhub: Flathub `com.orcaslicer.OrcaSlicer` 2.4.2, aarch64**, `--user`,
+  runtime `org.gnome.Platform//50`, 415 MB, commit `881e45b2…`, **`flatpak mask`ed so it cannot
+  update under proven profiles**. Filesystem access includes `home`. (The release AppImage is
+  built on Ubuntu 24.04; Debian 12 is older, so it was not tried on the Pi.)
+- **Profiles: `~/slicer/orca/{machine_ender5s1,filament_petg,process_petg,process_petg_fast}.json`**,
+  snapshot in `reference/orca/`. Each inherits an Orca Creality Ender-5 S1 system preset and
+  overrides every value that PrusaSlicer's **effective** config (the block at the end of the
+  proven G-code, not our sparse `.ini`) sets — including the vendor defaults that differ:
+  adaptive layer height and prime tower on, flow 0.95, 2 walls, 7 top layers, `overhang` slowdown.
+  Inheritance means a new Orca version can change unspecified values: that is why the flatpak is
+  masked; **diff the config block of a reference slice before unmasking**.
+- **Orca quirk: a process or filament preset must list the *system* printer name**
+  (`Creality Ender-5 S1 0.4 nozzle`) in `compatible_printers`; our own printer name alone gives
+  exit 239, "The selected printer is not compatible with the process preset in the 3mf".
+- **`printable_area` is the mesh (X3–205, Y28–218), not the bed**, so `--arrange 1` centres on
+  104,123 by itself and places nothing outside the mesh. Several STLs arrange onto one plate
+  natively — the `--merge` problem does not arise.
+- **`gcode_flavor = klipper`**: accelerations come out as `SET_VELOCITY_LIMIT ACCEL=`, no
+  `M204`, so the `marlin` workaround is not needed. `exclude_object` is off (`printer.cfg` has no
+  `[exclude_object]`). `M73` progress lines are emitted.
+- **`~/slicer/orca-slice.sh <name> <profile> <models...> [--print]`** refuses to run while
+  printing, slices to a temp dir, then checks the emitted G-code: `M140 → M190 → M104 →
+  START_PRINT` first, no brim, flavour `klipper`, extrusion inside the mesh, one plate only — and
+  leaves no file if any check fails. Filament = profile name before the first `_`.
+- **Parity with the proven PrusaSlicer G-code (`petg_fast`)**: 4 × 4 baseplate 1 h 31 est.,
+  26.2 g vs Prusa 1 h 26 est. (1 h 31 actual), 25.6 g; 4 × 2 × 9 divided bin 5 h 26, 110.7 g vs
+  5 h 27 (5 h 37 actual), 111.3 g. Line width, speed and acceleration per feature match; skirt
+  and footprint match to 0.3 mm. Slices in **4 s on the Pi**. Pi (aarch64) and blake (x86_64)
+  output differ only in island order and last-digit rounding — **the Pi's slice is canonical**.
+- **Known differences, not yet judged**: Orca's wipe is `wipe_distance = 1` mm (Prusa derives its
+  own); Orca prints overhang walls at bridge accel (1000); overhang fan at ≥95 % overhang stands
+  in for Prusa's bridge-only fan.
+
+Still to do, in order: **(1)** print one proven part from `orca-slice.sh` (owner's go), judge
+against its PrusaSlicer twin; **(2)** port `plaplus`, `tpu`, the support profiles and figurine
+profiles, each verified against its own proven G-code, with organic bed-only supports
+re-proven; **(3)** once all are proven, retire both PrusaSlicers and `slice-print.sh` /
+`slice-plate.sh`, and move AGENTS.md onto Orca. Pressure advance can then live in the filament
+profile (`enable_pressure_advance`/`pressure_advance`) instead of `printer.cfg`.
+
 ### `slice-plate.sh` cannot make a plate — how to fix it
 
 Raised 2026-09-21 by the `--merge` A/B ([decisions.md](decisions.md#slicing)). The script
@@ -519,7 +571,7 @@ plates by hand with `/usr/bin/prusa-slicer --merge` on Z0 inputs, as in [AGENTS.
 - **A slicer off the print host would remove the "never slice during a print" constraint.**
   It bit tonight: comparing `Wrist_Roll_Pitch` orientations had to be deferred ~3.5 h because
   `printhub` is the only machine with PrusaSlicer, and it was busy printing. Neither `blake`
-  (12 cores) nor `ivory` (12 cores) has one, and both are far faster than the Pi's 4 cores.
+  (12 cores) nor `ivory` (16 cores, Ubuntu 24.04) has one, and both are far faster than the Pi's 4 cores.
   **Put it on `ivory`, not `blake`** — blake gets wiped. **Pin the version to 2.5.0**, or
   figures stop being comparable with everything already measured, and note that a newer
   PrusaSlicer would also change support behaviour (organic supports arrive in 2.6). This is the
@@ -530,7 +582,7 @@ plates by hand with `/usr/bin/prusa-slicer --merge` on Z0 inputs, as in [AGENTS.
     `systemd-run --scope -p AllowedCPUs=1-3 -p CPUWeight=10 nice -n 19 …` in the slice scripts).
     printhub is Debian 12 arm64 (MainsailOS), cgroup v2 with `cpuset`/`cpu`, no Docker or snap.
     Ubuntu Workshop (Canonical, May 2026; snap on LXD) targets Ubuntu dev workstations — a
-    candidate for a pinned-version slicer on `ivory` if that runs Ubuntu (unverified), not for
+    candidate for a pinned-version slicer on `ivory` (Ubuntu 24.04, verified 2026-09-27), not for
     printhub. **Rule 1's harm has never been measured**: no print in the log was damaged by
     slicing. The test, if revisited: slice during a print and compare `buffer_time`/`sysload`
     in `klippy.log`'s `Stats` lines against a quiet stretch.

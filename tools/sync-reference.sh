@@ -112,9 +112,10 @@ sync "printer_data/config/crowsnest.conf" "reference/crowsnest.conf"
 found=0
 while read -r rp; do
   [ -n "$rp" ] || continue
-  sync "$rp" "reference/$(basename "$rp")"
+  case "$rp" in */orca/*) lp="reference/orca/$(basename "$rp")" ;; *) lp="reference/$(basename "$rp")" ;; esac
+  sync "$rp" "$lp"
   found=$((found + 1))
-done < <(remote 'ls ~/slicer/*.sh ~/slicer/ender5s1_*.ini 2>/dev/null' \
+done < <(remote 'ls ~/slicer/*.sh ~/slicer/ender5s1_*.ini ~/slicer/orca/*.json 2>/dev/null' \
          | tr -d '\r' | grep -v '\.bak' || true)
 
 if [ "$found" -eq 0 ]; then

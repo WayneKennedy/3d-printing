@@ -122,10 +122,12 @@ curl -sL -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/5
 **GitHub-hosted models need none of this and are worth preferring**; DrLex's Flexi Rex is one
 such, and is why that print worked first time as a fetch.
 
-## Secondary path — OrcaSlicer on `ivory-win`
+## Secondary path — OrcaSlicer GUI (installed nowhere)
 
-Kept for when a print needs actual tuning; not needed for routine work. **Named explicitly
-because "the desktop" is not a location** — see the note on machine-local claims below.
+GUI settings from when OrcaSlicer lived on `ivory-win`, which no longer exists — `ivory` was
+reformatted as native Ubuntu (owner, 2026-09-27; `orca-slicer` absent there). **Headless Orca on
+printhub is a separate, active assessment** with its own JSON profiles —
+[open-questions.md](open-questions.md#single-slicer-orcaslicer-on-printhub--assessment-started-2026-09-27).
 
 | Setting | Value |
 |---|---|
@@ -245,7 +247,7 @@ whether layer 1 has *area*. Solid filled regions adhere; a field of single-width
 small isolated dashes is the shape that fails.
 
 Extract the layer-1 segments on the Pi, then render them as SVG. **Do not assume ImageMagick
-is present** — the workstation has no `convert`; `ivory` does. Either render on `ivory` or
+is present** — the workstation has no `convert`; `ivory` does (checked 2026-09-27). Either render on `ivory` or
 write SVG directly, which needs no tooling at all:
 
 ```bash
@@ -279,8 +281,9 @@ see any of it. iPhone `.HEIC` needs decoding first.
 
 **Corrected 2026-09-07: the workstation has `libheif1` but NOT `libheif-examples`, so there is
 no `heif-convert`, and no ImageMagick or ffmpeg either.** This file previously claimed both were
-installed locally; they are not. **`ivory` has `heif-convert` and `convert`** — decode there and
-fetch the result, which also avoids installing anything:
+installed locally; they are not. **`ivory` has `convert` but, since its 2026-09-27 reinstall,
+no `heif-convert`** (`libheif-examples` would add it). With it installed, decode there and fetch
+the result:
 
 ```bash
 tailscale ssh wkenn@ivory 'heif-convert -q 92 ~/Code/IMG_1234.HEIC /tmp/p.jpg >/dev/null 2>&1
@@ -312,13 +315,12 @@ worked and, when that failed, reported `MISSING on Pi` for every file — which 
 having lost its config rather than as a connection problem.
 
 **Inventory below is a snapshot, not a guarantee — check before relying on it.**
-Last verified 2026-09-07:
+Last verified 2026-09-07; `ivory` rows 2026-09-27:
 
 | Host | Role | Verified present |
 |---|---|---|
 | `printhub` | Raspberry Pi 5 — Klipper, Moonraker, camera. No desktop session. | PrusaSlicer 2.5.0 CLI, ffmpeg, python3 |
-| `ivory` | Linux desktop, 12 cores. Where this repo originated. | `heif-convert`, ImageMagick `convert`. **No PrusaSlicer.** |
-| `ivory-win` | Windows | OrcaSlicer |
+| `ivory` | Ubuntu 24.04 desktop, 16 cores. Where this repo originated. Reformatted from Windows + WSL2 to native Ubuntu (2026-09-27); `ivory-win` is gone. | ImageMagick `convert`, `flatpak`. **No** `heif-convert`, PrusaSlicer or OrcaSlicer. |
 | `blake` | Linux workstation, 12 cores / 14 GB. **Reformatted often — assume it is bare.** | `libheif1` only — **no** `heif-convert`, ImageMagick, ffmpeg or PrusaSlicer |
 
 **`blake` is the machine this repo is usually worked from, and it is the one most likely to be

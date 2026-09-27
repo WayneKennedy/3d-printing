@@ -539,7 +539,8 @@ Decided by the owner 2026-09-23.
   (measured from the STL's up-facing faces). `-D _tab_depth=17.5` gives 16.1 mm if ever wanted.
 - **Fixing: double-sided tape first; printed tabs, corners and frame dropped** (owner,
   2026-09-25). Supersedes the screw-tab and frame designs in open-questions. Tabs remain possible
-  later as glued-on pieces if tape fails.
+  later as glued-on pieces if tape fails. **Done 2026-09-27 with 6 mm double-sided tape
+  (Amazon): "good result"** (owner, photo); all 12 down, bins seat across the joins.
 - **Grid: 12 × 16 units = twelve 4 × 4 plates in 3 columns × 4 rows, 504 × 672 mm** (owner,
   2026-09-23: "1 cm over size … rather than 3 cm undersize. It's only the flat desk"). 4 mm
   wider than the 500 mm area (2 mm each side), 28 mm short of 700 (14 mm front and back). No

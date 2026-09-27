@@ -8,3 +8,4 @@ scratch/
 *.gcode
 *.stl
 *.3mf
+__pycache__/

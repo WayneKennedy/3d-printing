@@ -470,6 +470,17 @@ Established 2026-09-27:
   own); Orca prints overhang walls at bridge accel (1000); overhang fan at ≥95 % overhang stands
   in for Prusa's bridge-only fan.
 
+- **Seam settings added to Orca `petg_fast` only (owner, 2026-09-27: "not comfy with seam being
+  static")**: `seam_position = nearest`, `staggered_inner_seams = 1`, `wipe_on_loops = 1`,
+  `seam_slope_type = external` (scarf). Backup `process_petg_fast.json.bak-seam-20260927`.
+  **`nearest` still lands outer-wall starts mostly at the divider-to-wall junctions** — in
+  `gf_bin_4x2x3_8bay_orca.gcode`, one point takes 75 of 105 layers — so it relocates little
+  here; the scarf ramp and PA 0.120 are what address the defect. `random` is the untried
+  alternative for placement.
+- **Combined test (owner's choice): `gf_bin_4x2x3_8bay_orca.gcode`** — 4 × 2 × 3, 8 × 1 × 1 bays
+  (`tools/gridfinity.sh bin 4 2 3 -D divx=4 -D divy=2 -D style_tab=5`), 3 h 41 est., 69 g.
+  Tests Orca, PA 0.120 and the seam settings at once, so a failure will not say which.
+
 Still to do, in order: **(1)** print one proven part from `orca-slice.sh` (owner's go), judge
 against its PrusaSlicer twin; **(2)** port `plaplus`, `tpu`, the support profiles and figurine
 profiles, each verified against its own proven G-code, with organic bed-only supports

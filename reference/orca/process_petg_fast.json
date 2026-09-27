@@ -23,7 +23,7 @@
  "infill_anchor_max": "50",
  "wall_generator": "arachne",
  "wall_infill_order": "inner wall/outer wall/infill",
- "seam_position": "aligned",
+ "seam_position": "nearest",
  "elefant_foot_compensation": "0",
  "xy_hole_compensation": "0",
  "xy_contour_compensation": "0",
@@ -77,5 +77,8 @@
  ],
  "compatible_printers_condition": "",
  "skirt_speed": "20",
- "small_perimeter_threshold": "6.5"
+ "small_perimeter_threshold": "6.5",
+ "staggered_inner_seams": "1",
+ "wipe_on_loops": "1",
+ "seam_slope_type": "external"
 }

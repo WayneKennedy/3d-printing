@@ -1,6 +1,7 @@
 # Calibration
 
-All values below are live in the `SAVE_CONFIG` block of `printer.cfg`. PID and Z-offset date
+All values below are live in the `SAVE_CONFIG` block of `printer.cfg`, except pressure
+advance, which is a plain `[extruder]` line. PID and Z-offset date
 from 2026-09-01 and were validated by a clean first-layer test square, a clean Benchy and an
 8 h dragon print; the mesh and tram figures were re-measured after the garage move on
 2026-09-06.
@@ -13,6 +14,7 @@ from 2026-09-01 and were validated by a clean first-layer test square, a clean B
 | Bed mesh `default` | 4 × 4, range **0.281 mm** | re-probed at 80 °C after the garage move, 2026-09-06; same gentle bowl, no tilt |
 | Bed tram | FL base / FR 0.059 / RL 0.036 / RR 0.014 mm | 2026-09-06, all four within `00:05`; chasing the last corner just rocks the others |
 | Probe repeatability | **≤ 0.0025 mm** | 2026-09-06, quantisation-limited — see below |
+| Pressure advance | **`0.120`**, `smooth_time` 0.04 (default) | 2026-09-27, **PETG only** — see below. `[extruder] pressure_advance` in `printer.cfg`; the TPU, PLA and PLA+ `.ini`s pin `SET_PRESSURE_ADVANCE ADVANCE=0` after `START_PRINT`, because they were proven at 0 and are untuned |
 
 ## Procedure
 
@@ -130,3 +132,23 @@ That second case is the stronger one, because relocation is precisely the event 
 claims is harmless. Re-run `PROBE_CALIBRATE` only if something
 actually changed that geometry: the probe was removed or knocked, the hotend or nozzle was
 swapped, or the first-layer test looks wrong in a way babystep cannot explain.
+
+## Pressure advance (2026-09-27)
+
+Tuned to fix a seam defect: a vertical line of gaps and blobs at one end of every Gridfinity
+divider wall ([print-log.md](print-log.md), 2026-09-27 06:10 UTC).
+
+- **Tower:** Klipper `~/klipper/docs/prints/square_tower.stl`, `petg` profile at 0.3 mm layers,
+  0 % infill, no top, all speeds 60 mm/s, centred 104,123 (`pa_tower_petg.gcode`, orange PETG,
+  240/80). Injected after `START_PRINT`: `SET_VELOCITY_LIMIT SQUARE_CORNER_VELOCITY=1 ACCEL=500`
+  and `TUNING_TOWER COMMAND=SET_PRESSURE_ADVANCE PARAMETER=ADVANCE START=0 FACTOR=.005`; before
+  `END_PRINT`, PA 0 and SCV 5 / accel 5000 restored.
+- **Reading (owner):** best outside corner at 26 mm, best inside notch at 24 mm, outside
+  acceptable at 24 mm → **24 mm × 0.005 = 0.120**.
+- **Applied** 2026-09-27 14:10 BST to `printer.cfg` `[extruder]` (backup
+  `printer.cfg.bak-pa-20260927`), Klipper restarted, live value read back as 0.12.
+- **Scope:** measured on one PETG spool at 240 °C through the stock Sprite direct drive. Other
+  PETG spools are assumed close; not verified. TPU, PLA and PLA+ are pinned to 0 in their
+  profiles until tuned (backups `*.ini.bak-pa-20260927` on the Pi).
+- **Not yet shown:** that it fixes the divider-end seam. Next divided bin is the test; seam
+  placement (`rear`/`nearest`) is the second lever if it does not.

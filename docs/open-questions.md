@@ -128,7 +128,7 @@ and learn what would speed it up generally. Plan, **nothing run yet**:
 
 **Where this printer stands** (live via Moonraker 2026-09-23; `reference/printer.cfg` agrees):
 `kinematics: cartesian`, `max_velocity 300`, `max_accel 5000`, `square_corner_velocity 5`,
-**`pressure_advance 0` (never tuned), no `[input_shaper]`, no `[adxl345]`.** The `petg` profile
+**`pressure_advance 0` (never tuned — since 2026-09-27 `0.120` for PETG, [calibration.md](calibration.md#pressure-advance-2026-09-27)), no `[input_shaper]`, no `[adxl345]`.** The `petg` profile
 runs perimeters 45, external 30, infill 60, travel 150 mm/s and emits no `M204`, so every move
 gets Klipper's 5000. At 60 mm/s × 0.45 × 0.2 infill needs only ~5.4 mm³/s — **the profile, not
 the machine, is the limit today.** Estimates land within 1–2 % of actual, consistent with
@@ -150,7 +150,7 @@ It cannot reach SV08 accelerations; its headroom is in flow, pressure advance an
 
 **Speed levers here, cheapest first** (none tried):
 - **Profile speeds up to the measured flow** — free; step 1–2 above.
-- **Tune pressure advance** (Klipper tuning tower) — free; keeps corners clean at speed.
+- ~~**Tune pressure advance**~~ **Done for PETG 2026-09-27: 0.120** ([calibration.md](calibration.md#pressure-advance-2026-09-27)).
 - **Input shaper** — needs an ADXL345 (**check wk-inventory before buying**) or Klipper's
   manual ringing-tower method, which needs nothing. Then accel can be raised with less ringing.
   Needs a `printer.cfg` change — never during a print (AGENTS.md rule 2).
@@ -256,8 +256,9 @@ that no consumer part depends on.
 
 Skipped unless something forces them: a **retraction test** (stringing is cosmetic on these
 parts, and TPU trades it for reliable feeding) and a **volumetric ceiling test** (2.5 mm³/s
-only matters if jobs are too slow, and these parts are small). **Pressure advance stays off**,
-as for every other material here — `printer.cfg` sets none.
+only matters if jobs are too slow, and these parts are small). **Pressure advance stays off**:
+since 2026-09-27 `printer.cfg` sets 0.120 (PETG-tuned), so `ender5s1_tpu.ini` pins
+`SET_PRESSURE_ADVANCE ADVANCE=0` after `START_PRINT` to keep the validated behaviour.
 
 **Flow cube and deck coupon sliced 2026-09-21 at the tower's settings**, both in Mainsail, first
 layer at Z 0.22, footprints in the mesh: `tpu_flow_cube.gcode` (spiral vase, 1 perimeter,
@@ -474,7 +475,7 @@ against its PrusaSlicer twin; **(2)** port `plaplus`, `tpu`, the support profile
 profiles, each verified against its own proven G-code, with organic bed-only supports
 re-proven; **(3)** once all are proven, retire both PrusaSlicers and `slice-print.sh` /
 `slice-plate.sh`, and move AGENTS.md onto Orca. Pressure advance can then live in the filament
-profile (`enable_pressure_advance`/`pressure_advance`) instead of `printer.cfg`.
+profile (`enable_pressure_advance`/`pressure_advance`) instead of `printer.cfg` and the `.ini` pins.
 
 ### `slice-plate.sh` cannot make a plate — how to fix it
 

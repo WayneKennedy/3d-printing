@@ -533,6 +533,10 @@ Decided by the owner 2026-09-23.
   flush with the rim (verified from the STL's top-face area). **3 U is too shallow for the
   desk** (owner). **Drawer bins: 9 U** (owner, 2026-09-24). Desk height is judged by printing a
   couple of 9 U bins first and trying them on the desk.
+- **Orange, low-profile (3U), front of the desk: the current-build zone** (owner, 2026-09-27).
+  The 4 × 4 × 3 16-bay and the 4 × 2 × 3 8-bay together make a 6 × 4-unit block closest to the
+  owner's hands, holding parts for whatever is being built now. Colour for the rest of the desk
+  bins is still open ([open-questions.md](open-questions.md#desk-gridfinity-and-opengrid--all-12-plates-printed-2026-09-25)).
 - **Bin label tabs stay stock; the owner is buying 12 mm tape** for the Supvan E10 (owner,
   2026-09-23: rather than "make every bin carry a big label"). The E10 takes 12/14/15 mm; the
   15 mm continuous tape on hand overhangs the stock tab, whose flat face is 40.7 × **14.5** mm

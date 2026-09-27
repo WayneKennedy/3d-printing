@@ -16,8 +16,9 @@ Decided so far: [decisions.md](decisions.md#desk-gridfinity). STLs come from
 
 - **Grid decided: twelve 4 × 4 plates, 504 × 672 mm** — [decisions.md](decisions.md#desk-gridfinity).
   **All 12 printed by 2026-09-25 16:02 BST** ([print-log.md](print-log.md)); **taped down
-  2026-09-27** ([decisions.md](decisions.md#desk-gridfinity)). **Open: bin colour** — owner
-  undecided; white is out, the 16-bay was printed in orange. Test bins: 4 × 2 × 3 (fit "perfect"), 4 × 2 × 9
+  2026-09-27** ([decisions.md](decisions.md#desk-gridfinity)). **Bin colour: orange is decided for the
+  low-profile current-build zone** ([decisions.md](decisions.md#desk-gridfinity)); **open for
+  everything else** — white is out. Test bins: 4 × 2 × 3 (fit "perfect"), 4 × 2 × 9
   divided (overnight, not yet judged); 2 × 2 × 9 sliced, not printed. **4 × 4 × 3 with 16 × 1 × 1
   bays, no tabs, no lip** (`divx=4 divy=4 style_tab=5`) printing 2026-09-26 from 20:17 BST —
   6 h 58 m est., 135 g: the 24 divider walls dominate. **Stopped at 16 %: the white spool ran out** (runout sensor

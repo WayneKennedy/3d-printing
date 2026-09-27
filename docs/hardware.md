@@ -164,5 +164,9 @@ v4l2-ctl -d /dev/video0 --set-ctrl=gain=50 --set-ctrl=brightness=3
   network for ~35 min on 2026-08-31: live (`iw dev wlan0 set power_save off`), persistently
   in NetworkManager (`powersave = disable`), and via a `wifi-powersave-off.service` boot
   unit. `iw` lives in `/usr/sbin`, which is not on the user PATH — call it by full path.
-- Persistent journald logging was enabled at the same time; before that, logs were volatile
-  and the outage could not be diagnosed after the fact.
+- ~~Persistent journald logging was enabled at the same time~~ **Not so on 2026-09-27:**
+  `/etc/systemd/journald.conf` has `Storage=volatile`, no `journald.conf.d`, journal in
+  `/run/log/journal` — so the 2026-09-27 network outage could not be diagnosed after the reboot.
+  `/var/log/journal` exists (dated 2025-10-01), so the change was either never made or reverted;
+  unknown which. Fix (not yet done, needs an idle printer): `Storage=persistent`, restart
+  `systemd-journald`.

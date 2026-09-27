@@ -530,6 +530,19 @@ plates by hand with `/usr/bin/prusa-slicer --merge` on Z0 inputs, as in [AGENTS.
 
 ## Machine
 
+### printhub lost the network 18:26–21:56 BST, 2026-09-27 — cause unknown
+
+The Pi, Klipper and Moonraker stayed up (Moonraker kept logging; only shutdown was the owner's
+reboot at 21:56; KlipperScreen sat on the finished job, no error). From **18:26 BST** Moonraker
+logged `gaierror -3 Temporary failure in name resolution` repeatedly (196 in the log);
+Tailscale showed printhub offline; it still reported local IP 192.168.7.198 at 21:27. Started
+16 min after the 8-bay bin completed; nothing was printing. After the reboot: `wlan0` on
+ATHOME at −48 dBm, 433 Mbit/s, power save **off**, `wifi-powersave-off.service` enabled — so
+this is **not** the 2026-08-31 power-save failure recurring, as far as can be seen. **The
+kernel/NetworkManager log is gone: journald is volatile** despite
+[hardware.md](hardware.md#network) having said otherwise. Next: make the journal persistent
+(idle printer), and if it recurs, plug in `eth0` — wired is the documented fallback.
+
 - **Moonraker briefly stops answering, twice now** — 2026-09-23 ~20:50 BST (just after plate 2
   completed: Moonraker and SSH both hung ~2 min while `tailscale ping` answered) and 2026-09-24
   19:39 BST (an empty reply to a status query ~11 min after plate 7 completed; answered in

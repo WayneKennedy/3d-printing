@@ -489,7 +489,18 @@ Established 2026-09-27:
   2.8 mm corner fillets (`r_f2`) meet a cross wall, a small **triangle of solid infill** is left
   between the loops, printed as short strokes with retracts. With `wall_loops = 2` the divider
   closes as loops (no open centre path) but the triangles remain. Untested fixes: `wall_loops
-  = 2`; a thicker divider (6 lines ≈ 2.7 mm); which end the owner's defect is at decides which.
+  = 2`; a thicker divider (6 lines ≈ 2.7 mm).
+- **Owner's inspection of the 8-bay (2026-09-27): dark voids on the bay's inside face at the
+  corners, at both ends of every divider, X and Y alike; heavy stringing.** That matches the
+  fillet triangles (present at every junction), not the open centre wall. Workstation comparison
+  per layer across the 12 junction windows (above Z5), short (<1 mm) infill strokes:
+  base 64, `wall_loops = 2` 104 (worse), concentric solid infill 88, classic 54, `wall_loops = 5`
+  34, **`wall_loops = 8` 12** (walls fill the triangles; 82.7 g, 4 h 10 vs 69 g, 3 h 41).
+  `reduce_infill_retraction = 1` cuts retract moves there ~23 %. Un-retract events stay ~1.3 per
+  junction per layer in every variant (loop ends) — not removable by settings.
+  **Proposed test (not run): `bin_2x1x3_div2_notab.stl`, base vs `wall_loops = 8` +
+  `reduce_infill_retraction = 1`**, 58 min / 19 g and 66 min / 22.5 g. **Hypothesis, unverified:
+  damp filament** could add voids and the stringing — the spools have lived in the greenhouse.
 - **Combined test (owner's choice): `gf_bin_4x2x3_8bay_orca.gcode`** — 4 × 2 × 3, 8 × 1 × 1 bays
   (`tools/gridfinity.sh bin 4 2 3 -D divx=4 -D divy=2 -D style_tab=5`), 3 h 41 est., 69 g.
   Tests Orca, PA 0.120 and the seam settings at once, so a failure will not say which.

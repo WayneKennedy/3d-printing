@@ -476,8 +476,20 @@ Established 2026-09-27:
   `seam_slope_type = external` (scarf). Backup `process_petg_fast.json.bak-seam-20260927`.
   **`nearest` still lands outer-wall starts mostly at the divider-to-wall junctions** — in
   `gf_bin_4x2x3_8bay_orca.gcode`, one point takes 75 of 105 layers — so it relocates little
-  here; the scarf ramp and PA 0.120 are what address the defect. `random` is the untried
+  here. **Owner, mid-print photo: "still the same flaw, by the looks of it"** — PA 0.120 and
+  the scarf seam did not cure it. `random` is the untried
   alternative for placement.
+- **The seam is not the lever (found 2026-09-27, workstation Orca 2.4.2, same STL).** Across
+  `nearest`/`random`/`back` and `arachne`/`classic`, ~half of all wall starts after a retract
+  lie within 2.5 mm of a divider junction and one junction point takes 55–79 starts in ~70
+  layers above Z5, whatever the setting. Cause is the geometry at each junction: the divider is
+  **1.9 mm** in section (Gridfinity Rebuilt `d_div = 1.2` in `src/core/standard.scad`), so with
+  3 walls × 0.45 per side it cannot close both bays' loops — Arachne runs a shared centre wall
+  as an **open path that starts and ends at the junction** every layer; and where the bays'
+  2.8 mm corner fillets (`r_f2`) meet a cross wall, a small **triangle of solid infill** is left
+  between the loops, printed as short strokes with retracts. With `wall_loops = 2` the divider
+  closes as loops (no open centre path) but the triangles remain. Untested fixes: `wall_loops
+  = 2`; a thicker divider (6 lines ≈ 2.7 mm); which end the owner's defect is at decides which.
 - **Combined test (owner's choice): `gf_bin_4x2x3_8bay_orca.gcode`** — 4 × 2 × 3, 8 × 1 × 1 bays
   (`tools/gridfinity.sh bin 4 2 3 -D divx=4 -D divy=2 -D style_tab=5`), 3 h 41 est., 69 g.
   Tests Orca, PA 0.120 and the seam settings at once, so a failure will not say which.

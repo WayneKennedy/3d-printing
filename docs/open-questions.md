@@ -915,7 +915,14 @@ USB constraint above applies to it and not to the KE.
     compensates in the wrong direction.
   - It is direct drive now, so TPU is viable on it and retraction transfers roughly from the S1.
     The earlier "TPU stays on the S1" reasoning is void.
-- **Open: did the kit include an all-metal hotend, or is the stock lined one still in place?**
+- **Answered 2026-09-28: all-metal hotend** (owner, with photos: Micro Swiss NG direct drive
+  with brass tension thumbwheel, silicone sock, printed part-cooling shroud; probe is an
+  **ANTCLABS BLTouch "Smart V3.x"** — minor version not legible). So the 260 °C PTFE ceiling
+  below does not apply; the hotend's own rating is not yet looked up. **Thermistor type still
+  unconfirmed.** Best source for it, `rotation_distance` and the probe offsets: **the
+  `printer.cfg` from the Pi 4B that last ran this machine under Klipper** (owner) — if that
+  card survives.
+- ~~**Open: did the kit include an all-metal hotend, or is the stock lined one still in place?**~~
   `max_temp: 260` in the sample is the signature of a PTFE liner. This collides with the
   RC-plane plan — **lightweight PLA foams at 230–260 °C, exactly where a PTFE liner degrades
   and off-gasses.** If all-metal, LW-PLA becomes viable and the blocker disappears; if stock,

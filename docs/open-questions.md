@@ -967,8 +967,21 @@ USB constraint above applies to it and not to the KE.
   **temporarily** to reach the paper and was **reverted to 0** afterwards. Trap for next time:
   `G28` leaves Z at the trigger height, so `PROBE_CALIBRATE` straight after it fails with
   "No trigger on probe after full movement" — raise Z first.
+  **Tram and mesh, bed at 80 °C:** first 7 × 7 mesh (probe X15–305, Y15–330, `algorithm:
+  bicubic` — the sample's default lagrange caps at 6 × 6 and halts Klipper) read **0.789 mm**,
+  mostly a left–right ramp = **dual-Z desync** (motors mid-Y on each side, one driver, so
+  Klipper cannot correct it). Fixed by hand on the left lead screw: mid-Y left−right went
+  +0.53 → −0.35 (overshoot; ~45° moved it ~0.88 mm, so **Z travel per turn may be 8 mm, not the
+  config's `rotation_distance: 4` — measure before printing**) → **0.023 mm**. Mid-Y also shows
+  a ~0.19 mm crown. Then **`[screws_tilt_adjust]`** added: corner screws at bed FL (16,38), BL
+  (16,296), BR ~(329,296), FR assumed (329,38); right pair probed 20 mm inboard (probe reach
+  limit X309). **`CW-M4` confirmed**: one pass took the corners from 0.17 to 0.06 mm spread
+  (owner accepted as is). **Final mesh 0.299 mm** (−0.258…+0.041), a dome — corners low,
+  centre high — saved as `default` by `SAVE_CONFIG`. Machine sits on a Workmate for now;
+  owner will move it to a permanent garage table after Connor's parts — **re-check the tram
+  and re-mesh after that move.**
   **Not yet done:** `START_PRINT`/
-  `END_PRINT` macros, extruder `rotation_distance`, mesh,
+  `END_PRINT` macros, Z `rotation_distance` check, extruder `rotation_distance`,
   PID, thermistor confirmation, first-layer test, Orca machine profile for 350 × 350.
 - **One Pi can host both S1 and Plus** — a second Klipper + Moonraker instance against a
   second MCU is established practice, and no second SBC is needed. But see the USB

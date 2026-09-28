@@ -80,6 +80,25 @@ Decided so far: [decisions.md](decisions.md#desk-gridfinity). STLs come from
 - **openGrid panel:** waiting for the back panel to arrive. Its dimensions, tile size (28 mm
   grid) and Full vs Lite are all open.
 
+### Son's parts `14338-06MB-110` / `-111` — received 2026-09-28, not printable as-is here
+
+Two STLs from the owner's son (staged on blake `~/Code/`, 2026-09-28 12:53 BST); only
+requirement given: "low friction"; use case unknown. Measured, not guessed:
+- **A left/right pair**: `-111` is `-110` mirrored in Z (same 430 triangles, volume, area).
+  Exported by Autodesk ATF 13.25 (Inventor/Fusion), mm, watertight (0 non-manifold edges).
+- **An S-curved guide rail, 373.1 × 128.7 × 24.5 mm**: a 9 mm base flange (~40 mm wide) with a
+  ~10–11 mm wide wall rising 15.5 mm above it along one edge (24.5 mm total), plus a ~60 mm
+  tapered lead-in tail at one end. Three through holes Ø≈6.5 with 90° countersinks to Ø≈11.7
+  opening on the flange's top face — **M6 countersunk**, spaced ~130 mm along the curve.
+- **165.5 cm³** (≈ 210 g solid PETG).
+- **Does not fit the S1 or the KE at any rotation** — smallest square footprint 287 mm vs a
+  220 bed (mesh 202 × 190). Fits the Ender-5 Plus (350) — not commissioned. On the S1 it
+  would have to be split (e.g. two ~187 mm pieces), which changes the part.
+
+Open: what it is for and which face things slide on; split vs wait for the Plus vs ask the
+son; material for "low friction" (check wk-inventory before buying — nylon/POM/PTFE-filled
+are the usual candidates; PETG is what is loaded).
+
 ### Drawer Gridfinity — 7-drawer unit, waiting for the Ender-5 Plus
 
 **Owner's decision, 2026-09-24: wait for the Plus** — partly as the push to commission it.

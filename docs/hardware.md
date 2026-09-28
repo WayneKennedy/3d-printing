@@ -168,5 +168,8 @@ v4l2-ctl -d /dev/video0 --set-ctrl=gain=50 --set-ctrl=brightness=3
   `/etc/systemd/journald.conf` has `Storage=volatile`, no `journald.conf.d`, journal in
   `/run/log/journal` — so the 2026-09-27 network outage could not be diagnosed after the reboot.
   `/var/log/journal` exists (dated 2025-10-01), so the change was either never made or reverted;
-  unknown which. Fix (not yet done, needs an idle printer): `Storage=persistent`, restart
-  `systemd-journald`.
+  unknown which. **Fixed 2026-09-28:** `/etc/systemd/journald.conf.d/10-persistent.conf`
+  (`Storage=persistent`, `SystemMaxUse=200M`), the `Storage=volatile` line in `journald.conf`
+  commented out (backup `journald.conf.bak-20260928`), journald restarted and flushed; journals
+  now in `/var/log/journal/`. Survival across a reboot not yet seen. Check with
+  `journalctl --list-boots` — more than one boot listed means it works.

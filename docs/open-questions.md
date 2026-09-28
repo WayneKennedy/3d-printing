@@ -562,8 +562,9 @@ Tailscale showed printhub offline; it still reported local IP 192.168.7.198 at 2
 ATHOME at −48 dBm, 433 Mbit/s, power save **off**, `wifi-powersave-off.service` enabled — so
 this is **not** the 2026-08-31 power-save failure recurring, as far as can be seen. **The
 kernel/NetworkManager log is gone: journald is volatile** despite
-[hardware.md](hardware.md#network) having said otherwise. Next: make the journal persistent
-(idle printer), and if it recurs, plug in `eth0` — wired is the documented fallback.
+[hardware.md](hardware.md#network) having said otherwise. Journal made persistent 2026-09-28
+([hardware.md](hardware.md#network)); if it recurs, read `journalctl -b -1` for NetworkManager
+and `brcmfmac` messages, and plug in `eth0` — wired is the documented fallback.
 
 - **Moonraker briefly stops answering, twice now** — 2026-09-23 ~20:50 BST (just after plate 2
   completed: Moonraker and SSH both hung ~2 min while `tailscale ping` answered) and 2026-09-24

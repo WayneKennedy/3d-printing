@@ -954,8 +954,15 @@ USB constraint above applies to it and not to the KE.
   extruder 23.0 °C and bed 23.7 °C at room temperature — plausible, but a room-temperature
   reading **cannot tell 100 k thermistor types apart**; they diverge when hot. `printer.cfg` is
   the sample verbatim below a header listing what is uncalibrated; nginx site `mainsail-5p`
-  on :81 → Moonraker :7126; no `[update_manager]` in 5P's Moonraker. **Not yet done:** `START_PRINT`/
-  `END_PRINT` macros, extruder `rotation_distance`, probe offsets, `PROBE_CALIBRATE`, mesh,
+  on :81 → Moonraker :7126; no `[update_manager]` in 5P's Moonraker.
+- **Commissioning log 2026-09-28 (owner at the machine):** BLTouch self-test and `G28 X`,
+  `G28 Y`, `G28 Z` all clean (15:15 UTC); hotend 26 → 200 °C in ~75 s at ~2.7 °C/s with the
+  sample PID, 1 °C overshoot; nozzle cleaned of old filament (owner: PLA+ in the feed tube).
+  **Probe offsets measured** (owner, pen mark): pin 41 mm left of and 14 mm in front of the
+  nozzle → `x_offset: -41`, `y_offset: -14` (X+ right, Y+ to the back; endstops at 350/350).
+  Reachable probe area is therefore X −41…309, Y −14…336 of the 0…350 bed.
+  **Not yet done:** `START_PRINT`/
+  `END_PRINT` macros, extruder `rotation_distance`, `PROBE_CALIBRATE`, mesh,
   PID, thermistor confirmation, first-layer test, Orca machine profile for 350 × 350.
 - **One Pi can host both S1 and Plus** — a second Klipper + Moonraker instance against a
   second MCU is established practice, and no second SBC is needed. But see the USB

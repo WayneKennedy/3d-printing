@@ -188,6 +188,7 @@ leaves the nozzle parked on the part at temperature. See
 | [docs/print-log.md](docs/print-log.md) | What has been printed, with outcomes |
 | [docs/decisions.md](docs/decisions.md) | Settled decisions and why — **do not re-litigate** |
 | [docs/open-questions.md](docs/open-questions.md) | Genuinely undecided, and active work |
+| [docs/projects/](docs/projects/) | Multi-step machine projects — [5p-corexy.md](docs/projects/5p-corexy.md) |
 | `reference/` | Snapshots of the live files on the Pi |
 | `tools/` | `print-monitor.py`, `sync-reference.sh`, `extract-soarm-parts.py`, `make-riser.py` (dependency-free frustum STL generator), `temp-tower.py` (temperature-tower STL + band patcher), `calibration-parts.py` (flow cube, TPU deck coupon), `gridfinity.sh` (Gridfinity Rebuilt baseplates and bins) |
 

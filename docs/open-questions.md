@@ -1013,7 +1013,7 @@ USB constraint above applies to it and not to the KE.
   350 × 350 bed a 7 × 7 plate (294 mm) should fit — **unverified until its mesh bounds are
   known**. The desk's proposed 11 × 16 grid ([Desk Gridfinity](#desk-gridfinity-and-opengrid--all-12-plates-printed-2026-09-25))
   would drop from 12 plates on the S1 to 4 (6+5 × 8+8). Not being commissioned yet.
-- **Owner's original plan: convert it to CoreXY** (stated 2026-09-23) — to take the X motor
+- **Owner's original plan: convert it to CoreXY** (stated 2026-09-23; **project file started 2026-09-28: [projects/5p-corexy.md](projects/5p-corexy.md)** — prior art, full mainboard replacement assumed) — to take the X motor
   off the moving gantry, the same reason the Sovol SV08 is fast
   ([Print speed](#print-speed--how-fast-this-machine-can-go-raised-2026-09-23)). The bed already
   moves only in Z, so the conversion is the belt path and motor mounts, plus `kinematics:

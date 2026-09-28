@@ -9,3 +9,7 @@ scratch/
 *.stl
 *.3mf
 __pycache__/
+
+# Generated viewers (tools/cad-viewer)
+build/
+.venv/

@@ -198,6 +198,22 @@ whether the Micro Swiss NG hotend can sit in EVA (if not, a hotend purchase), a 
 restock date for Hydra, a priced Hydra remainder list, the board + drivers total, and who prints
 the ABS parts.
 
+## 3D viewer
+
+[`tools/cad-viewer/`](../../tools/cad-viewer/README.md) renders ZeroG's whole-printer STEP in the
+browser (tailnet `http://blake:8018/` while served), coloured printed (74) vs bought (318) vs
+fasteners (668), with section cuts and part picking. From the same STEP: **Hydra's Z motors are at
+the bottom front-left, front-right and rear-centre**, each under a vertical MGN12 rail (front is
+−Y); bed stack heater → 8 mm plate → magnetic sheet → PEI on three spacers on the arms.
+
+**Does the Hydra STEP contain all of Mercury One.1?** Yes for the motion system, in its EVA
+configuration: every printed Mercury part in ZeroG's MercuryOne STL folder has a counterpart in
+the CAD (stepper mounts, X-joints, flange/idler spacers, front towers, both tension plates, Y
+endstop, X endstop block, rear cable arm, EVA plates, belt clamps, TriHorn duct, Rapido face,
+BLTouch mount). Not in it: the **5 Plus bed raisers** (Mercury-without-Hydra only), the Pro-only
+Z bracket, the **alignment tools** (`STLs/Tools/` — print these too), and the other toolhead
+options. ZeroG's MercuryOne repo also has its own `mercury_370_assembly.zip`.
+
 ## Open questions (the owner's calls)
 
 1. **Which design** — Mercury One.1 (XY only, keep the stock bed/dual Z) vs Mercury + Hydra

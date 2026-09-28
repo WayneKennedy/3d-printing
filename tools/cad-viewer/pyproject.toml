@@ -1,0 +1,12 @@
+[project]
+name = "cad-viewer"
+version = "0.1.0"
+description = "Tessellate a STEP assembly into a browser 3D viewer (Three.js r128, vendored)"
+requires-python = ">=3.10"
+dependencies = [
+    "build123d>=0.11.1",
+    "numpy>=2.0",
+]
+
+[tool.uv]
+package = false

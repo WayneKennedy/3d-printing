@@ -190,7 +190,7 @@ leaves the nozzle parked on the part at temperature. See
 | [docs/open-questions.md](docs/open-questions.md) | Genuinely undecided, and active work |
 | [docs/projects/](docs/projects/) | Multi-step machine projects — [5p-corexy.md](docs/projects/5p-corexy.md) |
 | `reference/` | Snapshots of the live files on the Pi |
-| `tools/` | `print-monitor.py`, `sync-reference.sh`, `extract-soarm-parts.py`, `make-riser.py` (dependency-free frustum STL generator), `temp-tower.py` (temperature-tower STL + band patcher), `calibration-parts.py` (flow cube, TPU deck coupon), `gridfinity.sh` (Gridfinity Rebuilt baseplates and bins) |
+| `tools/` | `print-monitor.py`, `sync-reference.sh`, `extract-soarm-parts.py`, `make-riser.py` (dependency-free frustum STL generator), `temp-tower.py` (temperature-tower STL + band patcher), `calibration-parts.py` (flow cube, TPU deck coupon), `gridfinity.sh` (Gridfinity Rebuilt baseplates and bins), `cad-viewer/` (browser 3D view of the Mercury One + Hydra STEP, printed-vs-bought colouring) |
 
 **The Pi holds the authoritative copies; `reference/` is a version-controlled cache.** Refresh
 with `./tools/sync-reference.sh` before trusting anything in it, and after any change made on

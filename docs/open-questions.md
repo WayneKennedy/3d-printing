@@ -920,8 +920,15 @@ USB constraint above applies to it and not to the KE.
   RC-plane plan — **lightweight PLA foams at 230–260 °C, exactly where a PTFE liner degrades
   and off-gasses.** If all-metal, LW-PLA becomes viable and the blocker disappears; if stock,
   the 260 ceiling stands. **Confirm visually before buying either.**
-- **Flashing will differ** — the sample shows an FTDI USB bridge, not the S1's CH340, so
-  [klipper-setup.md](klipper-setup.md) does not apply.
+- **Mainboard seen 2026-09-28 (owner's photo): Creality "V2.2", Atmel ATmega2560 (16 MHz,
+  TQFP), four on-board stepper drivers under heatsinks with trim-pot current setting
+  (RP3/RP4/RP5/RP1) — not UART-configurable.** That is the board the Klipper sample names
+  ("Creality v2.2 board … atmega2560"), so its pin map applies. A handwritten mark on the board
+  near C48; meaning unknown.
+- **Flashing will differ** — the sample shows an FTDI USB bridge (`usb-FTDI_FT232R…`), not the
+  S1's CH340, so [klipper-setup.md](klipper-setup.md) does not apply. An ATmega2560 normally
+  carries a serial bootloader, so Klipper would be written over USB (`make flash` via avrdude)
+  rather than by SD card — **unverified on this board** until the bootloader answers.
 - **One Pi can host both S1 and Plus** — a second Klipper + Moonraker instance against a
   second MCU is established practice, and no second SBC is needed. But see the USB
   constraint above: address it by `by-path`, and **measure the cost of the second `klippy`

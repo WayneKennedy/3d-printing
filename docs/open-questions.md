@@ -981,8 +981,13 @@ USB constraint above applies to it and not to the KE.
   centre high — saved as `default` by `SAVE_CONFIG`. Machine sits on a Workmate for now;
   owner will move it to a permanent garage table after Connor's parts — **re-check the tram
   and re-mesh after that move.**
+  **Extruder `rotation_distance: 7.670`** (Micro Swiss NG, measured with green PETG at 240 °C,
+  1 mm/s, mark at 120 mm from the filament-sensor block): the sample's 33.683 fed **23 mm of
+  100** (no clicking — gearing, not slip) → 7.747 fed 99 → 7.670. Printing on the sample value
+  would have been ~23 % flow. `max_extrude_only_distance` is 50 mm: send long test extrusions
+  in 50 mm moves.
   **Not yet done:** `START_PRINT`/
-  `END_PRINT` macros, extruder `rotation_distance`,
+  `END_PRINT` macros,
   PID, thermistor confirmation, first-layer test, Orca machine profile for 350 × 350.
 - **One Pi can host both S1 and Plus** — a second Klipper + Moonraker instance against a
   second MCU is established practice, and no second SBC is needed. But see the USB

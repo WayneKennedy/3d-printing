@@ -202,8 +202,10 @@ the ABS parts.
 
 [`tools/cad-viewer/`](../../tools/cad-viewer/README.md) renders ZeroG's whole-printer STEP in the
 browser (tailnet `http://blake:8018/` while served), coloured printed (74) vs bought (318) vs
-fasteners (668), with section cuts and part picking. From the same STEP: **Hydra's Z motors are at
-the bottom front-left, front-right and rear-centre**, each under a vertical MGN12 rail (front is
+fasteners (668), with section cuts and part picking. From the same STEP (placements verified
+against OCC's plain reader): **Hydra's Z motors are at the bottom front-left, front-right and
+rear-centre** (Y −235 / −235 / +242; Mercury's front towers at Y −252 and XY steppers at +282
+confirm front = −Y), each under a vertical MGN12 rail (front is
 −Y); bed stack heater → 8 mm plate → magnetic sheet → PEI on three spacers on the arms.
 
 **Does the Hydra STEP contain all of Mercury One.1?** Yes for the motion system, in its EVA

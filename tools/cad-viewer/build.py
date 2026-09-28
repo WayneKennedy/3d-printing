@@ -27,7 +27,10 @@ from build123d import import_step
 from OCP.BRep import BRep_Tool
 from OCP.BRepMesh import BRepMesh_IncrementalMesh
 from OCP.BRepTools import BRepTools
-from OCP.TopAbs import TopAbs_FACE, TopAbs_REVERSED
+from OCP.Bnd import Bnd_Box
+from OCP.BRepBndLib import BRepBndLib
+from OCP.STEPControl import STEPControl_Reader
+from OCP.TopAbs import TopAbs_FACE, TopAbs_REVERSED, TopAbs_SOLID
 from OCP.TopExp import TopExp_Explorer
 from OCP.TopLoc import TopLoc_Location
 from OCP.TopoDS import TopoDS
@@ -121,9 +124,8 @@ def group_name(path: list[str]) -> str:
     return top
 
 
-def mesh(shape, lin=LINEAR, ang=ANGULAR) -> tuple[np.ndarray, np.ndarray]:
-    """Triangulate one located leaf; faces OCC cannot mesh are skipped, not the whole part."""
-    w = shape.wrapped
+def mesh(w, lin=LINEAR, ang=ANGULAR) -> tuple[np.ndarray, np.ndarray]:
+    """Triangulate one placed leaf (a TopoDS shape); faces OCC cannot mesh are skipped, not the part."""
     BRepTools.Clean_s(w)             # drop any finer triangulation carried in from the import
     BRepMesh_IncrementalMesh(w, lin, False, ang, True)
     pos, idx, base = [], [], 0
@@ -147,20 +149,57 @@ def mesh(shape, lin=LINEAR, ang=ANGULAR) -> tuple[np.ndarray, np.ndarray]:
     return np.asarray(pos, np.float32).reshape(-1, 3), np.asarray(idx, np.uint32).reshape(-1, 3)
 
 
+def _bbox(shape) -> np.ndarray:
+    b = Bnd_Box()
+    BRepBndLib.Add_s(shape, b, True)
+    lo, hi = b.CornerMin(), b.CornerMax()
+    return np.array([lo.X(), lo.Y(), lo.Z(), hi.X(), hi.Y(), hi.Z()])
+
+
+def _solids(shape):
+    e = TopExp_Explorer(shape, TopAbs_SOLID)
+    while e.More():
+        yield e.Current()
+        e.Next()
+
+
+def verify(step: pathlib.Path, placed: list) -> None:
+    """Every placed solid must match a solid from OCC's plain STEP reader (which applies the file's
+    own placements, independent of the assembly traversal) to within 1 mm, and the counts must be
+    equal. Refuses to build otherwise."""
+    r = STEPControl_Reader()
+    r.ReadFile(str(step))
+    r.TransferRoots()
+    ref = np.array([_bbox(s) for s in _solids(r.OneShape())])
+    mine = [_bbox(s) for w in placed for s in _solids(w)]
+    bad = sum(1 for b in mine if np.abs(ref - b).max(1).min() > 1.0)
+    print(f"verify: {len(mine)} placed solids vs {len(ref)} from the plain reader, {bad} unmatched",
+          file=sys.stderr)
+    if bad or len(mine) != len(ref):
+        sys.exit("verify FAILED: placements disagree with the plain STEP reader — not building")
+
+
 def build() -> None:
     step = fetch_step()
     t = time.time()
     root = import_step(str(step))
     print(f"read {step.name} in {time.time() - t:.0f}s", file=sys.stderr)
 
+    # build123d's import leaves each child in its PARENT's frame: its .wrapped carries only its
+    # own location. Compose every ancestor's location explicitly (found 2026-09-28: without this,
+    # 1019 of 1153 solids sat in local coordinates — the "floating parts"). verify() checks it.
     leaves = []
-    def walk(s, path):
+    def walk(s, locs, path):
         kids = list(s.children)
         if not kids:
-            leaves.append((s, path))
+            g = TopLoc_Location()
+            for loc in locs:
+                g = g.Multiplied(loc)
+            leaves.append((s.wrapped.Moved(g), path))
         for k in kids:
-            walk(k, path + [k.label])
-    walk(root, [])
+            walk(k, locs + [s.wrapped.Location()], path + [k.label])
+    walk(root, [], [])
+    verify(step, [w for w, _ in leaves])
 
     OUT.mkdir(parents=True, exist_ok=True)
     blobs = {"geometry.bin": io.BytesIO(), "fasteners.bin": io.BytesIO()}

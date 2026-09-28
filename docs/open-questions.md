@@ -971,8 +971,9 @@ USB constraint above applies to it and not to the KE.
   bicubic` — the sample's default lagrange caps at 6 × 6 and halts Klipper) read **0.789 mm**,
   mostly a left–right ramp = **dual-Z desync** (motors mid-Y on each side, one driver, so
   Klipper cannot correct it). Fixed by hand on the left lead screw: mid-Y left−right went
-  +0.53 → −0.35 (overshoot; ~45° moved it ~0.88 mm, so **Z travel per turn may be 8 mm, not the
-  config's `rotation_distance: 4` — measure before printing**) → **0.023 mm**. Mid-Y also shows
+  +0.53 → −0.35 (overshoot; ~45° moved it ~0.88 mm, so Z travel per turn looked like 8 mm — **measured and
+  ruled out**: `G1 Z10`→`Z30` moved the bed 40 → 60 mm below the gantry (owner), so
+  `rotation_distance: 4` is right and the hand turn was ~80°, not 45°) → **0.023 mm**. Mid-Y also shows
   a ~0.19 mm crown. Then **`[screws_tilt_adjust]`** added: corner screws at bed FL (16,38), BL
   (16,296), BR ~(329,296), FR assumed (329,38); right pair probed 20 mm inboard (probe reach
   limit X309). **`CW-M4` confirmed**: one pass took the corners from 0.17 to 0.06 mm spread
@@ -981,7 +982,7 @@ USB constraint above applies to it and not to the KE.
   owner will move it to a permanent garage table after Connor's parts — **re-check the tram
   and re-mesh after that move.**
   **Not yet done:** `START_PRINT`/
-  `END_PRINT` macros, Z `rotation_distance` check, extruder `rotation_distance`,
+  `END_PRINT` macros, extruder `rotation_distance`,
   PID, thermistor confirmation, first-layer test, Orca machine profile for 350 × 350.
 - **One Pi can host both S1 and Plus** — a second Klipper + Moonraker instance against a
   second MCU is established practice, and no second SBC is needed. But see the USB

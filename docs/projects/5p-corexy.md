@@ -129,8 +129,20 @@ to landfill or obsolete dust gathering, if I can reuse instead." So each part be
   Hydra's 3 points (drill/tap 3 mounts, retire the 20 × 10 frame) — standard layout, test with a
   hot mesh; **B** keep the 20 × 10 frame + corner screws and put the *frame* on Hydra's 3 points
   — maximum reuse, but a custom adaptation that defeats Hydra's free-expansion kinematic mount;
-  **C** buy the ATP5 9.53 mm plate (US$79.99). Lean: **A, falling back to C**. Open: find
-  anyone who has run Hydra on a stock 4 mm 5 Plus bed.
+  **C** buy the ATP5 9.53 mm plate (US$79.99). ~~Lean: A, falling back to C~~ — **owner now
+  favours C, the 9.5 mm plate** (2026-09-28), accepting that the bonded heater likely does not
+  transfer (peeling a bonded silicone pad often tears it or ruins the bond) → **plan a new
+  heater**: Fabreeko edge-to-edge US$79.99, or a generic 370 mm pad. **Read the stock pad's label
+  first (24 V DC or mains AC, watts)** — it decides whether 5P's bed wiring can drive it or
+  Hydra's SSR is needed. The old plate + heater stay a working bed (spare / pass on).
+- **Hydra's three bed mounts, from ZeroG's `377x370.dxf`** (downloaded 2026-09-28 from
+  `docs.zerog.one/assets/dxf/hydra/`; scaled from the 377 × 370 mm outline, 1 drawing unit =
+  63.5 mm): two on one **377 mm edge, 13.5 mm in from each corner and 10 mm from the edge**; one
+  **centred on the opposite edge** (188.5 mm along), 10 mm in. Holes **Ø4.3 through, Ø8
+  counterbore 4.5 deep**. The drawing recommends **8–10 mm** plate "for thermal stability and
+  proper bolt engagement". Arms are named left / right / rear, which suggests **front-left,
+  front-right and rear-centre** (Trident-style) — inference; the drawing does not label front.
+  A `410x410` bed variant also exists. Z motor positions: not yet read (arm build pages).
 - **Reuse candidates, remaining unverified:** the stock bed's thickness/heater (above), the **two stock Z
   motors and TR8 lead screws** (Hydra needs 3 motors and 3 × 450/470 mm screws — measure the
   stock screws), the **PSU**, the **filament sensor**. Measure before buying any of them.

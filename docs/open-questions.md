@@ -501,6 +501,24 @@ Established 2026-09-27:
   **Proposed test (not run): `bin_2x1x3_div2_notab.stl`, base vs `wall_loops = 8` +
   `reduce_infill_retraction = 1`**, 58 min / 19 g and 66 min / 22.5 g. **Hypothesis, unverified:
   damp filament** could add voids and the stringing — the spools have lived in the greenhouse.
+- **Coupon A (8 walls) result (owner, 2026-09-28): "not as bad, but still visible as a seam"** —
+  a vertical line of small voids at both ends of the divider face, where the corner fillets meet it.
+- **Root cause found 2026-09-28: the divider is 0.6 mm thick above ~Z9 and prints as ONE line.**
+  Gridfinity Rebuilt shrinks every compartment by `d_div/2` (`cgs()` in `src/core/cutouts.scad`),
+  so the wall between two bays is `d_div/2` = **0.6 mm** with the default `d_div = 1.2`
+  (`src/core/standard.scad`); only the chamfered foot is wider (1.9 mm at Z8). Orca prints it as
+  a single 0.56 mm "Outer wall" **open path that starts at one divider end and stops at the
+  other on every layer** — the start/stop is on the visible face of both bays. No seam or wall
+  setting can move it: on the 2 × 1 coupon, 6.1 restarts per layer sit at the two divider ends
+  (of 7.6) whatever the seam position. Earlier findings (open centre wall, fillet triangles) were
+  real but secondary.
+- **Fix under test: `-D d_div=3.6` → 1.8 mm divider**, which Orca prints as outer + inner wall
+  per bay — closed loops, so seam placement is free again. The fillet triangle stays, but its
+  restarts are now buried behind the loops. Divider-end restarts: 4.25/layer with `random`
+  (3.64 with 8 walls). Compartments lose ~0.6 mm each side. **Coupon C:
+  `gf_coupon_2x1x3_div2_d36.gcode`** (`bin_2x1x3_div2_d36.stl`, Orca `petg_fast_random` =
+  `petg_fast` with `seam_position = random`), 1 h 06, 21.9 g. Coupon B (base settings) dropped:
+  it could only reproduce the known defect.
 - **Combined test (owner's choice): `gf_bin_4x2x3_8bay_orca.gcode`** — 4 × 2 × 3, 8 × 1 × 1 bays
   (`tools/gridfinity.sh bin 4 2 3 -D divx=4 -D divy=2 -D style_tab=5`), 3 h 41 est., 69 g.
   Tests Orca, PA 0.120 and the seam settings at once, so a failure will not say which.

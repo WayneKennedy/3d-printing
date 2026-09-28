@@ -95,7 +95,16 @@ requirement given: "low friction"; use case unknown. Measured, not guessed:
   220 bed (mesh 202 × 190). Fits the Ender-5 Plus (350) — not commissioned. On the S1 it
   would have to be split (e.g. two ~187 mm pieces), which changes the part.
 
-Open: what it is for and which face things slide on; split vs wait for the Plus vs ask the
+**Use (owner, 2026-09-28): guide rails added to a belt carrying fresh pies in foil trays
+(~220 g, soft)** — first said boxed, corrected to unboxed. The rail meets the foil tray, and
+possibly the pastry, which overhangs the tray rim — so possible **direct food contact**. Owner
+prefers PETG (green, ~650 g on hand) over an unopened 1 kg ABS; ~80 g each on `petg_fast`
+(estimated on a notional 400 mm bed). Printed PETG is not certified food-contact (colourant,
+brass nozzle, layer crevices that cannot be cleaned); acceptable-for-a-trial is the line
+operator's call, not ours. Production conveyor guides are normally machined UHMW-PE or acetal.
+Printing waits for the Ender-5 Plus (owner, 2026-09-28: fetching it to re-commission today).
+
+Open: which face things slide on; split vs wait for the Plus vs ask the
 son; material for "low friction" (check wk-inventory before buying — nylon/POM/PTFE-filled
 are the usual candidates; PETG is what is loaded).
 

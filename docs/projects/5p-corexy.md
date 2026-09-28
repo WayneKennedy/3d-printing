@@ -162,7 +162,16 @@ the ABS parts.
 3. **Toolhead** — *leaning NG via the Micro Swiss MGN12H plate (see Reuse first).* Mercury One.1's BOM is built around the **EVA** toolhead (Rapido HF hotend,
    40 mm fan). Does the Micro Swiss NG adapt, or does 5P take EVA? Affects probe mounting and
    every calibration done on 2026-09-28 (probe offsets, `rotation_distance`, `z_offset`).
-4. **Printed parts** — *JB3D UK sells both kits in ABS (see Reuse first).* Which printer and material if printed here. ZeroG kit parts are sold in ABS; ABS on
+4. **Printed parts — decided in principle (owner, 2026-09-28): print them here, in ABS, from
+   the owner's unopened grey ABS spool.** ABS over PETG because the gantry sits over an
+   80–100 °C bed and the idler/tensioner parts carry constant belt load — PETG softens near
+   80 °C and creeps; ZeroG and JB3D use ABS. **Print on 5SI** (enclosed; hotend `max_temp` 305,
+   bed 110) — 5P is open-frame and is the machine being converted. Needed first: an **ABS
+   profile** (none exists; ABS never printed here) proven on a temperature check and a small
+   warp test; **enclosure closed** (the "closed when needed" case in
+   [hardware.md](../hardware.md)); ventilation for styrene/UFP; no brim unless a part lifts
+   (house rule). Check each Plus-specific part against 5SI's mesh (X3–205, Y28–218) once the
+   STLs are downloaded. JB3D's ABS kits (£40–70 + £30) remain the fallback. ZeroG kit parts are sold in ABS; ABS on
    5SI (open enclosure) is untested here and the long parts may warp. PETG vs ABS for a
    gantry near a hot bed is a real question.
 5. **Build or buy the kit** — printed parts + sourced hardware vs a commercial kit.

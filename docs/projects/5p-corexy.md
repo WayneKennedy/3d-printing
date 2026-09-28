@@ -75,6 +75,51 @@ slots, £80.00 at 3DJake UK ([3DJake](https://www.3djake.uk/bigtreetech/manta-m8
 extra; BTT Octopus / Octopus Pro V1.1 — 8 slots, UK price not found. Either can stay a plain
 USB MCU with printhub as host, so the Manta's compute-module socket is optional.
 
+### Reuse first (owner, 2026-09-28)
+
+**Owner leans to building Mercury even if it costs more than an SV08:** "I hate consigning things
+to landfill or obsolete dust gathering, if I can reuse instead." So each part below is judged
+**reuse before buy**.
+
+**Toolhead — the Micro Swiss NG can stay (evidence, not yet proven here):**
+- Micro Swiss sells an **NG adaptation plate for Ender 5 / 5 Pro / 5 Plus on an MGN12 rail with
+  an MGN12H carriage**, **US$16.00**, NG and NG REVO
+  ([Micro Swiss](https://store.micro-swiss.com/products/micro-swiss-ng-direct-drive-extruder-adaptation-plate-for-creality-ender-5-5-pro-5-plus-linear-rail-edition)).
+  Mercury One.1's X axis is an MGN12H carriage. The description does not mention Mercury; **one
+  customer review does:** "Perfect upgrade to add my Microswiss my Mercury One.1 printer".
+- Community parts exist: "MicroSwiss NG for Mercury One with Cable Chain" (GupperKay,
+  [Thingiverse 7050319](https://www.thingiverse.com/thing:7050319) — contents not readable by
+  fetch) and a "Microswiss ng linear rail adapter Core_XY"
+  ([Thingiverse 7210368](https://www.thingiverse.com/thing:7210368)). A search summary said a
+  Mercury NG REVO adapter "requires a new fan shroud to clear the belt clamp" — **source not
+  pinned down; treat as a warning to check.**
+- EVA 3 (Mercury's default toolhead) lists V6/Mosquito/Copperhead/Dragon/Volcano hotends and
+  Titan/BMG/LGX/Orbiter drives — **no Micro Swiss** — so keeping the NG means **not using EVA**.
+- Consequences: the kit's 50 W heater + 104-GT2 thermistor become spares; probe offsets change
+  with the new mount (re-measure, as on 2026-09-28); `rotation_distance: 7.670` stays (same
+  extruder). The BLTouch needs a mount on the new carriage — unchecked.
+
+**Hydra — buyable from the UK/EU:**
+- Hardware kit **in stock at 3DO (Denmark), kr 816** for the Plus 510 mm variant (same contents
+  as Fabreeko's) ([3DO](https://3do.dk/en/frame-kits/2526-zero-g-hydra-3-point-conversion-kit-for-ender-5-pro-plus.html));
+  UK shipping not shown on the page.
+- Printed parts: **JB3D (UK)** sells ABS kits — **Mercury £40–70** (Standard or **Plus**, EVA /
+  Stealthburner / **"None"** toolhead option, idler 8.5/9/10 mm), **Hydra bed mounts £30**
+  ([Mercury](https://jb3d.uk/product/zero-g-mercury-one-ender-5-conversion/),
+  [Hydra](https://jb3d.uk/product/zero-g-hydra-bed-conversion-printed-parts-kits-in-abs/)).
+  That answers "who prints the ABS"; the "None" toolhead option fits keeping the NG.
+- Bed: Fabreeko ATP5 plate for 5 Plus, **US$79.99, 9.53 mm**, has **both the stock and the
+  Hydra bolt patterns**, pre-order 10–15 days; edge-to-edge heater extra US$79.99
+  ([Fabreeko](https://www.fabreeko.com/products/zero-g-atp5-aluminum-beds-for-ender-5-pro-plus-hydra-conversion)).
+- **Reuse candidates, all unverified:** the **stock 5P bed plate and heater** (Hydra's BOM calls
+  for a 377 mm plate — the stock plate's size and heater type not measured), the **two stock Z
+  motors and TR8 lead screws** (Hydra needs 3 motors and 3 × 450/470 mm screws — measure the
+  stock screws), the **PSU**, the **filament sensor**. Measure before buying any of them.
+- Hydra BOM (5 Plus): 510 mm 2020 extrusion, 3 × MGN9C 100 mm, **3 × MGN12C/H 500 mm**, 3 ×
+  TR8 450/470 mm + nuts, 3 × 5–8 mm couplers, 3 × NEMA17, 377 mm bed + heater, SSR, drag chain,
+  3 × 10 mm M4 kossel balls, 3 × 12 × 5 mm countersunk magnets, fasteners
+  ([BOM](https://docs.zerog.one/manual/build/hydra/bill_of_material)).
+
 ### Contrast: convert 5P vs buy an SV08
 
 | | 5P → Mercury One.1 + Hydra + new board | Sovol SV08 |
@@ -105,10 +150,10 @@ the ABS parts.
 2. **Which mainboard** — driver count is set by Q1: CoreXY needs 2 (A, B) + extruder; stock Z
    needs 1–2, Hydra needs 3 independent. So **5–6 drivers** with Hydra. UART/SPI Trinamic
    for quiet running. Check wk-inventory first; none recorded as of 2026-09-28.
-3. **Toolhead** — Mercury One.1's BOM is built around the **EVA** toolhead (Rapido HF hotend,
+3. **Toolhead** — *leaning NG via the Micro Swiss MGN12H plate (see Reuse first).* Mercury One.1's BOM is built around the **EVA** toolhead (Rapido HF hotend,
    40 mm fan). Does the Micro Swiss NG adapt, or does 5P take EVA? Affects probe mounting and
    every calibration done on 2026-09-28 (probe offsets, `rotation_distance`, `z_offset`).
-4. **Printed parts** — which printer and material. ZeroG kit parts are sold in ABS; ABS on
+4. **Printed parts** — *JB3D UK sells both kits in ABS (see Reuse first).* Which printer and material if printed here. ZeroG kit parts are sold in ABS; ABS on
    5SI (open enclosure) is untested here and the long parts may warp. PETG vs ABS for a
    gantry near a hot bed is a real question.
 5. **Build or buy the kit** — printed parts + sourced hardware vs a commercial kit.

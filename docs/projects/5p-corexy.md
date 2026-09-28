@@ -1,6 +1,6 @@
 # 5P CoreXY conversion (Ender-5 Plus)
 
-**Status: planning — nothing chosen, nothing bought.** Started 2026-09-28 at the owner's request.
+**Status: planning — owner leans Mercury One.1 kit + Hydra + new board; to be contrasted with an SV08. Nothing bought.** Started 2026-09-28 at the owner's request.
 Decided facts go to [decisions.md](../decisions.md) when they are decided; this file is the
 working brief and the prior-art survey. Machine state today:
 [open-questions.md → Creality Ender-5 Plus](../open-questions.md#creality-ender-5-plus--not-committed).
@@ -43,6 +43,46 @@ Tridra is the same idea with a Voron gantry, but is one person's repo. **ZeroG's
 haven't written any configuration for Klipper"** for Mercury One.1 — the Klipper config would
 be ours, which is normal (`kinematics: corexy` + the new board's pins from its official
 sample).
+
+## Owner's lean (2026-09-28) — not yet decided
+
+**Mercury One.1 as a bought full kit (£206.55, owner's quote — seller and contents not yet
+recorded here), plus Hydra, plus a new mainboard with ≥ 6 Trinamic drivers.** To be weighed
+against **buying a Sovol SV08** before anything is ordered.
+
+**Hydra has a hardware kit, but a partial one:** Fabreeko "Zero G Hydra 3 point conversion for
+Ender 5 Pro & Plus", **US$94.99** for the Plus (510 mm extrusion), 3 left in stock when read
+2026-09-28 ([Fabreeko](https://www.fabreeko.com/products/zero-g-hydra-3-point-conversion-for-ender-5-pro-plus)).
+It contains brackets, couplers, 3 kossel balls + magnets, drag chain, extrusion, **3 × MGN9C
+100 mm** rails, inserts, spacers and fasteners. **Not included:** bed plate (MIC-6 aluminium
+recommended), bed heater, SSR, TR8 lead screws, **3 × 500 mm Z rails**, extra stepper(s), PEI,
+printed parts. US seller: shipping and UK import VAT on top (not priced).
+
+**Mainboard candidates (≥ 6 Trinamic, not yet compared):** BTT Manta M8P V2.0 — 8 driver
+slots, £80.00 at 3DJake UK ([3DJake](https://www.3djake.uk/bigtreetech/manta-m8p-v20)), drivers
+extra; BTT Octopus / Octopus Pro V1.1 — 8 slots, UK price not found. Either can stay a plain
+USB MCU with printhub as host, so the Manta's compute-module socket is optional.
+
+### Contrast: convert 5P vs buy an SV08
+
+| | 5P → Mercury One.1 + Hydra + new board | Sovol SV08 |
+|---|---|---|
+| Kinematics | CoreXY, fixed gantry, 3-point bed (Hydra) | CoreXY flying gantry (Voron 2.4 derivative, GPL-3.0) |
+| Build area | Ender-5 Plus frame, ~350 × 350 (exact post-conversion figure not read) | 350 × 350 × 345 (Sovol spec) |
+| Price, known parts | £206.55 kit + US$94.99 Hydra kit (+ shipping/VAT) + ~£80 board + TMC drivers | **£389** sale at sovol.uk (regular £469), 2026-09-28; £486.99 at 3DJake |
+| Price, not yet priced | bed plate, heater + SSR, 3 × Z rails, lead screws, 1 motor, printed parts (ABS), toolhead/hotend if the NG does not adapt | none for a working machine |
+| Time | many evenings: strip, build, wire, Klipper config written by us, re-commission | unbox, calibrate |
+| Firmware | mainline Klipper from day one | Sovol's Klipper fork (0.12, criticised as stale); mainline needs an ST-Link ([issue #28](https://github.com/Sovol3d/SV08/issues/28)) |
+| Printers after | 5SI + 5P (CoreXY) + 3KE | 5SI + 5P (Cartesian, noisy) + 3KE + SV08 — a fourth machine and a fourth USB/host question |
+| Risk | parts sourcing across UK/US; integration is ours | known machine; reviews note QC issues fixed in later batches (see [Print speed](../open-questions.md#print-speed--how-fast-this-machine-can-go-raised-2026-09-23)) |
+| What you get beyond a printer | a machine you built and understand; reuses a frame you own | none |
+
+**Reading (inference):** on price alone the conversion is unlikely to beat the SV08 once the
+unpriced Hydra items, drivers and printed parts are added — it plausibly lands above £389. The
+case for converting is ownership and learning, reuse of the 5P frame, and mainline Klipper;
+the case for the SV08 is time and a known result. **To firm up:** the £206.55 kit's contents
+(does it include rails, motors, toolhead?), a priced Hydra remainder list, and the board +
+drivers total.
 
 ## Open questions (the owner's calls)
 

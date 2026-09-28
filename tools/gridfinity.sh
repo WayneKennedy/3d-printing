@@ -8,7 +8,9 @@
 # Settled parameters (docs/decisions.md#desk-gridfinity): thin baseplate, no magnet or screw
 # holes in plates or bins; bins get one compartment, the stock label tab (40.7 x 14.5 mm
 # flat face -- sized for 12 mm tape) and NO stacking lip (owner: open tops, never stacked).
-# See docs/decisions.md#desk-gridfinity.
+# Bins also get d_div=3.6: upstream's default 1.2 makes dividers 0.6 mm (compartments shrink
+# by d_div/2), which prints as one open line with a start/stop seam at both divider ends every
+# layer; 3.6 gives 1.8 mm, printed as closed loops. See docs/decisions.md#desk-gridfinity.
 # Anything else, pass extra OpenSCAD args after the sizes, e.g.
 #   tools/gridfinity.sh bin 2 1 3 -D divx=2
 #
@@ -58,7 +60,8 @@ case "$kind" in
     x=$1 y=$2 z=$3; shift 3
     f="$OUT/bin_${x}x${y}x${z}.stl"
     (cd "$SRC" && "$OPENSCAD" "${BACKEND[@]}" -q -o "$f" -D gridx="$x" -D gridy="$y" -D gridz="$z" \
-      -D include_lip=false -D refined_holes=false -D magnet_holes=false -D screw_holes=false "$@" gridfinity-rebuilt-bins.scad) ;;
+      -D include_lip=false -D refined_holes=false -D magnet_holes=false -D screw_holes=false \
+      -D d_div=3.6 "$@" gridfinity-rebuilt-bins.scad) ;;
   lite)
     [ $# -ge 3 ] || usage
     x=$1 y=$2 z=$3; shift 3

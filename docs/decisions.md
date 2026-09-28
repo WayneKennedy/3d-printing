@@ -533,6 +533,15 @@ Decided by the owner 2026-09-23.
   flush with the rim (verified from the STL's top-face area). **3 U is too shallow for the
   desk** (owner). **Drawer bins: 9 U** (owner, 2026-09-24). Desk height is judged by printing a
   couple of 9 U bins first and trying them on the desk.
+- **Bin dividers are 1.8 mm: `tools/gridfinity.sh` passes `-D d_div=3.6` for every bin**
+  (owner, 2026-09-28: "a solid pass. Set that as our default"). Gridfinity Rebuilt's default
+  `d_div = 1.2` leaves dividers **0.6 mm** (compartments shrink by `d_div/2`), which slices to
+  one open line that starts and stops at both divider ends on every layer — the vertical seam of
+  voids on every divided bin printed before this. Seam settings, pressure advance and 8 walls
+  only reduced it. Proven on coupon C, `gf_coupon_2x1x3_div2_d36.gcode` (Orca `petg_fast`,
+  random seam). Cost: each compartment ~0.6 mm smaller per side. **STLs generated before
+  2026-09-28 have 0.6 mm dividers — regenerate, do not reprint them.** Investigation:
+  [open-questions.md](open-questions.md#single-slicer-orcaslicer-on-printhub--assessment-started-2026-09-27).
 - **Orange, low-profile (3U), front of the desk: the current-build zone** (owner, 2026-09-27).
   The 4 × 4 × 3 16-bay and the 4 × 2 × 3 8-bay together make a 6 × 4-unit block closest to the
   owner's hands, holding parts for whatever is being built now. Colour for the rest of the desk

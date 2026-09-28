@@ -472,7 +472,7 @@ Established 2026-09-27:
   in for Prusa's bridge-only fan.
 
 - **Seam settings added to Orca `petg_fast` only (owner, 2026-09-27: "not comfy with seam being
-  static")**: `seam_position = nearest`, `staggered_inner_seams = 1`, `wipe_on_loops = 1`,
+  static")** — since 2026-09-28 `random` (see RESOLVED below); first tried as `seam_position = nearest`, `staggered_inner_seams = 1`, `wipe_on_loops = 1`,
   `seam_slope_type = external` (scarf). Backup `process_petg_fast.json.bak-seam-20260927`.
   **`nearest` still lands outer-wall starts mostly at the divider-to-wall junctions** — in
   `gf_bin_4x2x3_8bay_orca.gcode`, one point takes 75 of 105 layers — so it relocates little
@@ -519,6 +519,10 @@ Established 2026-09-27:
   `gf_coupon_2x1x3_div2_d36.gcode`** (`bin_2x1x3_div2_d36.stl`, Orca `petg_fast_random` =
   `petg_fast` with `seam_position = random`), 1 h 06, 21.9 g. Coupon B (base settings) dropped:
   it could only reproduce the known defect.
+- **RESOLVED 2026-09-28: coupon C "a solid pass" (owner, photo) → decided**
+  ([decisions.md](decisions.md#desk-gridfinity)): `d_div=3.6` is the `gridfinity.sh` default,
+  and Orca `petg_fast` now carries `seam_position = random` (with staggered inner seams, wipe on
+  loops, scarf on external walls). The `_w8` and `_random` test profiles were removed.
 - **Combined test (owner's choice): `gf_bin_4x2x3_8bay_orca.gcode`** — 4 × 2 × 3, 8 × 1 × 1 bays
   (`tools/gridfinity.sh bin 4 2 3 -D divx=4 -D divy=2 -D style_tab=5`), 3 h 41 est., 69 g.
   Tests Orca, PA 0.120 and the seam settings at once, so a failure will not say which.

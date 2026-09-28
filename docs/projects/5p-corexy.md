@@ -119,9 +119,9 @@ to landfill or obsolete dust gathering, if I can reuse instead." So each part be
   (ZeroG recommend 9.53 mm MIC-6 cast plate; the stock plate is probably thinner — **not
   measured**). Plan: fit Hydra with the stock plate, mesh it hot, buy a thick plate only if the
   mesh shows sag.
-- **Reuse candidates, all unverified:** the **stock 5P bed plate and heater** (Hydra's BOM assumes
-  a 377 mm plate — measure the stock plate's size and **thickness**, and whether the heater is a
-  bonded pad), the **two stock Z
+- **Stock bed is 377 mm square** (owner, measured 2026-09-28) — **exactly Hydra's BOM size**.
+  Still to check: plate **thickness** and whether the heater is a bonded pad.
+- **Reuse candidates, remaining unverified:** the stock bed's thickness/heater (above), the **two stock Z
   motors and TR8 lead screws** (Hydra needs 3 motors and 3 × 450/470 mm screws — measure the
   stock screws), the **PSU**, the **filament sensor**. Measure before buying any of them.
 - Hydra BOM (5 Plus): 510 mm 2020 extrusion, 3 × MGN9C 100 mm, **3 × MGN12C/H 500 mm**, 3 ×

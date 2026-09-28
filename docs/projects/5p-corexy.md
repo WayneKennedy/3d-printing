@@ -142,7 +142,20 @@ to landfill or obsolete dust gathering, if I can reuse instead." So each part be
   counterbore 4.5 deep**. The drawing recommends **8–10 mm** plate "for thermal stability and
   proper bolt engagement". Arms are named left / right / rear, which suggests **front-left,
   front-right and rear-centre** (Trident-style) — inference; the drawing does not label front.
-  A `410x410` bed variant also exists. Z motor positions: not yet read (arm build pages).
+  Z motor positions: not yet read (arm build pages).
+- **`410x410` variant (owner asked, 2026-09-28): same 3-point layout** — holes 10 mm in from the
+  two corners and the opposite-edge centre, same Ø4.3 / Ø8 × 4.5 (from `410x410.dxf`, same
+  63.5 mm scale). **It does not buy print area on this frame**: print area is set by XY travel,
+  and real 5 Plus Mercury builds reach **X 377 / Y 365 / Z 420** (`position_max` in
+  [ethomasgt's Klipper config](https://github.com/ethomasgt/Ender-5-Plus-Mercury-One-Klipper-Mainsail),
+  SKR3 EZ + Sprite Pro, mesh 10–310) and **370 × 370 × 420** on a 370 mm MIC-6 plate with Hydra
+  ([Team FDM build](https://www.teamfdm.com/forums/topic/6608-ender-5-plus-conversion-mercury-one-awd-with-hydra-kinda-voron-trident-style/)).
+  A 410 plate would overhang nozzle reach by ~20 mm a side — more mass, heat-up and heater cost
+  for no printable area. What it is for is not stated (possibly extended-frame builds such as the
+  Printables "500 mm Ender 5 Plus" — unverified). **Decision input: keep 377.** The size gain is
+  Mercury's (350 → ~370 × 365 vs today), and with the NG + side-mounted BLTouch our travel and
+  mesh area will differ again — measure after the build.
+- **The 9.5 mm plate's case is therefore flatness/thermal stability**, not size.
 - **Reuse candidates, remaining unverified:** the stock bed's thickness/heater (above), the **two stock Z
   motors and TR8 lead screws** (Hydra needs 3 motors and 3 × 450/470 mm screws — measure the
   stock screws), the **PSU**, the **filament sensor**. Measure before buying any of them.

@@ -929,6 +929,15 @@ USB constraint above applies to it and not to the KE.
   S1's CH340, so [klipper-setup.md](klipper-setup.md) does not apply. An ATmega2560 normally
   carries a serial bootloader, so Klipper would be written over USB (`make flash` via avrdude)
   rather than by SD card — **unverified on this board** until the bootloader answers.
+- **On the bench and on printhub 2026-09-28** (owner: last run under Klipper/Mainsail on a Pi 4B;
+  visual inspection passed — belts, motors, BLTouch, fans, PEI plate present). USB: **FTDI
+  FT232R, serial `AG0KDTIL`**, `/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AG0KDTIL-if00-port0`
+  (`ttyUSB1`; by-path `platform-xhci-hcd.1-usb-0:1:1.0-port0`). The S1 stays on
+  `usb-1a86_USB_Serial…`, so the two cannot be confused by id.
+- **MCU firmware is Klipper `v0.11.0-239-ga96608ad`** (read with `klippy/console.py`, read-only,
+  250000 baud): `MCU=atmega2560`, 16 MHz, `SERIAL_BAUD=250000`, gcc 5.4.0. printhub's host is
+  `v0.13.0-439-g2cc360894` — **a reflash to match is needed.** Build it **in a separate
+  `KCONFIG_CONFIG`/`OUT`** so the S1's `~/klipper/.config` and `out/` are not overwritten.
 - **One Pi can host both S1 and Plus** — a second Klipper + Moonraker instance against a
   second MCU is established practice, and no second SBC is needed. But see the USB
   constraint above: address it by `by-path`, and **measure the cost of the second `klippy`

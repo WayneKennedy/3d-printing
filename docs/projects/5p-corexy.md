@@ -111,8 +111,17 @@ to landfill or obsolete dust gathering, if I can reuse instead." So each part be
 - Bed: Fabreeko ATP5 plate for 5 Plus, **US$79.99, 9.53 mm**, has **both the stock and the
   Hydra bolt patterns**, pre-order 10–15 days; edge-to-edge heater extra US$79.99
   ([Fabreeko](https://www.fabreeko.com/products/zero-g-atp5-aluminum-beds-for-ender-5-pro-plus-hydra-conversion)).
-- **Reuse candidates, all unverified:** the **stock 5P bed plate and heater** (Hydra's BOM calls
-  for a 377 mm plate — the stock plate's size and heater type not measured), the **two stock Z
+- **The bed is not a Hydra requirement** (owner's challenge, 2026-09-28 — correct): Hydra's BOM
+  lists a bed because it is a full build list. The **heater pad and PEI are generic** and stay if
+  they work. Only the **aluminium plate** is in question, for two reasons: it needs the **three
+  Hydra mounting points** (drill and tap the stock plate — Fabreeko's ATP5 is sold with both
+  patterns precisely to save that), and it must stay flat **supported at three points** when hot
+  (ZeroG recommend 9.53 mm MIC-6 cast plate; the stock plate is probably thinner — **not
+  measured**). Plan: fit Hydra with the stock plate, mesh it hot, buy a thick plate only if the
+  mesh shows sag.
+- **Reuse candidates, all unverified:** the **stock 5P bed plate and heater** (Hydra's BOM assumes
+  a 377 mm plate — measure the stock plate's size and **thickness**, and whether the heater is a
+  bonded pad), the **two stock Z
   motors and TR8 lead screws** (Hydra needs 3 motors and 3 × 450/470 mm screws — measure the
   stock screws), the **PSU**, the **filament sensor**. Measure before buying any of them.
 - Hydra BOM (5 Plus): 510 mm 2020 extrusion, 3 × MGN9C 100 mm, **3 × MGN12C/H 500 mm**, 3 ×

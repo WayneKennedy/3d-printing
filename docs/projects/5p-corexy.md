@@ -156,6 +156,17 @@ to landfill or obsolete dust gathering, if I can reuse instead." So each part be
   Mercury's (350 → ~370 × 365 vs today), and with the NG + side-mounted BLTouch our travel and
   mesh area will differ again — measure after the build.
 - **The 9.5 mm plate's case is therefore flatness/thermal stability**, not size.
+- **Hydra CAD (read 2026-09-28):** [`ZeroGDesign/Hydra`](https://github.com/ZeroGDesign/Hydra)
+  has `CAD/Hydra_5Plus.zip` → one **STEP AP214** file, `Hydra_5Plus.stp`, 132 MB, internal name
+  "Hydra 370 Assembly.step", timestamp 2024-06-15, exported via **Autodesk Translation Framework**
+  (so authored in Fusion 360 or Inventor — which one is not stated). It is the **whole printer**
+  (516 products): Ender 5 Plus Hydra frame, Mercury gantry, XY joints, **EVA toolhead with Rapido
+  hotend and LGX Mini**, skirts/panels, and Hydra — `Hydra_Left/Right/Rear_Arm_v1-0-2`,
+  `Hydra_Left_N17Mount`, `Hydra_Bed_370x377_8mm` (**8 mm** plate modelled),
+  `Hydra_Bed_377x370_Heater`, 500 mm rails, TR8 screw/nut, kossel balls, magnets. Plus per-part
+  **STLs** (Arms, Stepper_Mounts, Mini_Tanks in 10 magnet/fit sizes, Misc). **No 2D
+  schematics or wiring diagrams** — the only drawings are the bed DXFs. Viewing needs a STEP
+  viewer (FreeCAD, not installed on blake).
 - **Reuse candidates, remaining unverified:** the stock bed's thickness/heater (above), the **two stock Z
   motors and TR8 lead screws** (Hydra needs 3 motors and 3 × 450/470 mm screws — measure the
   stock screws), the **PSU**, the **filament sensor**. Measure before buying any of them.

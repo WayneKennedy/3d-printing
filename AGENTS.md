@@ -79,7 +79,7 @@ tailscale ssh wkenn@printhub '~/slicer/slice-print.sh <model.stl|.3mf> [material
 tailscale ssh wkenn@printhub '~/slicer/slice-plate.sh <output-name> <material> <model.stl>...'
 ```
 
-**OrcaSlicer is under assessment to replace both PrusaSlicer scripts** (`~/slicer/orca-slice.sh`, `petg`/`petg_fast` only, **not yet proven by a print**) — [open-questions.md](docs/open-questions.md#single-slicer-orcaslicer-on-printhub--assessment-started-2026-09-27).
+**OrcaSlicer is under assessment to replace both PrusaSlicer scripts** (`~/slicer/orca-slice.sh [--printer 5si|5p] <name> <profile> <models...>`, PETG profiles only; the only slicer set up for 5P) — [open-questions.md](docs/open-questions.md#single-slicer-orcaslicer-on-printhub--assessment-started-2026-09-27).
 `slice-print.sh` handles one model; `slice-plate.sh` arranges several onto one plate. Both
 write G-code into `~/printer_data/gcodes/`, where Mainsail lists it. `<material>` resolves
 `~/slicer/ender5s1_<material>.ini`.

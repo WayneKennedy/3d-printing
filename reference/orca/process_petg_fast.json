@@ -73,7 +73,9 @@
  "enable_arc_fitting": "0",
  "compatible_printers": [
   "Ender-5 S1 Klipper (wk)",
-  "Creality Ender-5 S1 0.4 nozzle"
+  "Creality Ender-5 S1 0.4 nozzle",
+  "Ender-5 Plus Klipper (wk)",
+  "Creality Ender-5 Plus 0.4 nozzle"
  ],
  "compatible_printers_condition": "",
  "skirt_speed": "20",

@@ -115,6 +115,9 @@ operator's call, not ours. **These are test pieces; production parts will be inj
 moulded once the design is proven** (owner, 2026-09-28) — so the prints prove fit and path, and
 their friction (PETG, layer lines) will not equal the moulded part's.
 Printing waits for the Ender-5 Plus (owner, 2026-09-28: fetching it to re-commission today).
+**Sliced for 5P 2026-09-28** (`petg`, green PETG): `connor_rail_110.gcode` 7 h 01, 82 g;
+`connor_rail_111_flangedown.gcode` 7 h 05, 82 g — `-111` rotated 180° about X (rigid, so still
+the opposite hand) to print flange-down like `-110`; Orca placed both diagonally inside the mesh.
 
 Open: which face things slide on; split vs wait for the Plus vs ask the
 son; material for "low friction" (check wk-inventory before buying — nylon/POM/PTFE-filled
@@ -986,8 +989,17 @@ USB constraint above applies to it and not to the KE.
   100** (no clicking — gearing, not slip) → 7.747 fed 99 → 7.670. Printing on the sample value
   would have been ~23 % flow. `max_extrude_only_distance` is 50 mm: send long test extrusions
   in 50 mm moves.
-  **Not yet done:** `START_PRINT`/
-  `END_PRINT` macros,
+  **PID** (240 °C hotend / 80 °C bed, saved): extruder Kp 26.717 Ki 1.817 Kd 98.185; bed Kp
+  64.331 Ki 0.924 Kd 1119.352. **Macros**: `START_PRINT`/`END_PRINT` (+ `PRINT_START`/`PRINT_END`
+  aliases) with 5SI's contract — purge at Y8/Y8.5 X15→205, park Y340.
+  **Orca**: `~/slicer/orca/machine_ender5plus.json` (inherits Orca's `Creality Ender-5 Plus 0.4
+  nozzle`; `printable_area` = mesh X15–305 Y15–330; accel limits 2500 = `printer.cfg`
+  `max_accel`); the PETG process/filament presets list both printers in `compatible_printers`.
+  `orca-slice.sh --printer 5p` writes to `~/printer_data_5p/gcodes`, checks against the 5P mesh,
+  starts on :7126, and **refuses to slice while either printer prints**. 5SI output unchanged
+  (lidar plate re-sliced identically). **Use `petg`, not `petg_fast`, on 5P** until its speed is
+  proven — `petg_fast` commands 5000 mm/s² above 5P's 2500 `max_accel`.
+  **Not yet done:**
   PID, thermistor confirmation, first-layer test, Orca machine profile for 350 × 350.
 - **One Pi can host both S1 and Plus** — a second Klipper + Moonraker instance against a
   second MCU is established practice, and no second SBC is needed. But see the USB

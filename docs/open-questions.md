@@ -80,6 +80,16 @@ Decided so far: [decisions.md](decisions.md#desk-gridfinity). STLs come from
 - **openGrid panel:** waiting for the back panel to arrive. Its dimensions, tile size (28 mm
   grid) and Full vs Lite are all open.
 
+- **Bin fit in the plates varies — observation, not acted on (owner, 2026-09-28).** Orange
+  PETG throughout: 4 × 4 × 3 16-bay (PrusaSlicer, PA 0) "pretty tight"; 4 × 2 × 3 8-bay (Orca,
+  PA 0.120) "only just on the loose side of snug"; the two 2 × 1 × 3 coupons (Orca, PA 0.120)
+  "not gripping at all". White bins earlier fitted "perfect". Orca and PrusaSlicer emit
+  identical outer-wall paths through the whole base (4 × 2 × 9, every layer to 0.01 mm; no
+  elephant-foot or XY compensation in either), so the slicer is ruled out. Confounded:
+  bin size (fewer edges in contact on smaller bins — owner's reading), pressure advance
+  (removes corner bulge, typically < 0.1 mm), and spool. **Revisit when choosing the next bin
+  spool** (owner); calipers across the foot at the same point would separate them.
+
 ### Son's parts `14338-06MB-110` / `-111` — received 2026-09-28, not printable as-is here
 
 Two STLs from the owner's son (staged on blake `~/Code/`, 2026-09-28 12:53 BST); only

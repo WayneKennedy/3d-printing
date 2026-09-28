@@ -46,13 +46,25 @@ sample).
 
 ## Owner's lean (2026-09-28) — not yet decided
 
-**Mercury One.1 as a bought full kit (£206.55, owner's quote — seller and contents not yet
-recorded here), plus Hydra, plus a new mainboard with ≥ 6 Trinamic drivers.** To be weighed
-against **buying a Sovol SV08** before anything is ordered.
+**Mercury One.1 as a bought full kit, plus Hydra, plus a new mainboard with ≥ 6 Trinamic
+drivers.** To be weighed against **buying a Sovol SV08** before anything is ordered.
 
-**Hydra has a hardware kit, but a partial one:** Fabreeko "Zero G Hydra 3 point conversion for
-Ender 5 Pro & Plus", **US$94.99** for the Plus (510 mm extrusion), 3 left in stock when read
-2026-09-28 ([Fabreeko](https://www.fabreeko.com/products/zero-g-hydra-3-point-conversion-for-ender-5-pro-plus)).
+**Mercury kit (owner's link, read 2026-09-28):** Fabreeko "HoneyBadger Zero G Mercury One Ender
+5 CoreXY Conversion Kit", **Ender 5 Plus – Full Kit (Rails + Fans), US$269.99** (the owner saw
+**£206.55** — Fabreeko's currency display; whether UK import VAT/handling comes on top was not
+read), **pre-order, ships late Sept – early Oct** ([Fabreeko](https://www.fabreeko.com/collections/zero-g/products/mercury-one-kit)).
+- **Base kit:** 2 × HoneyBadger NEMA17 1.8° 48 mm motors, 1 × extrusion (500 mm for Plus),
+  100 × M3 heat inserts, Mercury 1.1 fastener BOM incl. EVA screws (+20 %), 2 × Omron D2F-5L
+  microswitches (endstops), **1 × 50 W 24 V heater + 1 × 104-GT2 thermistor** (hotend), motion
+  kit with 6 mm Gates belts and 8.5 mm idlers.
+- **Full kit adds:** 3 × MGN12H stainless rails **450 mm** (Plus), 1 × 5015 fan, 1 × 4010 fan.
+- **Not included:** **printed parts** (must suit the 8.5 mm toothed idlers), **toolhead
+  assembly, hotend**, control board, the printer itself.
+
+**Hydra has a hardware kit, but a partial one — and it is sold out:** Fabreeko "Zero G Hydra 3
+point conversion for Ender 5 Pro & Plus", Plus variant (510 mm extrusion) **US$99.99 sale,
+Sold Out** on the owner's link (an earlier read the same day showed US$94.99 / "3 left" — which
+variant that was is unclear; the owner's check says the Plus is out of stock) ([Fabreeko](https://www.fabreeko.com/products/zero-g-hydra-3-point-conversion-for-ender-5-pro-plus)).
 It contains brackets, couplers, 3 kossel balls + magnets, drag chain, extrusion, **3 × MGN9C
 100 mm** rails, inserts, spacers and fasteners. **Not included:** bed plate (MIC-6 aluminium
 recommended), bed heater, SSR, TR8 lead screws, **3 × 500 mm Z rails**, extra stepper(s), PEI,
@@ -69,8 +81,8 @@ USB MCU with printhub as host, so the Manta's compute-module socket is optional.
 |---|---|---|
 | Kinematics | CoreXY, fixed gantry, 3-point bed (Hydra) | CoreXY flying gantry (Voron 2.4 derivative, GPL-3.0) |
 | Build area | Ender-5 Plus frame, ~350 × 350 (exact post-conversion figure not read) | 350 × 350 × 345 (Sovol spec) |
-| Price, known parts | £206.55 kit + US$94.99 Hydra kit (+ shipping/VAT) + ~£80 board + TMC drivers | **£389** sale at sovol.uk (regular £469), 2026-09-28; £486.99 at 3DJake |
-| Price, not yet priced | bed plate, heater + SSR, 3 × Z rails, lead screws, 1 motor, printed parts (ABS), toolhead/hotend if the NG does not adapt | none for a working machine |
+| Price, known parts | Mercury full kit US$269.99 (≈ £206.55 shown) + Hydra kit US$99.99 (**sold out**) + US shipping/VAT + ~£80 board + TMC drivers | **£389** sale at sovol.uk (regular £469), 2026-09-28; £486.99 at 3DJake |
+| Price, not yet priced | **printed parts** (Mercury + EVA + Hydra), **hotend** (Mercury BOM names Rapido HF), bed plate, bed heater + SSR, 3 × Z rails, lead screws, 1 Z motor | none for a working machine |
 | Time | many evenings: strip, build, wire, Klipper config written by us, re-commission | unbox, calibrate |
 | Firmware | mainline Klipper from day one | Sovol's Klipper fork (0.12, criticised as stale); mainline needs an ST-Link ([issue #28](https://github.com/Sovol3d/SV08/issues/28)) |
 | Printers after | 5SI + 5P (CoreXY) + 3KE | 5SI + 5P (Cartesian, noisy) + 3KE + SV08 — a fourth machine and a fourth USB/host question |
@@ -80,9 +92,11 @@ USB MCU with printhub as host, so the Manta's compute-module socket is optional.
 **Reading (inference):** on price alone the conversion is unlikely to beat the SV08 once the
 unpriced Hydra items, drivers and printed parts are added — it plausibly lands above £389. The
 case for converting is ownership and learning, reuse of the 5P frame, and mainline Klipper;
-the case for the SV08 is time and a known result. **To firm up:** the £206.55 kit's contents
-(does it include rails, motors, toolhead?), a priced Hydra remainder list, and the board +
-drivers total.
+the case for the SV08 is time and a known result. The kit settles the XY side (rails, motors,
+belts, idlers, endstops, fans, fasteners) but **not the toolhead or hotend**. **To firm up:**
+whether the Micro Swiss NG hotend can sit in EVA (if not, a hotend purchase), a UK source or
+restock date for Hydra, a priced Hydra remainder list, the board + drivers total, and who prints
+the ABS parts.
 
 ## Open questions (the owner's calls)
 

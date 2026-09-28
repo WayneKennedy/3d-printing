@@ -1020,6 +1020,14 @@ USB constraint above applies to it and not to the KE.
   corexy` in Klipper. **Not scoped:** no kit or design chosen, and the conversion would
   invalidate the stock sample config's XY stepper sections as well as the NG-extruder items
   above. Its gain is acceleration headroom, which pays only once profile speeds are up.
+- **Noise: much louder than 5SI (owner, 2026-09-28, first print)** — "singing" from X and Y
+  during layers, and from Z during homing/probing. Consistent with the V2.2 board's on-board
+  trim-pot drivers (typically A4988-class on this board — **chip not read**, it is under the
+  heatsinks) versus 5SI's Trinamic drivers. Drivers are soldered, so no driver swap. Options,
+  cheapest first: stepper dampers on X/Y; a replacement silent board (TMC2208/2209, UART) —
+  which would also give **separate Z drivers so Klipper could sync the two Z motors itself**
+  (`Z_TILT_ADJUST`), removing today's manual Z-desync fix. Not needed for current jobs;
+  check wk-inventory before buying.
 - **Proposed split if commissioned:** S1 = PETG, TPU, detailed figures; Plus = large flat
   parts, plain PLA, LW-PLA, potentially carbon-filled. Driven by bed size and hotend
   capability, not extruder type, since both are direct drive.

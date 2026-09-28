@@ -214,6 +214,29 @@ BLTouch mount). Not in it: the **5 Plus bed raisers** (Mercury-without-Hydra onl
 Z bracket, the **alignment tools** (`STLs/Tools/` — print these too), and the other toolhead
 options. ZeroG's MercuryOne repo also has its own `mercury_370_assembly.zip`.
 
+## Enclosure (owner asked 2026-09-28 — candidates, nothing chosen)
+
+- **syph3rd "Merc Enclosure"** — [GitHub `syph3rd/ZeroG-Enclosure`](https://github.com/syph3rd/ZeroG-Enclosure),
+  "Creality Ender 5 Plus (Pro) | ZeroG Mercury Enclosure", GPL-2.0, 53★, last push 2023-10-20.
+  Printed frame spacers (upper/lower × 4 corners) + hinge spacers for **two front doors**; panels
+  from DXF (mm, read from the files): doors 228.6 × 548 ×2, front spacer strips 55.8 × 548 ×2,
+  sides 617.4 × 548 ×2, rear 569.8 × 548 ×1. **No top panel** — pairs with a top hat. Also a
+  STEP (`CAD/V1.0 Encclosure.zip`). Designed for Mercury **without Hydra** — clearance with
+  Hydra's in-frame corner motors not yet checked (load its STEP into the viewer).
+- **dragonsmith "zerog-top-hat"** — [GitHub](https://github.com/dragonsmith/zerog-top-hat), for Mercury
+  One.1 on the Ender 5 Plus; 2020/2040 extrusion (594, 574, 578, 195 mm lengths), printed frame
+  covers, hinged lid, **2 mm acrylic/PC** panels on VHB; author reports a stable **47–49 °C** in
+  25–35 min. 2022, against Mercury BETA1.0.1; **no licence file** (personal use only, no reuse
+  rights granted). STEP + Fusion `.f3z` included.
+- Fabreeko cast acrylic panel set, US$158.99, 3 mm, doors/sides/top/back/deck/bottom — sized for
+  **LDO's Nebula frame**, not the stock 5 Plus frame.
+- zockerlukas2004 5 Plus enclosure + in-frame stepper mod — WIP (Dec 2025), STEP only.
+- "Mercury One.1 Inside Frame Stepper Mounts" (Printables) — steppers inside the frame for easier
+  enclosing; an alternative to a top hat.
+
+Lean (inference): Merc Enclosure + a top hat — small ABS prints, locally cut sheet (reuse-first),
+and lets 5P print ABS itself.
+
 ## Open questions (the owner's calls)
 
 1. **Which design** — Mercury One.1 (XY only, keep the stock bed/dual Z) vs Mercury + Hydra

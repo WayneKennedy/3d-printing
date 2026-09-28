@@ -101,7 +101,9 @@ possibly the pastry, which overhangs the tray rim — so possible **direct food 
 prefers PETG (green, ~650 g on hand) over an unopened 1 kg ABS; ~80 g each on `petg_fast`
 (estimated on a notional 400 mm bed). Printed PETG is not certified food-contact (colourant,
 brass nozzle, layer crevices that cannot be cleaned); acceptable-for-a-trial is the line
-operator's call, not ours. Production conveyor guides are normally machined UHMW-PE or acetal.
+operator's call, not ours. **These are test pieces; production parts will be injection
+moulded once the design is proven** (owner, 2026-09-28) — so the prints prove fit and path, and
+their friction (PETG, layer lines) will not equal the moulded part's.
 Printing waits for the Ender-5 Plus (owner, 2026-09-28: fetching it to re-commission today).
 
 Open: which face things slide on; split vs wait for the Plus vs ask the

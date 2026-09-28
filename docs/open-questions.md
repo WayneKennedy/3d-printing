@@ -945,6 +945,18 @@ USB constraint above applies to it and not to the KE.
   250000 baud): `MCU=atmega2560`, 16 MHz, `SERIAL_BAUD=250000`, gcc 5.4.0. printhub's host is
   `v0.13.0-439-g2cc360894` — **a reflash to match is needed.** Build it **in a separate
   `KCONFIG_CONFIG`/`OUT`** so the S1's `~/klipper/.config` and `out/` are not overwritten.
+- **Reflashed 2026-09-28 ~16:08 BST to `v0.13.0-439-g2cc360894`**: built with
+  `KCONFIG_CONFIG=~/klipper-e5plus.config OUT=~/klipper-e5plus-out/` (atmega2560, 16 MHz,
+  serial 250000; S1's `.config` md5 unchanged), `make … flash FLASH_DEVICE=<by-id>` — **the
+  bootloader answered over USB** (avrdude, signature `0x1e9801`), 40 128 bytes written and
+  verified; version read back with `console.py`. No SD card needed on this board.
+- **Second instance live 2026-09-28** (names/ports: [AGENTS.md](../AGENTS.md)): Klipper `ready`,
+  extruder 23.0 °C and bed 23.7 °C at room temperature — plausible, but a room-temperature
+  reading **cannot tell 100 k thermistor types apart**; they diverge when hot. `printer.cfg` is
+  the sample verbatim below a header listing what is uncalibrated; nginx site `mainsail-5p`
+  on :81 → Moonraker :7126; no `[update_manager]` in 5P's Moonraker. **Not yet done:** `START_PRINT`/
+  `END_PRINT` macros, extruder `rotation_distance`, probe offsets, `PROBE_CALIBRATE`, mesh,
+  PID, thermistor confirmation, first-layer test, Orca machine profile for 350 × 350.
 - **One Pi can host both S1 and Plus** — a second Klipper + Moonraker instance against a
   second MCU is established practice, and no second SBC is needed. But see the USB
   constraint above: address it by `by-path`, and **measure the cost of the second `klippy`

@@ -104,6 +104,9 @@ sync() {  # <remote path, absolute or relative to ~> <local path>
 
 sync "printer_data/config/printer.cfg"   "reference/printer.cfg"
 sync "printer_data/config/crowsnest.conf" "reference/crowsnest.conf"
+# 5P (Ender-5 Plus) instance, 2026-09-28
+sync "printer_data_5p/config/printer.cfg"   "reference/5p/printer.cfg"
+sync "printer_data_5p/config/moonraker.conf" "reference/5p/moonraker.conf"
 
 # Slicer scripts and profiles are DISCOVERED on the Pi, not hardcoded. A hardcoded
 # list silently left ender5s1_petg_koala.ini, ender5s1_petg_koalacoupon.ini and

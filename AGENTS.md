@@ -8,6 +8,20 @@ and is linked rather than repeated.
 The machine is a **Creality Ender-5 S1**, stock, running **Klipper** on `printhub` (Raspberry
 Pi 5, MainsailOS). Full identifiers: [docs/hardware.md](docs/hardware.md).
 
+**Printer names (owner, 2026-09-28): `5SI` = Ender-5 S1, `5P` = Ender-5 Plus, `3KE` = Ender-3
+V3 KE** (not connected). Everything in this file not marked 5P is about **5SI**. **5P is being
+commissioned — uncalibrated, do not print on it** until
+[open-questions.md](docs/open-questions.md#creality-ender-5-plus--not-committed) says so. **5SI
+stays idle until running two prints at once is judged safe** (owner, 2026-09-28).
+
+| | 5SI | 5P |
+|---|---|---|
+| Mainsail | `http://printhub/` (port 80) | `http://printhub:81/` |
+| Moonraker | `:7125` | `:7126` |
+| Data dir on the Pi | `~/printer_data` | `~/printer_data_5p` |
+| systemd | `klipper`, `moonraker` | `klipper-5p`, `moonraker-5p` |
+| MCU | `/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0` | `/dev/serial/by-id/usb-FTDI_FT232R_USB_UART_AG0KDTIL-if00-port0` |
+
 ## Access — no SSH needed
 
 Moonraker's HTTP API is the control surface. `trusted_clients` covers the tailnet

@@ -873,7 +873,7 @@ never-guess-hardware rule in [AGENTS.md](../AGENTS.md).
 ### Creality Ender-5 Plus — not committed
 
 In the garage, unused ~2 years, identified from the purchase invoice 2026-09-02.
-**350 × 350 × 400 mm.** The case for it is that RC plane parts are long and 220 × 220 is the
+**350 × 350 × 400 mm** build volume; **machine 632 × 666 × 619 mm** (W × D × H, spool and PSU on the frame), package 730 × 740 × 310 mm — Creality's official store page, read 2026-09-28 ([creality3dofficial.com](https://www.creality3dofficial.com/products/creality-ender-5-plus-3d-printer)); weight given there as ~24 kg, third-party spec pages say 18.2 kg net / 23.8 kg gross — not measured. The case for it is that RC plane parts are long and 220 × 220 is the
 binding constraint — a reason the KE does not address, since it is 220 × 220 too. **Now
 likely the third machine rather than the second.** It is USB-attached, so everything in the
 USB constraint above applies to it and not to the KE.

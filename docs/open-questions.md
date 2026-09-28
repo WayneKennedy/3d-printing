@@ -961,8 +961,14 @@ USB constraint above applies to it and not to the KE.
   **Probe offsets measured** (owner, pen mark): pin 41 mm left of and 14 mm in front of the
   nozzle → `x_offset: -41`, `y_offset: -14` (X+ right, Y+ to the back; endstops at 350/350).
   Reachable probe area is therefore X −41…309, Y −14…336 of the 0…350 bed.
+  **`z_offset = 3.425`** (`PROBE_CALIBRATE`, paper "slight drag" at TESTZ −3.390 below a probe
+  reading of 0.035; bed 80 °C, nozzle 150 °C with PLA+ loaded; saved via `SAVE_CONFIG`).
+  The nozzle sits ~3.4 mm above the bed at probe trigger, so `position_min: -5` was needed
+  **temporarily** to reach the paper and was **reverted to 0** afterwards. Trap for next time:
+  `G28` leaves Z at the trigger height, so `PROBE_CALIBRATE` straight after it fails with
+  "No trigger on probe after full movement" — raise Z first.
   **Not yet done:** `START_PRINT`/
-  `END_PRINT` macros, extruder `rotation_distance`, `PROBE_CALIBRATE`, mesh,
+  `END_PRINT` macros, extruder `rotation_distance`, mesh,
   PID, thermistor confirmation, first-layer test, Orca machine profile for 350 × 350.
 - **One Pi can host both S1 and Plus** — a second Klipper + Moonraker instance against a
   second MCU is established practice, and no second SBC is needed. But see the USB

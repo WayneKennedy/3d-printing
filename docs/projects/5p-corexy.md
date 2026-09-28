@@ -119,8 +119,18 @@ to landfill or obsolete dust gathering, if I can reuse instead." So each part be
   (ZeroG recommend 9.53 mm MIC-6 cast plate; the stock plate is probably thinner — **not
   measured**). Plan: fit Hydra with the stock plate, mesh it hot, buy a thick plate only if the
   mesh shows sag.
-- **Stock bed is 377 mm square** (owner, measured 2026-09-28) — **exactly Hydra's BOM size**.
-  Still to check: plate **thickness** and whether the heater is a bonded pad.
+- **Stock bed is 377 mm square, 4 mm aluminium, heater bonded underneath and insulated**
+  (owner, 2026-09-28) — 377 mm is **exactly Hydra's BOM size**; heater + insulation reusable as
+  is. The plate sits on a **20 × 10 extrusion frame** carried by the two Z lead-screw nuts and
+  holding the **4 corner adjusters**. Stiffness vs ZeroG's 9.53 mm MIC-6: (4/9.53)³ ≈ **1/13**
+  the bending stiffness at ~0.42× the mass. **Estimate, not measured:** self-weight sag on 3
+  points of order 0.1–0.3 mm — static and mesh-compensable; thermal bowing is the unknown
+  (today's 4-point-supported mesh at 80 °C is a 0.30 mm dome). Options: **A** plate direct on
+  Hydra's 3 points (drill/tap 3 mounts, retire the 20 × 10 frame) — standard layout, test with a
+  hot mesh; **B** keep the 20 × 10 frame + corner screws and put the *frame* on Hydra's 3 points
+  — maximum reuse, but a custom adaptation that defeats Hydra's free-expansion kinematic mount;
+  **C** buy the ATP5 9.53 mm plate (US$79.99). Lean: **A, falling back to C**. Open: find
+  anyone who has run Hydra on a stock 4 mm 5 Plus bed.
 - **Reuse candidates, remaining unverified:** the stock bed's thickness/heater (above), the **two stock Z
   motors and TR8 lead screws** (Hydra needs 3 motors and 3 × 450/470 mm screws — measure the
   stock screws), the **PSU**, the **filament sensor**. Measure before buying any of them.

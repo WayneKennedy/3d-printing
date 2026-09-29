@@ -784,8 +784,9 @@ the `Stats` lines both instances write to `klippy.log` once a second, with **5P 
   instance, `buffer_time` never under 0.995 s (5SI) / 0.997 s (5P) while printing,
   `print_stall` 0, retransmits unchanged, no timing error in either log, no USB over-current in
   `dmesg`, `throttled=0x0`. The 5SI job completed (61 min of 61 estimated) and the owner judged the
-  part "very good". **Still pending: rail 111's outcome on 5P** —
-  [print-log.md](print-log.md).
+  part "very good". **Rail 111 on 5P completed**: 429 min of 425 estimated (+1 %; rail 110,
+  printed alone, took 423 of 421), `print_stall` 0 and no retransmit over the whole job.
+  **Pending: the owner's judgement of rail 111** — [print-log.md](print-log.md).
 - **The touchscreen has been removed (owner, 2026-09-29) but `KlipperScreen.service` and Xorg
   still run**: 246 MB resident, ~0.7 % CPU together. `sudo systemctl disable --now
   KlipperScreen` reclaims that; **not done** — it is immaterial against 7.4 GB free, and no

@@ -5,11 +5,14 @@
 # in 3d-printing AGENTS.md and refuses to leave a file that fails them.
 #
 # <profile> resolves ~/slicer/orca/process_<profile>.json; the filament is the part before the
-# first "_" (petg_fast -> filament_petg.json). Machine: ~/slicer/orca/machine_ender5s1.json
+# first "_" (petg_fast -> filament_petg.json); if machine_<printer>_<filament>.json exists it
+# replaces the machine file (tpu: slicer-side z_offset, which Orca keeps in the machine preset).
+# Machine: ~/slicer/orca/machine_ender5s1.json
 # (5SI) or machine_ender5plus.json (5P), whose printable_area is that bed's MESH (5SI X3-205
 # Y28-218, centre 104,123; 5P X15-305 Y15-330), so Orca's arrange centres parts on the mesh and
 # refuses anything outside it. Several models are arranged by Orca itself.
-# Refuses to slice while EITHER printer is printing: rule 1 is about the Pi's CPU, not the printer.
+# Slices while printers print (owner, 2026-09-29): Orca slices up to 6 s were measured harmless
+# with both printing - 3d-printing docs/open-questions.md, "Two printers and slicing on one Pi".
 set -euo pipefail
 APP=com.orcaslicer.OrcaSlicer
 DIR="$HOME/slicer/orca"
@@ -29,13 +32,8 @@ for a in "$@"; do [ "$a" = "--print" ] && DOPRINT=yes || MODELS+=("$(realpath "$
 flatpak info --user "$APP" >/dev/null 2>&1 || { echo "OrcaSlicer flatpak ($APP) not installed" >&2; exit 1; }
 PROCESS="$DIR/process_${PROF}.json"
 FILAMENT="$DIR/filament_${PROF%%_*}.json"
+[ -f "${MACHINE%.json}_${PROF%%_*}.json" ] && MACHINE="${MACHINE%.json}_${PROF%%_*}.json"
 for f in "$MACHINE" "$PROCESS" "$FILAMENT" "${MODELS[@]}"; do [ -f "$f" ] || { echo "Missing: $f" >&2; exit 1; }; done
-
-for p in 7125 7126; do
-  STATE=$(curl -s -m10 "http://localhost:$p/printer/objects/query?print_stats" \
-    | python3 -c 'import json,sys;print(json.load(sys.stdin)["result"]["status"]["print_stats"]["state"])' 2>/dev/null || echo unknown)
-  if [ "$STATE" = printing ] || [ "$STATE" = paused ]; then echo "Refusing to slice: printer on :$p is $STATE (AGENTS.md rule 1)" >&2; exit 1; fi
-done
 
 VER=$(flatpak info --user "$APP" | awk '/Version:/{print $2}')
 echo "Slicer: OrcaSlicer $VER (flatpak) - $PROF for $PRINTER"

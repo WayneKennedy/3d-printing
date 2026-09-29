@@ -501,8 +501,8 @@ Established 2026-09-27:
 - **`gcode_flavor = klipper`**: accelerations come out as `SET_VELOCITY_LIMIT ACCEL=`, no
   `M204`, so the `marlin` workaround is not needed. `exclude_object` is off (`printer.cfg` has no
   `[exclude_object]`). `M73` progress lines are emitted.
-- **`~/slicer/orca-slice.sh <name> <profile> <models...> [--print]`** refuses to run while
-  printing, slices to a temp dir, then checks the emitted G-code: `M140 → M190 → M104 →
+- **`~/slicer/orca-slice.sh <name> <profile> <models...> [--print]`** (refused to run while
+  printing until 2026-09-29) slices to a temp dir, then checks the emitted G-code: `M140 → M190 → M104 →
   START_PRINT` first, no brim, flavour `klipper`, extrusion inside the mesh, one plate only — and
   leaves no file if any check fails. Filament = profile name before the first `_`.
 - **Parity with the proven PrusaSlicer G-code (`petg_fast`)**: 4 × 4 baseplate 1 h 31 est.,
@@ -570,8 +570,21 @@ Established 2026-09-27:
   (`tools/gridfinity.sh bin 4 2 3 -D divx=4 -D divy=2 -D style_tab=5`), 3 h 41 est., 69 g.
   Tests Orca, PA 0.120 and the seam settings at once, so a failure will not say which.
 
+- **`tpu` ported 2026-09-29** from the effective config of the proven `bee35_gps_220.gcode`:
+  `filament_tpu.json` (inherits `Creality Generic TPU`; 210/215, bed 50, fan 30–50 %, 2 mm³/s,
+  retraction as filament overrides — 0.4 mm at 20 mm/s, no hop, no wipe, not on layer change,
+  travels over 2 mm; `filament_start_gcode` = `SET_PRESSURE_ADVANCE ADVANCE=0`, emitted after
+  `START_PRINT`), `process_tpu.json` (`process_petg` with speeds 15–25 and
+  `reduce_crossing_wall`), and **`machine_ender5s1_tpu.json`** (the 5SI machine plus
+  `z_offset = -0.02`: Orca keeps Z offset in the machine preset, so `orca-slice.sh` now swaps in
+  `machine_<printer>_<filament>.json` when one exists; backup `orca-slice.sh.bak-20260929`).
+  Verified in the emitted cam-mount G-code: bed-first header, first layer at Z 0.22, 586
+  retractions all 0.4 mm at F1200, no hops, no wipes, peak flow 2.03 mm³/s, no brim, no
+  support. **Validated 2026-09-29 on `bee35_cam_mount_tpu_orca.gcode`: owner, "came out very
+  good"** ([print-log.md](print-log.md)). No 5P TPU machine file exists.
+
 Still to do, in order: **(1)** print one proven part from `orca-slice.sh` (owner's go), judge
-against its PrusaSlicer twin; **(2)** port `plaplus`, `tpu`, the support profiles and figurine
+against its PrusaSlicer twin; **(2)** port `plaplus`, the support profiles and figurine
 profiles, each verified against its own proven G-code, with organic bed-only supports
 re-proven; **(3)** once all are proven, retire both PrusaSlicers and `slice-print.sh` /
 `slice-plate.sh`, and move AGENTS.md onto Orca. Pressure advance can then live in the filament
@@ -698,9 +711,8 @@ and `brcmfmac` messages, and plug in `eth0` — wired is the documented fallback
     printhub is Debian 12 arm64 (MainsailOS), cgroup v2 with `cpuset`/`cpu`, no Docker or snap.
     Ubuntu Workshop (Canonical, May 2026; snap on LXD) targets Ubuntu dev workstations — a
     candidate for a pinned-version slicer on `ivory` (Ubuntu 24.04, verified 2026-09-27), not for
-    printhub. **Rule 1's harm has never been measured**: no print in the log was damaged by
-    slicing. The test, if revisited: slice during a print and compare `buffer_time`/`sysload`
-    in `klippy.log`'s `Stats` lines against a quiet stretch.
+    printhub. **Rule 1's harm was measured 2026-09-29 and none found for Orca slices up to
+    6 s** — [below](#two-printers-and-slicing-on-one-pi--measured-2026-09-29).
 - **Keep the flashing microSD with the printer.** MCU firmware updates still go via SD; see
   [klipper-setup.md](klipper-setup.md#consequence).
 
@@ -740,6 +752,54 @@ differently:
 
 So "how many printers can the Pi drive?" is not a property of the printer. **It is a
 consequence of a choice**, and for the KE that choice is still open.
+
+### Two printers and slicing on one Pi — measured 2026-09-29
+
+**Owner's question: can one Pi run several Klipper printers, and is slicing during a print a
+real risk?** Upstream: Klipper's FAQ says multiple host instances on one machine are supported
+(each with its own config, log and pseudo-tty), and that an "intensive general-purpose
+computing task" on the host during a print "may cause Klipper to report print errors"
+([klipper3d.org/FAQ](https://www.klipper3d.org/FAQ.html), read 2026-09-29). Measured here, from
+the `Stats` lines both instances write to `klippy.log` once a second, with **5P printing
+`connor_rail_111_flangedown.gcode` and 5SI printing `bee35_cam_mount_tpu_orca.gcode`** (started
+13:54 UTC, 5P then 3 h 37 in):
+
+| Window | 5SI `buffer_time` min | 5P `buffer_time` min | `print_stall` | retransmits | srtt max 5SI / 5P |
+|---|---|---|---|---|---|
+| 5P alone, 10 min | – | 1.000 s | 0 | 0 | – / 13 ms |
+| both printing, quiet | 1.000 s | 1.008 s | 0 | unchanged (5SI 9, 5P 0) | 3 / 13 ms |
+| Orca slice on the Pi, cam mount, **0.9 s** | 1.256 s | 1.046 s | 0 | unchanged | 3 / 11 ms |
+| Orca slice on the Pi, `bin_4x4x3_16bay_notab.stl` (22 MB), `petg_fast`, **6.3 s** | 1.009 s | 1.031 s | 0 | unchanged | 3 / 13 ms |
+
+- **1.0 s is the floor Klipper keeps `buffer_time` at while printing**, so no window moved it.
+  No `Timer too close`, `Lost communication` or `Rescheduled timer` in either log.
+- **Host cost of a printing `klippy`: ~0.5 % of one core** (`cputime` +0.43 s in 82 s on 5SI,
+  +2.95 s in 600 s on 5P). With both printing the Pi was 98.7 % idle, load 0.2, 51 °C,
+  `throttled=0x0`, 7.4 GB of 8 GB available. The 6.3 s slice had 4–7 runnable tasks on 4 cores
+  and peaked at 55 °C.
+- **Not measured: slices longer than 6 s** (PrusaSlicer, organic supports, figurines), a third
+  instance, and USB supply with a third MCU
+  ([USB constraint](#usb-over-current-dropped-the-mcu-mid-print-2026-09-21--cause-found)).
+- **The two prints overlapped for 61 min with no fault on either**: 3 568 `Stats` samples per
+  instance, `buffer_time` never under 0.995 s (5SI) / 0.997 s (5P) while printing,
+  `print_stall` 0, retransmits unchanged, no timing error in either log, no USB over-current in
+  `dmesg`, `throttled=0x0`. The 5SI job completed (61 min of 61 estimated) and the owner judged the
+  part "very good". **Still pending: rail 111's outcome on 5P** —
+  [print-log.md](print-log.md).
+- **The touchscreen has been removed (owner, 2026-09-29) but `KlipperScreen.service` and Xorg
+  still run**: 246 MB resident, ~0.7 % CPU together. `sudo systemctl disable --now
+  KlipperScreen` reclaims that; **not done** — it is immaterial against 7.4 GB free, and no
+  service was changed mid-print.
+- **Guard removed (owner, 2026-09-29): `orca-slice.sh` no longer refuses while a printer
+  prints.** Backup with the guard: `orca-slice.sh.bak-20260929-guard`. Run for real on the Pi
+  with 5P printing (cam mount, `tpu`): checks passed, 5P `buffer_time` min 1.0 s, `print_stall`
+  0. AGENTS.md rule 1 states what is and is not measured.
+- **Workstation slicing works and is the fallback**: Orca 2.4.2 flatpak on `ivory`, same preset
+  files, G-code uploaded with
+  `curl -F "file=@plate_1.gcode;filename=<name>.gcode" http://100.99.147.57:7125/server/files/upload`.
+  The cam mount sliced on `ivory` and on the Pi differ (845 710 vs 845 481 bytes), as the
+  2026-09-27 x86_64/aarch64 comparison found. **The flatpak cannot see `/tmp`** — models,
+  presets and the output directory must be under `$HOME`, or it fails with "No such file".
 
 ### USB over-current dropped the MCU mid-print (2026-09-21) — cause found
 
@@ -786,8 +846,8 @@ with native USB (STM32 CDC-ACM, `ttyACM*`) usually *do* carry unique serials, so
 may have some printers safely on `by-id` and others not — check each rather than assume.
 
 **Host CPU, not USB, is the ceiling.** printhub sits at load 0.35 across 4 cores with a print
-running and the camera streaming, so there is headroom — **but the cost of a second `klippy`
-instance has not been measured here, and should be before committing to a third.** The known
+running and the camera streaming, so there is headroom — **the cost of a second `klippy` instance was measured 2026-09-29:
+~0.5 % of one core each** ([above](#two-printers-and-slicing-on-one-pi--measured-2026-09-29)). The known
 collision matters more as the count rises: PrusaSlicer saturating the Pi degrades *every*
 running print, not just the one being sliced for. **A farm probably wants slicing off the print
 host entirely.**
@@ -996,7 +1056,8 @@ USB constraint above applies to it and not to the KE.
   nozzle`; `printable_area` = mesh X15–305 Y15–330; accel limits 2500 = `printer.cfg`
   `max_accel`); the PETG process/filament presets list both printers in `compatible_printers`.
   `orca-slice.sh --printer 5p` writes to `~/printer_data_5p/gcodes`, checks against the 5P mesh,
-  starts on :7126, and **refuses to slice while either printer prints**. 5SI output unchanged
+  starts on :7126, and refused to slice while either printer printed (guard removed
+  2026-09-29 — [above](#two-printers-and-slicing-on-one-pi--measured-2026-09-29)). 5SI output unchanged
   (lidar plate re-sliced identically). **Use `petg`, not `petg_fast`, on 5P** until its speed is
   proven — `petg_fast` commands 5000 mm/s² above 5P's 2500 `max_accel`.
   **Not yet done:**

@@ -12,7 +12,9 @@ Pi 5, MainsailOS). Full identifiers: [docs/hardware.md](docs/hardware.md).
 V3 KE** (not connected). Everything in this file not marked 5P is about **5SI**. **5P is being
 commissioned — uncalibrated, do not print on it** until
 [open-questions.md](docs/open-questions.md#creality-ender-5-plus--not-committed) says so. **5SI
-stays idle until running two prints at once is judged safe** (owner, 2026-09-28).
+and 5P printed at once for the first time 2026-09-29** (owner's call, replacing the 2026-09-28
+"5SI stays idle" hold); what was measured:
+[open-questions.md](docs/open-questions.md#two-printers-and-slicing-on-one-pi--measured-2026-09-29).
 
 | | 5SI | 5P |
 |---|---|---|
@@ -50,9 +52,14 @@ not answer over the tailnet. The trailing slash is load-bearing — `/webcam?act
 
 ## Rules that will cost you a print if broken
 
-1. **Never slice while a print is running.** PrusaSlicer saturates the Pi's cores and Klipper's
-   timing is what suffers. This is not currently enforced by anything but attention — check
-   `print_stats.state` before invoking any slicer on the Pi.
+1. **Slicing on the Pi during a print: measured harmless for OrcaSlicer slices up to 6 s;
+   anything longer is unmeasured.** With both printers printing (2026-09-29), a 0.9 s and a
+   6.3 s Orca slice left `buffer_time`, `print_stall`, retransmits and round-trip time unchanged
+   on both — [open-questions.md](docs/open-questions.md#two-printers-and-slicing-on-one-pi--measured-2026-09-29).
+   **Not measured: PrusaSlicer, and long slices (organic supports, figurines).** For those, check
+   `print_stats.state` on both printers first, or slice on a workstation and upload.
+   **`orca-slice.sh` no longer refuses while a printer prints** (owner, 2026-09-29), so nothing
+   but attention enforces this for a long slice.
 2. **Never edit `printer.cfg` during a print.** Any config change restarts Klipper and aborts
    the job. `SAVE_CONFIG` also restarts it — wait for `state: ready` before the next command.
 3. **Never guess hardware config.** Pins, kinematics, thermistors and endstops came from
@@ -79,7 +86,7 @@ tailscale ssh wkenn@printhub '~/slicer/slice-print.sh <model.stl|.3mf> [material
 tailscale ssh wkenn@printhub '~/slicer/slice-plate.sh <output-name> <material> <model.stl>...'
 ```
 
-**OrcaSlicer is under assessment to replace both PrusaSlicer scripts** (`~/slicer/orca-slice.sh [--printer 5si|5p] <name> <profile> <models...>`, PETG profiles only; the only slicer set up for 5P) — [open-questions.md](docs/open-questions.md#single-slicer-orcaslicer-on-printhub--assessment-started-2026-09-27).
+**OrcaSlicer is under assessment to replace both PrusaSlicer scripts** (`~/slicer/orca-slice.sh [--printer 5si|5p] <name> <profile> <models...>`; profiles `petg`, `petg_fast`, `petg_fast_solid`, and `tpu` for 5SI only; the only slicer set up for 5P) — [open-questions.md](docs/open-questions.md#single-slicer-orcaslicer-on-printhub--assessment-started-2026-09-27).
 `slice-print.sh` handles one model; `slice-plate.sh` arranges several onto one plate. Both
 write G-code into `~/printer_data/gcodes/`, where Mainsail lists it. `<material>` resolves
 `~/slicer/ender5s1_<material>.ini`.
@@ -96,7 +103,7 @@ write G-code into `~/printer_data/gcodes/`, where Mainsail lists it. `<material>
 | `petg_riser` | `petg` at **50 % cubic** infill, 4/4 solid | **validated** 2026-09-14 on the desk risers — structural-but-not-solid parts; see [decisions.md](docs/decisions.md#slicing) |
 | `petg_fast` | `petg` speeds ~2×, per-feature accel, flow cap 8 mm³/s, `gcode_flavor = marlin` | **validated** 2026-09-23 on Gridfinity plate 2: "indistinguishable" from plate 1 on `petg` (owner), 1 h 31 m vs 2 h 15 m; why `marlin`: [decisions.md](docs/decisions.md#slicing) |
 | `pla` | 210/205, bed 60 | **untested — no plain PLA has been printed** |
-| `tpu` | 210/215, bed 50, retract 0.4 @ 20, ≤ 2.0 mm³/s, flow 1.0, slicer `z_offset` −0.02 | **calibrated 2026-09-21** on Reprapper Silk TPU 95A (tower, flow cube) and **validated** on the Bee35 GPS mount and the Holybro deck rev C. Drawing allowances (hex press-fit, thin walls, pockets): [decisions.md](docs/decisions.md#materials). Bare PEI, no glue stick (owner's call); remove cool or with a firm warm tug. **Keep the spool free to turn** — a tangle starved two jobs silently. [open-questions.md](docs/open-questions.md#tpu-95a--profile-and-calibration) |
+| `tpu` | 210/215, bed 50, retract 0.4 @ 20, ≤ 2.0 mm³/s, flow 1.0, slicer `z_offset` −0.02 | **calibrated 2026-09-21** on Reprapper Silk TPU 95A (tower, flow cube) and **validated** on the Bee35 GPS mount and the Holybro deck rev C. Drawing allowances (hex press-fit, thin walls, pockets): [decisions.md](docs/decisions.md#materials). Bare PEI, no glue stick (owner's call); remove cool or with a firm warm tug. **Keep the spool free to turn** — a tangle starved two jobs silently. **Orca `tpu`** (ported 2026-09-29, same values): **validated** 2026-09-29 on the Bee35 cam mount, no support (owner: "very good") — [print-log.md](docs/print-log.md). [open-questions.md](docs/open-questions.md#tpu-95a--profile-and-calibration) |
 | `petg_koala`, `petg_koalacoupon` | 4 perim, 30 % gyroid | built for a superseded spec; **not** the koala-bot standard |
 
 **A bare `START_PRINT` is always safe** — it defaults to PETG 240/80. It homes on its own, so an
@@ -207,8 +214,9 @@ verify rather than trust: [docs/workflow.md](docs/workflow.md#a-fresh-clone-assu
 
 **Times: any time given in UTC says "UTC"** (owner, 2026-09-24). Local (UK, BST in summer) or
 UTC are both fine for people; an unlabelled UTC time is not. Robot compute runs UTC throughout —
-wk-robotics `docs/common.md` → *Robots run on UTC*. Here, the workstation (and so
-`print-monitor.py`) is UTC; printhub's clock is Europe/London.
+wk-robotics `docs/common.md` → *Robots run on UTC*. Here, `print-monitor.py` stamps events in
+the local time of whichever host runs it — **check with `timedatectl`**: `ivory` is
+Europe/London (verified 2026-09-29), as is printhub's clock.
 
 **Distinguish decided from open.** `decisions.md` records conclusions with the evidence that
 produced them, including conclusions that were reached, tested and found wrong — those

@@ -320,7 +320,7 @@ Last verified 2026-09-07; `ivory` row 2026-09-29:
 | Host | Role | Verified present |
 |---|---|---|
 | `printhub` | Raspberry Pi 5 — Klipper, Moonraker, camera. No desktop session. | PrusaSlicer 2.5.0 CLI, ffmpeg, python3 |
-| `ivory` | Ubuntu 24.04 desktop, 16 cores. Where this repo originated. Reformatted from Windows + WSL2 to native Ubuntu (2026-09-27); `ivory-win` is gone. | ImageMagick `convert`, `flatpak`; **OrcaSlicer 2.4.2** flatpak (`--user`, Flathub x86_64 commit `1681b0ad…`, installed 2026-09-29, not masked). Clock Europe/London. **No** `heif-convert` or PrusaSlicer. |
+| `ivory` | Ubuntu 24.04 desktop, 16 cores. Where this repo originated. Reformatted from Windows + WSL2 to native Ubuntu (2026-09-27); `ivory-win` is gone. | ImageMagick `convert`, `flatpak`; **OrcaSlicer 2.4.2** flatpak (`--user`, Flathub x86_64 commit `1681b0ad…`, installed 2026-09-29, not masked); OpenSCAD snapshot 2026.09.22 AppImage at `~/.cache/openscad-snapshot/` (2026-09-29; pass it as `$OPENSCAD` to `tools/gridfinity.sh`). Clock Europe/London. **No** `heif-convert` or PrusaSlicer. |
 | `blake` | Linux workstation, 12 cores / 14 GB. **Reformatted often — assume it is bare.** | `libheif1` only — **no** `heif-convert`, ImageMagick, ffmpeg or PrusaSlicer |
 
 **`blake` is the machine this repo is usually worked from, and it is the one most likely to be

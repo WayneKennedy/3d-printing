@@ -1,5 +1,5 @@
 #!/bin/bash
-# Usage: orca-slice.sh [--printer 5si|5p] <output-name> <profile> <model.stl|.3mf>... [--print]
+# Usage: orca-slice.sh [--printer 5si|5p] <output-name> <profile> <model.stl|.3mf>... [--print] [--no-rotate]
 # Slices one or more models onto one plate with OrcaSlicer (flatpak, version-masked) into
 # the printer's gcodes dir (5SI ~/printer_data, 5P ~/printer_data_5p; default 5si), then checks the emitted G-code against the traps
 # in 3d-printing AGENTS.md and refuses to leave a file that fails them.
@@ -9,8 +9,12 @@
 # replaces the machine file (tpu: slicer-side z_offset, which Orca keeps in the machine preset).
 # Machine: ~/slicer/orca/machine_ender5s1.json
 # (5SI) or machine_ender5plus.json (5P), whose printable_area is that bed's MESH (5SI X3-205
-# Y28-218, centre 104,123; 5P X15-305 Y15-330), so Orca's arrange centres parts on the mesh and
-# refuses anything outside it. Several models are arranged by Orca itself.
+# Y28-218, centre 104,123) or, for 5P, the mesh in X and the plate in Y (X15-305 Y-2-348, a
+# 350 mm depth centred on Y173: arrange needs ~7 mm more than part + skirt; extrusion is then
+# checked against Y1-345; the probe cannot mesh beyond Y336), so Orca's arrange centres parts
+# there and refuses anything outside it.
+# --no-rotate: keep the STL's orientation. Orca's arrange otherwise turns a part by an arbitrary
+# angle (a 186 x 168 plate came out 2.7 deg askew), which a 336 mm plate on 5P has no room for. Several models are arranged by Orca itself.
 # Slices while printers print (owner, 2026-09-29): Orca slices up to 6 s were measured harmless
 # with both printing - 3d-printing docs/open-questions.md, "Two printers and slicing on one Pi".
 set -euo pipefail
@@ -20,14 +24,20 @@ PRINTER=5si
 if [ "${1:-}" = "--printer" ]; then PRINTER="${2:-}"; shift 2; fi
 case "$PRINTER" in
   5si) MACHINE="$DIR/machine_ender5s1.json";   GCODES="$HOME/printer_data/gcodes";    PORT=7125; MESH="3 205 28 218" ;;
-  5p)  MACHINE="$DIR/machine_ender5plus.json"; GCODES="$HOME/printer_data_5p/gcodes"; PORT=7126; MESH="15 305 15 330" ;;
+  5p)  MACHINE="$DIR/machine_ender5plus.json"; GCODES="$HOME/printer_data_5p/gcodes"; PORT=7126; MESH="15 305 1 345" ;;
   *)   echo "Unknown printer: $PRINTER (5si or 5p)" >&2; exit 2 ;;
 esac
 
 [ $# -ge 3 ] || { sed -n 2p "$0" | sed 's/^# //' >&2; exit 2; }
 NAME="$1"; PROF="$2"; shift 2
-DOPRINT=no; MODELS=()
-for a in "$@"; do [ "$a" = "--print" ] && DOPRINT=yes || MODELS+=("$(realpath "$a")"); done
+DOPRINT=no; ROTATE=(); MODELS=()
+for a in "$@"; do
+  case "$a" in
+    --print) DOPRINT=yes ;;
+    --no-rotate) ROTATE=(--allow-rotations=0) ;;
+    *) MODELS+=("$(realpath "$a")") ;;
+  esac
+done
 
 flatpak info --user "$APP" >/dev/null 2>&1 || { echo "OrcaSlicer flatpak ($APP) not installed" >&2; exit 1; }
 PROCESS="$DIR/process_${PROF}.json"
@@ -41,7 +51,7 @@ TMP=$(mktemp -d "$HOME/.cache/orca-slice.XXXXXX"); trap 'rm -rf "$TMP"' EXIT
 set +e
 flatpak run --user --command=orca-slicer "$APP" \
   --load-settings "$MACHINE;$PROCESS" --load-filaments "$FILAMENT" \
-  --arrange 1 --slice 0 --outputdir "$TMP" "${MODELS[@]}" >"$TMP/log" 2>&1
+  --arrange 1 "${ROTATE[@]}" --slice 0 --outputdir "$TMP" "${MODELS[@]}" >"$TMP/log" 2>&1
 RC=$?; set -e
 if [ $RC -ne 0 ] || [ ! -s "$TMP/plate_1.gcode" ]; then
   echo "Slice failed (exit $RC):" >&2

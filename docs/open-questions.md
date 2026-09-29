@@ -132,6 +132,77 @@ takes 336 mm plus skirt** — unknown until its mesh is probed. **Fallback: 18 |
 18 in two rows** (2 left-padded + 2 right-padded 4 × 4 at 186 × 168, 2 plain 1 × 4 strips),
 all within the S1. 5 × 4 is not printable on the S1 (210 mm > ~194 usable).
 
+**Assessed 2026-09-29 for 5P, yellow eSUN PLA loaded (owner). Nothing printed yet.**
+- **Two parts per drawer do not fit 5P's mesh, in any orientation or split.** Each part must
+  reach two corners of the 414 × 336 mm grid, so one side is ≥ 336 mm; the mesh is 290 × 315
+  (X15–305, Y15–330). Orca refuses both plates against the mesh (exit 206).
+- **They fit the bed's travel (0–350), lengthwise in Y only**: the probe reaches Y −14…336 but
+  X only to 309, so a 336 mm part along X would lie 34 mm outside any possible mesh. Along Y,
+  at Y10–346 (clear of `START_PRINT`'s purge at Y8–8.5) it overhangs today's mesh by 5 mm at
+  the front and 16 mm at the back. **Estimate, not measured:** the saved mesh falls at most
+  0.10 mm over its last 52.5 mm (back-right), i.e. ~0.002 mm/mm, so ~0.03 mm of first-layer
+  error at the far corners if the bed continues that trend.
+- **Plate edges against nozzle travel — owner at the machine, 2026-09-29, by eye ("hard to
+  measure these things"); X/Y homed, Z not:** at X350 Y0 the nozzle is **8 mm in from the right
+  edge and 18 mm in from the front edge**; at X350 Y350 it is **in line with the back edge**;
+  at X0 Y0 it "could easily move to −10, −10". So the plate spans about **X −10…358,
+  Y −18…350** (~368 mm square; [5p-corexy.md](projects/5p-corexy.md) records the aluminium bed
+  as 377). **All of X 0–350 is over the plate; Y is usable to ~345**, the last few mm being
+  the plate's edge. **The 290 × 315 limit was the probed mesh, not the machine** (owner's
+  challenge, 2026-09-29 — correct).
+- **A 336 mm plate fits at Y5–341**, skirt Y1–345, 9 mm inside the back edge. The probe sits
+  14 mm in front of the nozzle, so a mesh can reach Y336 at most: the part's last 5 mm lie
+  beyond it. **Still unverified:** clips or cable at the back, and whether the bed holds
+  temperature at its ends.
+- **Done 2026-09-29 (owner: "do all these things"; backups `printer.cfg.bak-widemesh-20260929`
+  and `.bak-pla60-20260929`):**
+  - `[bed_mesh]` `mesh_min: 15, 2`, `mesh_max: 305, 334` (was Y15–330).
+  - **Mesh `pla60`**: 7 × 7 at bed 60 °C after a 3 min soak, range **0.284 mm**
+    (−0.220…+0.064), the same dome as `default` (0.299 at 80 °C over Y15–330). Added to
+    `printer.cfg`'s autosave block **by hand, not by `SAVE_CONFIG`**: `BED_MESH_CALIBRATE`
+    writes its result into `default` as well, and `SAVE_CONFIG` would have replaced the proven
+    80 °C mesh. **Next time: `BED_MESH_CALIBRATE PROFILE=<name>`.**
+  - `START_PRINT` picks the mesh by bed temperature (`pla60` under 70 °C, else `default`) and
+    purges up the left edge, X5/5.5, Y20→210, instead of along Y8.
+  - Orca `machine_ender5plus.json` `printable_area` X15–305, **Y −2…348**: arrange refuses a
+    336 mm part in anything shallower than ~350, and this centres it on Y173.
+    `orca-slice.sh` checks 5P extrusion against X15–305 Y1–345.
+  - **Orca's arrange rotates parts by arbitrary angles** — the 186 × 168 plate came out 2.7°
+    askew, the 336 mm one ~11° — so `orca-slice.sh` gained `--no-rotate`
+    (`--allow-rotations=0`; the form `--allow-rotations 0` is read as a filename). Default
+    behaviour is unchanged (cam-mount G-code identical before and after).
+  - Orca `pla` presets installed (`filament_pla.json`, `process_pla.json` = `process_petg`
+    speeds; 210/205, bed 60, fan 100 %). **The temperatures are generic — the spool label has
+    not been read.** All four plates slice with `--no-rotate`; STLs in
+    `printhub:~/models/gridfinity/drawer/`.
+  - **No PLA part has been printed.** A four-part piece started as a profile "proof" was
+    cancelled by the owner at 5 min: unauthorised, and four parts are rejected (below) —
+    [print-log.md](print-log.md).
+- **Decided (owner, 2026-09-29): two parts per drawer. Four parts per drawer are not
+  accepted.** The four-part figures above are kept as the record of what was assessed.
+- **Four parts per drawer fit the mesh as it is**: left 186 × 168 and right 228 × 168, two of
+  each; no two of them share a plate.
+- **Sliced on `ivory`** (Orca 2.4.2, draft PLA 210/205, bed 60, fan 100 %, `process_petg`
+  speeds, 5P accel 2500; STLs from `tools/gridfinity.sh baseplate 4 8 -D distancex=186 -D
+  fitx=-1` and `5 8 -D distancex=228 -D fitx=1`, and `4 4` / `5 4` likewise):
+
+  | Part | Size mm | Time | PLA |
+  |---|---|---|---|
+  | left 4 × 8 | 186 × 336 × 5 | 6 h 44 | 68.6 g |
+  | right 5 × 8 | 228 × 336 × 5 | 7 h 56 | 81.3 g |
+  | left 4 × 4 | 186 × 168 × 5 | 3 h 23 | 34.6 g |
+  | right 5 × 4 | 228 × 168 × 5 | 3 h 58 | 41.0 g |
+
+  **Per drawer ~150 g and ~14 h 40 either way; seven drawers ~1 050 g, ~103 h — one 1 kg spool
+  covers six.** Faster speeds are unproven on 5P.
+- **The spool: eSUN PLA (plain, not PLA+), yellow, 1 kg** — Amazon order 205-4727707-9385916,
+  ordered 2026-09-11, delivered 2026-09-12, £11.72; opened and loaded on 5P 2026-09-29 (owner).
+  wk-inventory records no filament at all (searched 2026-09-29). **Suitable for drawer
+  baseplates** (reasoning, not a test): indoors, out of sunlight, no load but bins, and PLA
+  warps least of what is owned, which matters on a 336 mm flat part. Its limit is ~55–60 °C —
+  it must not live in the garage. **Nozzle temperature: read it off the spool label**; the
+  draft's 210/205 is `ender5s1_pla.ini`'s generic value.
+
 
 Owner, 2026-09-24: a 7-drawer unit (Amazon), **internal 414 W × 335 D mm, 70 mm deep**
 (re-measured; the first figures, 410 × 330, were wrong). **Two `bp_4x4` fit front to back
@@ -786,7 +857,7 @@ the `Stats` lines both instances write to `klippy.log` once a second, with **5P 
   `dmesg`, `throttled=0x0`. The 5SI job completed (61 min of 61 estimated) and the owner judged the
   part "very good". **Rail 111 on 5P completed**: 429 min of 425 estimated (+1 %; rail 110,
   printed alone, took 423 of 421), `print_stall` 0 and no retransmit over the whole job.
-  **Pending: the owner's judgement of rail 111** — [print-log.md](print-log.md).
+  **Owner: both rails "perfect, no lifting"** — [print-log.md](print-log.md).
 - **The touchscreen has been removed (owner, 2026-09-29) but `KlipperScreen.service` and Xorg
   still run**: 246 MB resident, ~0.7 % CPU together. `sudo systemctl disable --now
   KlipperScreen` reclaims that; **not done** — it is immaterial against 7.4 GB free, and no

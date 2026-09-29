@@ -9,9 +9,10 @@ The machine is a **Creality Ender-5 S1**, stock, running **Klipper** on `printhu
 Pi 5, MainsailOS). Full identifiers: [docs/hardware.md](docs/hardware.md).
 
 **Printer names (owner, 2026-09-28): `5SI` = Ender-5 S1, `5P` = Ender-5 Plus, `3KE` = Ender-3
-V3 KE** (not connected). Everything in this file not marked 5P is about **5SI**. **5P is being
-commissioned — uncalibrated, do not print on it** until
-[open-questions.md](docs/open-questions.md#creality-ender-5-plus--not-committed) says so. **5SI
+V3 KE** (not connected). Everything in this file not marked 5P is about **5SI**. **5P prints
+PETG** (Orca `petg`; rails 110 and 111, owner: "perfect") **and is on its first PLA print**
+(Orca `pla`, 2026-09-29); its calibration record is
+[open-questions.md](docs/open-questions.md#creality-ender-5-plus--not-committed). **5SI
 and 5P printed at once for the first time 2026-09-29** (owner's call, replacing the 2026-09-28
 "5SI stays idle" hold); what was measured:
 [open-questions.md](docs/open-questions.md#two-printers-and-slicing-on-one-pi--measured-2026-09-29).
@@ -76,6 +77,10 @@ not answer over the tailnet. The trailing slash is load-bearing — `/webcam?act
    Power lights and accessories from anything else.
 7. **The user is at the machine and can see it.** Ask what the nozzle or first layer actually
    did rather than inferring it from telemetry.
+8. **Start only a print the owner has asked for, by part.** Approval of a plan, or of config
+   and calibration work, is not a go for any print named in it — a test or "proof" print
+   included. Slice, stage and report; then wait for the go (2026-09-29: a proof plate started
+   on 5P without one was killed by the owner).
 
 ## Slicing and printing
 
@@ -86,7 +91,7 @@ tailscale ssh wkenn@printhub '~/slicer/slice-print.sh <model.stl|.3mf> [material
 tailscale ssh wkenn@printhub '~/slicer/slice-plate.sh <output-name> <material> <model.stl>...'
 ```
 
-**OrcaSlicer is under assessment to replace both PrusaSlicer scripts** (`~/slicer/orca-slice.sh [--printer 5si|5p] <name> <profile> <models...>`; profiles `petg`, `petg_fast`, `petg_fast_solid`, and `tpu` for 5SI only; the only slicer set up for 5P) — [open-questions.md](docs/open-questions.md#single-slicer-orcaslicer-on-printhub--assessment-started-2026-09-27).
+**OrcaSlicer is under assessment to replace both PrusaSlicer scripts** (`~/slicer/orca-slice.sh [--printer 5si|5p] <name> <profile> <models...> [--print] [--no-rotate]`; profiles `petg`, `petg_fast`, `petg_fast_solid`, `pla` (unproven), and `tpu` for 5SI only; the only slicer set up for 5P. **Orca's arrange turns parts by arbitrary angles unless `--no-rotate` is given**) — [open-questions.md](docs/open-questions.md#single-slicer-orcaslicer-on-printhub--assessment-started-2026-09-27).
 `slice-print.sh` handles one model; `slice-plate.sh` arranges several onto one plate. Both
 write G-code into `~/printer_data/gcodes/`, where Mainsail lists it. `<material>` resolves
 `~/slicer/ender5s1_<material>.ini`.
@@ -121,7 +126,13 @@ un-homed machine needs no action first.
   turns unreliable. `slice-plate.sh` centres on `104,123` for this reason. **Verify the emitted
   footprint against the mesh bounds before printing.**
 - **`START_PRINT`'s purge line runs at Y8, X15→X205.** Anything placed there gets a prime line
-  drawn through it.
+  drawn through it. **On 5P it runs up the left edge instead, X5, Y20→Y210** (since
+  2026-09-29), outside the slicer's X15–305.
+- **5P's usable area is X15–305, Y1–345** — the mesh in X, the plate in Y. Its plate spans
+  about X −10…358, Y −18…350 (owner, by eye); the probe sits 14 mm in front of the nozzle, so
+  no mesh reaches past Y336. `START_PRINT` loads mesh `pla60` (Y2–334, probed at 60 °C) for a
+  bed under 70 °C and `default` (Y15–330, probed at 80 °C) otherwise —
+  [open-questions.md](docs/open-questions.md#drawer-gridfinity--7-drawer-unit-waiting-for-the-ender-5-plus).
 - **`--merge` means "arrange, then merge" — which binary you run decides whether it works.**
   On the **flatpak 2.9.6 it always segfaults** (exit 139, no message, no output file — even for
   one clean part), so **`slice-plate.sh`, which picks the flatpak, does not work.** On the

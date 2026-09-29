@@ -5,10 +5,10 @@
  "inherits": "Creality Ender-5 Plus 0.4 nozzle",
  "gcode_flavor": "klipper",
  "printable_area": [
-  "15x15",
-  "305x15",
-  "305x330",
-  "15x330"
+  "15x-2",
+  "305x-2",
+  "305x348",
+  "15x348"
  ],
  "printable_height": "400",
  "nozzle_diameter": [

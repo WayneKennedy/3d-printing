@@ -10,8 +10,8 @@ Pi 5, MainsailOS). Full identifiers: [docs/hardware.md](docs/hardware.md).
 
 **Printer names (owner, 2026-09-28): `5SI` = Ender-5 S1, `5P` = Ender-5 Plus, `3KE` = Ender-3
 V3 KE** (not connected). Everything in this file not marked 5P is about **5SI**. **5P prints
-PETG** (Orca `petg`; rails 110 and 111, owner: "perfect") **and is on its first PLA print**
-(Orca `pla`, 2026-09-29); its calibration record is
+PETG** (Orca `petg`; rails 110 and 111, owner: "perfect") **and PLA** (Orca `pla`; right 5 × 8
+drawer plate 2026-09-30, owner: "perfect"); its calibration record is
 [open-questions.md](docs/open-questions.md#creality-ender-5-plus--not-committed). **5SI
 and 5P printed at once for the first time 2026-09-29** (owner's call, replacing the 2026-09-28
 "5SI stays idle" hold); what was measured:
@@ -91,7 +91,7 @@ tailscale ssh wkenn@printhub '~/slicer/slice-print.sh <model.stl|.3mf> [material
 tailscale ssh wkenn@printhub '~/slicer/slice-plate.sh <output-name> <material> <model.stl>...'
 ```
 
-**OrcaSlicer is under assessment to replace both PrusaSlicer scripts** (`~/slicer/orca-slice.sh [--printer 5si|5p] <name> <profile> <models...> [--print] [--no-rotate]`; profiles `petg`, `petg_fast`, `petg_fast_solid`, `pla` (unproven), and `tpu` for 5SI only; the only slicer set up for 5P. **Orca's arrange turns parts by arbitrary angles unless `--no-rotate` is given**) — [open-questions.md](docs/open-questions.md#single-slicer-orcaslicer-on-printhub--assessment-started-2026-09-27).
+**OrcaSlicer is under assessment to replace both PrusaSlicer scripts** (`~/slicer/orca-slice.sh [--printer 5si|5p] <name> <profile> <models...> [--print] [--no-rotate]`; profiles `petg`, `petg_fast`, `petg_fast_solid`, `pla` (validated 2026-09-30 on 5P, 336 mm drawer plate), and `tpu` for 5SI only; the only slicer set up for 5P. **Orca's arrange turns parts by arbitrary angles unless `--no-rotate` is given**) — [open-questions.md](docs/open-questions.md#single-slicer-orcaslicer-on-printhub--assessment-started-2026-09-27).
 `slice-print.sh` handles one model; `slice-plate.sh` arranges several onto one plate. Both
 write G-code into `~/printer_data/gcodes/`, where Mainsail lists it. `<material>` resolves
 `~/slicer/ender5s1_<material>.ini`.

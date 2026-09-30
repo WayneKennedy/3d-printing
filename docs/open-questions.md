@@ -175,9 +175,10 @@ all within the S1. 5 × 4 is not printable on the S1 (210 mm > ~194 usable).
     speeds; 210/205, bed 60, fan 100 %). **The temperatures are generic — the spool label has
     not been read.** All four plates slice with `--no-rotate`; STLs in
     `printhub:~/models/gridfinity/drawer/`.
-  - **No PLA part has been printed.** A four-part piece started as a profile "proof" was
-    cancelled by the owner at 5 min: unauthorised, and four parts are rejected (below) —
-    [print-log.md](print-log.md).
+  - A four-part piece started as a profile "proof" was cancelled by the owner at 5 min:
+    unauthorised, and four parts are rejected (below). **The right 5 × 8 then printed on the
+    owner's go: complete 2026-09-30 02:38 UTC, 470 min of 464 estimated, 26.9 m, no fault;
+    quality not yet judged** — [print-log.md](print-log.md).
 - **Decided (owner, 2026-09-29): two parts per drawer. Four parts per drawer are not
   accepted.** The four-part figures above are kept as the record of what was assessed.
 - **Four parts per drawer fit the mesh as it is**: left 186 × 168 and right 228 × 168, two of

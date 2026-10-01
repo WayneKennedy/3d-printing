@@ -198,12 +198,29 @@ whether the Micro Swiss NG hotend can sit in EVA (if not, a hotend purchase), a 
 restock date for Hydra, a priced Hydra remainder list, the board + drivers total, and who prints
 the ABS parts.
 
-## 3D viewer
+## The whole-printer STEP
 
-[`tools/cad-viewer/`](../../tools/cad-viewer/README.md) renders ZeroG's whole-printer STEP in the
-browser (tailnet `http://blake:8018/` while served), coloured printed (74) vs bought (318) vs
-fasteners (668), with section cuts and part picking. From the same STEP (placements verified
-against OCC's plain reader): **Hydra's Z motors are at the bottom front-left, front-right and
+**View it in FreeCAD** (family rule, 2026-10-01:
+[wk-robotics `common.md`](https://github.com/WayneKennedy/wk-robotics/blob/main/docs/common.md#cad-and-viewing-freecad)).
+The browser viewer `tools/cad-viewer/` was retired that day and deleted; it is in git history
+up to `27cf611`. What it established about the file, 2026-09-28:
+
+- **Source:** `ZeroGDesign/Hydra` `CAD/Hydra_5Plus.zip` pinned at `a062dbd`, one STEP AP214
+  (132 MB, "Hydra 370 Assembly", Autodesk export) of the whole printer: frame, Mercury One.1
+  gantry, EVA toolhead (Rapido + LGX Lite), Hydra bed/Z, skirts and accessories.
+  CC BY-NC-SA 4.0, so the STEP is **not committed** (`scratch/cad/`).
+- **1060 parts: 74 printed, 318 bought, 668 fasteners**, classified by assembly-path name
+  against ZeroG's published STL lists; none unclassified.
+- **Placement trap:** build123d's `import_step` leaves each child in its parent's frame.
+  Used directly, 1019 of 1153 solids land in local coordinates ("floating parts"), and a
+  check against build123d's own bounding boxes shares the error and passes. Compose every
+  ancestor's location and compare with OCC's plain STEP reader: 1153 of 1153 then match
+  within 1 mm. Check the same thing after any import into FreeCAD.
+- **"Hidera_*" is ZeroG's spelling on real parts** (right arm, right/rear motor mounts, bed
+  plate), not copies.
+- **Orientation:** Z up; front is −Y (the rear Z motor is +Y).
+
+From that STEP: **Hydra's Z motors are at the bottom front-left, front-right and
 rear-centre** (Y −235 / −235 / +242; Mercury's front towers at Y −252 and XY steppers at +282
 confirm front = −Y), each under a vertical MGN12 rail (front is
 −Y); bed stack heater → 8 mm plate → magnetic sheet → PEI on three spacers on the arms.

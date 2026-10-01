@@ -10,6 +10,6 @@ scratch/
 *.3mf
 __pycache__/
 
-# Generated viewers (tools/cad-viewer)
+# Generated build output and virtualenvs
 build/
 .venv/

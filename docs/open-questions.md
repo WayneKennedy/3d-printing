@@ -180,7 +180,9 @@ all within the S1. 5 × 4 is not printable on the S1 (210 mm > ~194 usable).
     owner's go: complete 2026-09-30 02:38 UTC, 470 min of 464 estimated, 26.9 m, no fault —
     owner: "perfect, fits the drawer just right"**. **The two-part layout, the Orca `pla`
     profile at 210/205, mesh `pla60` and the left-edge purge are all proven by it.** Left 4 × 8
-    started 06:41 UTC — [print-log.md](print-log.md).
+    complete 13:35 UTC, 408 min of 403. **Drawer 1 done — owner: "both plates printed well,
+    and fit the drawer perfectly."** Six drawers remain: ~892 g against ~850 g left on the
+    spool — [print-log.md](print-log.md).
 - **Decided (owner, 2026-09-29): two parts per drawer. Four parts per drawer are not
   accepted.** The four-part figures above are kept as the record of what was assessed.
 - **Four parts per drawer fit the mesh as it is**: left 186 × 168 and right 228 × 168, two of
